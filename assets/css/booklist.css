@@ -203,12 +203,67 @@
 }
 .booklist-empty a { color: var(--cam); font-weight: bold; }
 .booklist-pagination { flex-wrap: wrap; align-items: center; }
-.booklist-pagination .pagination-ellipsis {
+.booklist-pagination .pagination-jump { position: relative; }
+.booklist-pagination .pagination-jump > summary {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
   color: #777777;
+  cursor: pointer;
+  font-weight: bold;
+  list-style: none;
+}
+.booklist-pagination .pagination-jump > summary::-webkit-details-marker { display: none; }
+.booklist-pagination .pagination-jump > summary:hover,
+.booklist-pagination .pagination-jump[open] > summary { border-color: var(--cam); color: var(--cam); }
+.booklist-pagination .pagination-jump form {
+  position: absolute;
+  z-index: 3;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  display: flex;
+  gap: 6px;
+  width: 220px;
+  padding: 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 14px #0000001a;
+  transform: translateX(-50%);
+}
+.booklist-pagination .pagination-jump label { min-width: 0; flex: 1; }
+.booklist-pagination .pagination-jump input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+}
+.booklist-pagination .pagination-jump button {
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cam);
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+.booklist-pagination .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 /* Mỗi nhóm = tiêu đề + lưới sách (.product-list đã chia 3 cột ở trên) */
