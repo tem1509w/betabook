@@ -202,6 +202,14 @@
   text-align: center;
 }
 .booklist-empty a { color: var(--cam); font-weight: bold; }
+.booklist-pagination { flex-wrap: wrap; align-items: center; }
+.booklist-pagination .pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: #777777;
+}
 
 /* Mỗi nhóm = tiêu đề + lưới sách (.product-list đã chia 3 cột ở trên) */
 .book-group { margin-bottom: 30px; }
