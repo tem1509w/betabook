@@ -124,6 +124,60 @@
         <?php endif; ?>
       </div>
 
+      <?php if ($totalPages > 1): ?>
+        <?php
+          $paginationParams = array_filter([
+              'q' => $search,
+              'danhmuc' => $category,
+              'sapxep' => $sort,
+          ], static function ($value) { return $value !== ''; });
+          if ($totalPages <= 7) {
+              $visiblePages = range(1, $totalPages);
+          } elseif ($currentPage <= 2) {
+              $visiblePages = [1, 2, 3];
+          } elseif ($currentPage >= $totalPages - 1) {
+              $visiblePages = [$totalPages - 2, $totalPages - 1, $totalPages];
+          } else {
+              $visiblePages = [$currentPage - 1, $currentPage, $currentPage + 1];
+          }
+        ?>
+        <nav class="pagination booklist-pagination" aria-label="Điều hướng trang sách">
+          <?php if ($currentPage > 1): ?>
+            <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => $currentPage - 1]))); ?>"
+               rel="prev" aria-label="Trang trước">‹</a>
+          <?php endif; ?>
+
+          <?php if ($visiblePages[0] > 1): ?>
+            <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => 1]))); ?>">1</a>
+            <?php if ($visiblePages[0] > 2): ?>
+              <span class="pagination-ellipsis" aria-hidden="true">…</span>
+            <?php endif; ?>
+          <?php endif; ?>
+
+          <?php foreach ($visiblePages as $visiblePage): ?>
+            <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => $visiblePage]))); ?>"
+               class="<?php echo $currentPage === $visiblePage ? 'on' : ''; ?>"
+               <?php echo $currentPage === $visiblePage ? 'aria-current="page"' : ''; ?>>
+              <?php echo $visiblePage; ?>
+            </a>
+          <?php endforeach; ?>
+
+          <?php if (end($visiblePages) < $totalPages): ?>
+            <?php if (end($visiblePages) < $totalPages - 1): ?>
+              <span class="pagination-ellipsis" aria-hidden="true">…</span>
+            <?php endif; ?>
+            <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => $totalPages]))); ?>">
+              <?php echo $totalPages; ?>
+            </a>
+          <?php endif; ?>
+
+          <?php if ($currentPage < $totalPages): ?>
+            <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => $currentPage + 1]))); ?>"
+               rel="next" aria-label="Trang tiếp theo">›</a>
+          <?php endif; ?>
+        </nav>
+      <?php endif; ?>
+
     </div>
   </div>
 </section>
