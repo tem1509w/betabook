@@ -1,6 +1,9 @@
 <?php
 $search = trim((string)get_param('q', ''));
 $category = trim((string)get_param('danhmuc', 'tatca'));
+$booksPerPage = 3;
+$requestedPage = (string)get_param('page', '1');
+$currentPage = ctype_digit($requestedPage) ? max(1, (int)$requestedPage) : 1;
 
 $sortOptions = [
     'az' => 'Tên A-Z',
@@ -54,6 +57,18 @@ if ($category !== '' && $category !== 'tatca') {
     $params[] = $category;
 }
 
+$count = $db->fetchOne(
+    'SELECT COUNT(*) AS book_count
+     FROM products p
+     LEFT JOIN categories c ON c.category_id = p.category_id
+     WHERE ' . implode(' AND ', $conditions),
+    $params
+);
+$resultCount = (int)$count['book_count'];
+$totalPages = (int)ceil($resultCount / $booksPerPage);
+$currentPage = min($currentPage, max(1, $totalPages));
+$offset = ($currentPage - 1) * $booksPerPage;
+
 $books = $db->fetchAll(
     'SELECT p.product_id, p.title, p.author, p.price, p.original_price, p.cover_image,
             (SELECT pi.image_url
@@ -64,10 +79,10 @@ $books = $db->fetchAll(
      FROM products p
      LEFT JOIN categories c ON c.category_id = p.category_id
      WHERE ' . implode(' AND ', $conditions) . '
-     ORDER BY ' . $orderBy[$sort],
+     ORDER BY ' . $orderBy[$sort] . '
+     LIMIT ' . $booksPerPage . ' OFFSET ' . $offset,
     $params
 );
-$resultCount = count($books);
 
 $categoryName = 'Tất cả sách';
 foreach ($categories as $bookCategory) {
