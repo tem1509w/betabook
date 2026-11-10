@@ -150,7 +150,20 @@
           <?php if ($visiblePages[0] > 1): ?>
             <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => 1]))); ?>">1</a>
             <?php if ($visiblePages[0] > 2): ?>
-              <span class="pagination-ellipsis" aria-hidden="true">…</span>
+              <details class="pagination-jump">
+                <summary aria-label="Nhập số trang muốn xem">…</summary>
+                <form action="<?php echo e(url('booklist')); ?>" method="get">
+                  <input type="hidden" name="q" value="<?php echo e($search); ?>">
+                  <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
+                  <input type="hidden" name="sapxep" value="<?php echo e($sort); ?>">
+                  <label>
+                    <span class="visually-hidden">Số trang muốn xem</span>
+                    <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                           placeholder="Trang (1-<?php echo $totalPages; ?>)" required>
+                  </label>
+                  <button type="submit">Đi</button>
+                </form>
+              </details>
             <?php endif; ?>
           <?php endif; ?>
 
@@ -164,7 +177,20 @@
 
           <?php if (end($visiblePages) < $totalPages): ?>
             <?php if (end($visiblePages) < $totalPages - 1): ?>
-              <span class="pagination-ellipsis" aria-hidden="true">…</span>
+              <details class="pagination-jump">
+                <summary aria-label="Nhập số trang muốn xem">…</summary>
+                <form action="<?php echo e(url('booklist')); ?>" method="get">
+                  <input type="hidden" name="q" value="<?php echo e($search); ?>">
+                  <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
+                  <input type="hidden" name="sapxep" value="<?php echo e($sort); ?>">
+                  <label>
+                    <span class="visually-hidden">Số trang muốn xem</span>
+                    <input type="number" name="page" min="1" max="<?php echo $totalPages; ?>"
+                           placeholder="Trang (1-<?php echo $totalPages; ?>)" required>
+                  </label>
+                  <button type="submit">Đi</button>
+                </form>
+              </details>
             <?php endif; ?>
             <a href="<?php echo e(url('booklist', array_merge($paginationParams, ['page' => $totalPages]))); ?>">
               <?php echo $totalPages; ?>
