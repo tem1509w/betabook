@@ -74,6 +74,7 @@ $routes = [
     'book-form' => 'pages/books/form.php',
     'categories' => 'pages/categories/index.php',
     'category-form' => 'pages/categories/form.php',
+    'promotions' => 'pages/discount-event/index.php',
 ];
 
 $actions = [
@@ -81,6 +82,10 @@ $actions = [
     'delete-category' => 'actions/delete-category.php',
     'save-book' => 'actions/save-book.php',
     'save-category' => 'actions/save-category.php',
+    'save-coupon' => 'pages/discount-event/action.php',
+    'delete-coupon' => 'pages/discount-event/action.php',
+    'save-event' => 'pages/discount-event/action.php',
+    'delete-event' => 'pages/discount-event/action.php',
 ];
 
 $actionPermissions = [
@@ -88,6 +93,10 @@ $actionPermissions = [
     'save-book' => 'books',
     'delete-category' => 'categories',
     'save-category' => 'categories',
+    'save-coupon' => 'promotions',
+    'delete-coupon' => 'promotions',
+    'save-event' => 'promotions',
+    'delete-event' => 'promotions',
 ];
 
 $actionName = get_param('action');
@@ -114,6 +123,7 @@ $pagePermissions = [
     'book-form' => 'books',
     'categories' => 'categories',
     'category-form' => 'categories',
+    'promotions' => 'promotions',
 ];
 
 if (is_string($page) && isset($routes[$page])
