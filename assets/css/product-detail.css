@@ -1,0 +1,242 @@
+/* =====================================================
+   PRODUCT-DETAIL.CSS - Trang chi tiết sản phẩm BetaBook
+   Dùng chung biến màu, .container, .section, .button, .img-box,
+   .rating, .stars, .price, .old-price, .product từ style.css
+   => PHẢI link style.css TRƯỚC file này. .../PHP.
+   Mục lục:
+   1. Khung trang & đường dẫn
+   2. Thư viện ảnh (đổi ảnh bằng radio)
+   3. Thông tin mua hàng
+   4. Tab mô tả / thông tin / đánh giá
+   5. Đánh giá
+   6. Điện thoại
+   ===================================================== */
+
+
+/* ---------- 1. KHUNG TRANG ---------- */
+.detail-page { padding-top: 24px; padding-bottom: 50px; }
+.detail-breadcrumb { align-items: center; }
+.detail-breadcrumb strong { overflow-wrap: anywhere; }
+
+/* 2 cột: ảnh | thông tin */
+.detail-top {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+
+/* ---------- 2. THƯ VIỆN ẢNH ---------- */
+.gallery { position: sticky; top: 100px; }   /* cuộn trang vẫn thấy ảnh */
+.gallery > input { display: none; }
+
+.gallery-main { position: relative; }
+.g-img {
+  display: none;
+  aspect-ratio: 3 / 4;          /* tỉ lệ bìa sách, ảnh nào cũng nằm gọn */
+  background: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+}
+.g-img img { object-fit: contain; }
+
+/* Chọn radio nào thì hiện ảnh đó */
+#g1:checked ~ .gallery-main .g1,
+#g2:checked ~ .gallery-main .g2,
+#g3:checked ~ .gallery-main .g3,
+#g4:checked ~ .gallery-main .g4 { display: flex; }
+
+.sale-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: var(--do);
+  color: white;
+  font-weight: bold;
+}
+
+/* Ảnh nhỏ bên dưới: bấm để đổi ảnh lớn */
+.thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 14px; }
+.thumbs label {
+  aspect-ratio: 3 / 4;
+  background: #f5f5f5;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.thumbs label:hover { border-color: var(--cam); transform: translateY(-3px); }
+.thumbs img { object-fit: contain; }
+#g1:checked ~ .thumbs label[for="g1"],
+#g2:checked ~ .thumbs label[for="g2"],
+#g3:checked ~ .thumbs label[for="g3"],
+#g4:checked ~ .thumbs label[for="g4"] { border-color: var(--cam); }
+
+
+/* ---------- 3. THÔNG TIN MUA HÀNG ---------- */
+.info h1 { font-size: 26px; line-height: 1.35; color: var(--den); margin: 0 0 10px; }
+
+.info .rating { margin-bottom: 14px; }
+.divider { color: #cccccc; }
+
+/* Khối giá */
+.price-box {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  background: #fff6ef;
+  border-radius: 10px;
+}
+.price.big { font-size: 30px; }
+.price-box .old-price { margin: 0; font-size: 16px; }
+
+/* Thông tin nhanh */
+.meta { display: grid; gap: 6px; margin-bottom: 16px; }
+.meta span { display: inline-block; min-width: 110px; color: #888888; }
+.meta b { color: var(--den); }
+.in-stock { color: #2e9e5b !important; }
+
+/* Mã giảm */
+.vouchers { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.voucher {
+  padding: 4px 12px;
+  border: 1px dashed var(--cam);
+  border-radius: 6px;
+  background: white;
+  color: var(--cam);
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Hàng "nhãn + lựa chọn" */
+.field-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.field-label { min-width: 110px; font-weight: bold; color: var(--den); }
+
+/* Số lượng */
+.qty { width: 80px; height: 42px; padding: 0 8px; border: 1px solid #cccccc; border-radius: 10px; text-align: center; }
+.qty:focus { outline: 2px solid var(--cam); border-color: var(--cam); }
+.stock { color: #888888; font-size: 13px; }
+
+/* Nút mua */
+.buy-actions { display: flex; gap: 12px; margin: 22px 0; }
+.buy-actions .button {
+  flex: 1;
+  border: 1px solid var(--cam);
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.buy-actions .button:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(244, 121, 32, 0.3); }
+.button.outline { background: white; color: var(--cam); }
+.wish {
+  width: 46px;
+  flex-shrink: 0;
+  border: 1px solid #cccccc;
+  border-radius: 50%;
+  background: white;
+  color: var(--do);
+  font-size: 22px;
+  cursor: pointer;
+}
+.wish:hover { border-color: var(--do); background: #fff2f2; }
+
+/* Cam kết */
+.perks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  padding: 16px;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.perks span { margin-right: 6px; }
+
+
+/* ---------- 4. TAB ---------- */
+.detail-tabs { background: white; border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; }
+.tab-input { display: none; }
+
+.tab-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--xam-nhat); padding-bottom: 14px; }
+.tab-bar label {
+  padding: 9px 22px;
+  border: 1px solid #cccccc;
+  border-radius: 30px;
+  font-weight: bold;
+  color: var(--den);
+  cursor: pointer;
+}
+.tab-bar label:hover { border-color: var(--cam); color: var(--cam); }
+#tab-mota:checked ~ .tab-bar label[for="tab-mota"],
+#tab-thongtin:checked ~ .tab-bar label[for="tab-thongtin"],
+#tab-danhgia:checked ~ .tab-bar label[for="tab-danhgia"] { background: var(--cam); border-color: var(--cam); color: white; }
+
+.tab-panel { display: none; }
+#tab-mota:checked ~ .panel-mota,
+#tab-thongtin:checked ~ .panel-thongtin,
+#tab-danhgia:checked ~ .panel-danhgia { display: block; }
+
+.panel-mota h2 { font-size: 20px; color: var(--den); }
+.panel-mota p { max-width: 820px; }
+
+/* Bảng thông tin chi tiết */
+.spec { width: 100%; max-width: 720px; border-collapse: collapse; }
+.spec th, .spec td { padding: 11px 14px; text-align: left; border-bottom: 1px solid #eeeeee; }
+.spec th { width: 200px; background: var(--xam-nhat); color: var(--den); }
+
+
+/* ---------- 5. ĐÁNH GIÁ ---------- */
+.review-summary {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 30px;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--xam-nhat);
+  border-radius: 10px;
+}
+.review-summary .bars { display: grid; gap: 7px; }
+.review-summary .button { white-space: nowrap; text-align: center; }
+.score { text-align: center; }
+.score b { display: block; font-size: 44px; line-height: 1.1; color: var(--cam); }
+.score small { display: block; }
+
+.bar { display: grid; grid-template-columns: 50px 1fr 40px; gap: 10px; align-items: center; font-size: 13px; }
+.bar i {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--cam) var(--w), #dddddd var(--w));   /* độ dài thanh theo --w */
+}
+
+.review-item { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #eeeeee; }
+.review-item .avatar { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; }
+.review-item b { color: var(--den); }
+.review-item .rating { margin: 2px 0 6px; }
+.review-item p { margin: 0; }
+.review-item .rating small { color: #999999; }
+.no-reviews { padding: 18px 0; color: #888888; }
+
+
+/* ---------- 6. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .detail-top { grid-template-columns: 1fr; gap: 24px; }
+  .gallery { position: static; }
+  .info h1 { font-size: 22px; }
+  .price.big { font-size: 26px; }
+  .buy-actions { flex-wrap: wrap; }
+  .perks { grid-template-columns: 1fr; }
+  .detail-tabs { padding: 16px; }
+  .review-summary { grid-template-columns: 1fr; gap: 16px; }
+  .spec th { width: 120px; }
+}

@@ -1,0 +1,105 @@
+/* =====================================================
+   ADMIN-LOGIN.CSS - Trang đăng nhập dành cho Nhân viên / Quản lý
+   File độc lập: không cần style.css hay login.css
+   Dùng cùng theme BetaBook (cam, Be Vietnam Pro, nút bo tròn)
+   Mục lục:
+   0. Màu sắc & cài đặt chung
+   1. Hộp đăng nhập
+   2. Ô nhập & nút
+   3. Điện thoại (responsive)
+   ===================================================== */
+
+
+/* ---------- 0. MÀU SẮC & CÀI ĐẶT CHUNG ---------- */
+:root {
+  --cam: #f47920;
+  --do: #fa3030;
+  --chu: #555555;
+  --den: #222222;
+  --xam-nhat: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 30px 15px;
+  font-family: "Be Vietnam Pro", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--chu);
+  background: var(--xam-nhat);
+}
+
+a { color: inherit; text-decoration: none; cursor: pointer; }
+h1, p { margin: 0 0 10px; }
+:focus-visible { outline: 2px solid var(--cam); outline-offset: 2px; }
+
+
+/* ---------- 1. HỘP ĐĂNG NHẬP ---------- */
+.box {
+  width: 100%;
+  max-width: 440px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid var(--cam);
+}
+
+/* Logo (đổi số height để to/nhỏ hơn) */
+.box-logo { display: block; text-align: center; margin-bottom: 18px; }
+.box-logo img { display: inline-block; height: 70px; width: auto; max-width: 100%; }
+
+.box h1 { text-align: center; font-size: 24px; color: var(--den); }
+.sub { text-align: center; margin-bottom: 22px; }
+
+.back-link { color: var(--chu); }
+.back-link:hover { color: var(--cam); }
+.copyright { font-size: 13px; color: #999999; margin: 0; }
+
+
+/* ---------- 2. Ô NHẬP & NÚT ---------- */
+.field { margin-bottom: 16px; }
+.field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--den); }
+.field input {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #cccccc;
+  border-radius: 22px;
+  font-size: 14px;
+}
+.field input:focus { outline: 2px solid var(--cam); outline-offset: 1px; border-color: var(--cam); }
+
+/* Dòng báo lỗi: chỉ hiện khi form có class "co-loi" (đăng nhập sai) */
+.form-error { display: none; color: var(--do); font-weight: bold; margin-bottom: 14px; }
+form.co-loi .form-error { display: block; }
+form.co-loi .field input { border-color: var(--do); }
+
+.button {
+  display: block;
+  width: 100%;
+  padding: 11px 26px;
+  border: 0;
+  border-radius: 30px;
+  background: var(--cam);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+.button:hover { opacity: 0.9; }
+
+
+/* ---------- 3. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .box { padding: 30px 22px; }
+}

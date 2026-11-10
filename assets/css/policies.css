@@ -1,0 +1,166 @@
+/* =====================================================
+   POLICIES.CSS - Trang Chính sách - BetaBook
+   Dùng chung biến màu (--cam, --do, --den, --chu, --xam-nhat) và
+   .container, .section, .button từ style.css
+   => PHẢI link style.css TRƯỚC file này.
+sidebar là link neo (#id) + cuộn mượt.
+   Mục lục:
+   1. Cuộn mượt & banner
+   2. Bố cục: mục lục trái | nội dung phải
+   3. Mục lục (sidebar)
+   4. Khối chính sách
+   5. Thành phần: bảng, lưu ý, các bước, hộp liên hệ
+   6. Điện thoại
+   ===================================================== */
+
+
+/* ---------- 1. CUỘN MƯỢT & BANNER ---------- */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.page-banner {
+  background: linear-gradient(135deg, var(--cam), #ffae6b);
+  color: white;
+  text-align: center;
+  padding: 50px 15px;
+}
+.page-banner h1 { font-size: 32px; text-transform: uppercase; margin-bottom: 3px; }
+.page-banner p { margin: 0; }
+
+
+
+
+/* ---------- 2. BỐ CỤC ---------- */
+.policy-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+
+/* ---------- 3. MỤC LỤC (SIDEBAR) ---------- */
+.policy-nav {
+  position: sticky;
+  top: 100px;               /* dưới header dính */
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 18px;
+}
+.policy-nav h2 {
+  font-size: 15px;
+  color: var(--den);
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--xam-nhat);
+}
+.policy-nav ul { display: grid; gap: 4px; }
+.policy-nav a {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  font-weight: bold;
+  color: var(--chu);
+}
+.policy-nav .update { margin: 14px 0 0; font-size: 13px; color: #999999; }
+
+
+/* ---------- 4. KHỐI CHÍNH SÁCH ---------- */
+.policy-content { display: grid; gap: 28px; }
+
+.policy {
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 32px;
+  scroll-margin-top: 100px;      /* không bị header dính che khi nhảy tới */
+}
+.policy:target { border-color: var(--cam); box-shadow: 0 0 0 3px #ffe1cc; }
+
+.policy-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 2px solid var(--xam-nhat); }
+.policy-icon {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 50%;
+  background: #fff2e8;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.policy-head h2 { font-size: 24px; color: var(--den); margin: 0; }
+.policy-head p { margin: 0; color: #888888; }
+
+.policy h3 { font-size: 16px; color: var(--den); margin: 22px 0 8px; }
+.policy p { max-width: 74ch; }
+.policy ul.list { list-style: disc; padding-left: 20px; max-width: 74ch; }
+.policy ul.list li { margin-bottom: 6px; padding-left: 4px; }
+.policy ul.list li::marker { color: var(--cam); }
+
+
+/* ---------- 5. THÀNH PHẦN ---------- */
+/* Bảng */
+.policy .table-wrap { overflow-x: auto; margin: 10px 0; }
+.policy table { width: 100%; border-collapse: collapse; min-width: 440px; }
+.policy th { text-align: left; background: var(--xam-nhat); color: var(--den); padding: 10px 14px; }
+.policy th:first-child { border-radius: 8px 0 0 8px; }
+.policy th:last-child { border-radius: 0 8px 8px 0; }
+.policy td { padding: 12px 14px; border-bottom: 1px solid #eeeeee; }
+.policy td.price { color: var(--do); font-weight: bold; }
+
+/* Hộp lưu ý */
+.note {
+  margin: 16px 0;
+  padding: 14px 18px;
+  background: #fff8f3;
+  border-left: 4px solid var(--cam);
+  border-radius: 0 10px 10px 0;
+  max-width: 74ch;
+}
+.note b { color: var(--den); }
+
+/* Các bước (đây là quy trình thật nên có đánh số) */
+.steps-list { counter-reset: buoc; display: grid; gap: 12px; margin: 12px 0; padding: 0; list-style: none; max-width: 74ch; }
+.steps-list li {
+  counter-increment: buoc;
+  position: relative;
+  padding: 4px 0 4px 48px;
+  min-height: 34px;
+}
+.steps-list li::before {
+  content: counter(buoc);
+  position: absolute; left: 0; top: 0;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--cam); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold;
+}
+.steps-list b { color: var(--den); }
+
+/* Hộp liên hệ cuối trang */
+.policy-contact {
+  background: var(--cam);
+  color: white;
+  border-radius: 12px;
+  padding: 28px 32px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+}
+.policy-contact h2 { font-size: 20px; margin: 0 0 4px; }
+.policy-contact p { margin: 0; }
+
+
+/* ---------- 6. ĐIỆN THOẠI (nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .page-banner h1 { font-size: 24px; }
+  .policy-layout { grid-template-columns: 1fr; gap: 20px; }
+
+  /* Mục lục thành hàng nút cuộn ngang */
+  .policy-nav { position: static; padding: 12px; }
+  .policy-nav h2, .policy-nav .update { display: none; }
+  .policy-nav ul { display: flex; gap: 8px; overflow-x: auto; }
+  .policy-nav a { white-space: nowrap; border: 1px solid #cccccc; border-radius: 30px; padding: 7px 16px; }
+
+  .policy { padding: 20px; scroll-margin-top: 20px; }
+  .policy-head h2 { font-size: 20px; }
+  .policy-contact { padding: 22px; }
+}

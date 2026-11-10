@@ -1,0 +1,119 @@
+/* =====================================================
+   LOGIN.CSS - Trang đăng nhập BetaBook
+   Dùng chung màu (--cam, --do, --den, --xam-nhat) từ style.css
+   nên PHẢI link style.css trước login.css
+   ..: đổi tab bằng radio
+   Mục lục:
+   1. Khối đăng nhập
+   2. Tab Đăng nhập / Đăng ký
+   3. Ô nhập & nút
+   4. Điện thoại (responsive)
+   ===================================================== */
+
+
+/* ---------- 1. KHỐI ĐĂNG NHẬP ---------- */
+/* Nền xám nhạt, hộp trắng nằm giữa */
+.login-page { background: var(--xam-nhat); padding: 50px 0; }
+
+.login-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;      /* trái: ảnh, phải: form */
+  max-width: 940px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Cột ảnh bên trái */
+.login-img { min-height: 560px; font-size: 18px; }
+
+/* Cột form bên phải */
+.login-form { padding: 44px 40px; }
+.login-form h1 { margin: 0 0 6px; font-size: 26px; color: var(--den); }
+.login-form .sub { margin-bottom: 22px; }
+
+
+/* ---------- 2. TAB ĐĂNG NHẬP / ĐĂNG KÝ ---------- */
+/* Radio chọn tab: ẩn đi, dùng nhãn (label) làm nút */
+.login-form > input[type="radio"] { display: none; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 22px; }
+.tabs label {
+  flex: 1;
+  text-align: center;
+  padding: 9px 10px;
+  border: 1px solid #cccccc;
+  border-radius: 30px;
+  font-weight: bold;
+  color: var(--den);
+  cursor: pointer;
+}
+.tabs label:hover { border-color: var(--cam); }
+
+/* Tab đang chọn: nền cam */
+#loai-dn:checked ~ .tabs label[for="loai-dn"],
+#loai-dk:checked ~ .tabs label[for="loai-dk"] {
+  background: var(--cam);
+  border-color: var(--cam);
+  color: white;
+}
+
+/* Chỉ hiện form của tab đang chọn */
+.login-form form { display: none; }
+#loai-dn:checked ~ #form-dn,
+#loai-dk:checked ~ #form-dk { display: block; }
+
+
+/* ---------- 3. Ô NHẬP & NÚT ---------- */
+.field { margin-bottom: 16px; }
+.field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--den); }
+.field input {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #cccccc;
+  border-radius: 22px;
+  font-size: 14px;
+}
+.field input:focus { outline: 2px solid var(--cam); outline-offset: 1px; border-color: var(--cam); }
+.field input:user-invalid { border-color: var(--do); }
+
+/* Nút gửi: dùng lại .button, cho rộng hết dòng */
+.login-form .button.full {
+  width: 100%;
+  border: 0;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+}
+.login-form .button.full:hover { opacity: 0.9; }
+
+.social-login { display: grid; gap: 10px; margin-top: 14px; }
+.social-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 14px;
+  border: 1px solid #cccccc;
+  border-radius: 22px;
+  background: white;
+  color: var(--den);
+  font: inherit;
+  cursor: pointer;
+}
+.social-button:hover { background: var(--xam-nhat); }
+.social-mark { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; }
+
+
+/* ---------- 4. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .login-page { padding: 20px 0; }
+  .login-box { grid-template-columns: 1fr; margin: 0 15px; }
+  .login-img { min-height: 140px; }
+  .login-form { padding: 30px 22px; }
+}

@@ -1,0 +1,192 @@
+/* =====================================================
+   MAGIAM-SUKIEN.CSS - Trang Mã giảm & Sự kiện - BetaBook
+   Dùng CHUNG biến màu và các class nền (header/footer/.container/
+   .section/.section-title/.button/.img-box) từ style.css
+   => PHẢI link style.css TRƯỚC file này.
+   Mục lục:
+   1. Banner đầu trang
+   2. Thanh chuyển tab (radio + label, ...)
+   3. Lưới mã giảm giá (coupon)
+   4. Danh sách sự kiện (event)
+   5. Điện thoại (responsive)
+   ===================================================== */
+
+
+/* ---------- 1. BANNER ĐẦU TRANG ---------- */
+.page-banner {
+  background: linear-gradient(135deg, var(--cam), #ffae6b);
+  color: white;
+  text-align: center;
+  padding: 50px 15px;
+}
+.page-banner h1 {
+  font-size: 32px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.page-banner p { margin: 0; }
+
+
+/* ---------- 2. THANH CHUYỂN TAB ---------- */
+/* Radio ẩn đi, label làm nút bấm (giống trang admin/login) */
+.tab-input { display: none; }
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.tabs label {
+  padding: 10px 28px;
+  border: 2px solid var(--cam);
+  border-radius: 30px;
+  font-weight: bold;
+  color: var(--cam);
+  cursor: pointer;
+}
+.tabs label:hover { background: #fff2e8; }
+
+/* Tab đang chọn: nền cam */
+#tab-magiam:checked ~ .tabs-wrap .tabs label[for="tab-magiam"],
+#tab-sukien:checked ~ .tabs-wrap .tabs label[for="tab-sukien"] {
+  background: var(--cam);
+  color: white;
+}
+
+/* Mặc định ẩn cả 2 nội dung, chỉ hiện tab đang chọn */
+.tab-panel { display: none; }
+#tab-magiam:checked ~ .tabs-wrap .panel-magiam,
+#tab-sukien:checked ~ .tabs-wrap .panel-sukien { display: block; }
+
+
+/* ---------- 3. LƯỚI MÃ GIẢM GIÁ ---------- */
+.coupon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.coupon-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px dashed var(--cam);
+  border-radius: 12px;
+  background: #fff8f3;
+  padding: 18px;
+  text-align: center;
+}
+.coupon-card .img-box {
+  height: 120px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: white;
+  color: var(--cam);
+  font-weight: bold;
+}
+.coupon-card .img-box img { object-fit: contain; }
+.coupon-card .code {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 16px;
+  border: 1px dashed var(--cam);
+  border-radius: 6px;
+  background: white;
+  color: var(--cam);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.coupon-card h3 {
+  color: var(--den);
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.coupon-card small { color: #999999; display: block; margin-bottom: 12px; }
+.coupon-card .button { margin-top: auto; }
+
+
+/* ---------- 4. DANH SÁCH SỰ KIỆN ---------- */
+.event-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.event-card {
+  border: 1px solid #eeeeee;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.event-card .img-box {
+  height: 220px;
+  background: #dddddd;
+}
+.event-info { padding: 18px; }
+.event-info small { color: var(--cam); font-weight: bold; }
+.event-info h3 { color: var(--den); font-size: 18px; margin: 6px 0; }
+
+
+/* ---------- 5. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .page-banner h1 { font-size: 24px; }
+  .tabs { flex-wrap: wrap; }
+
+  .coupon-grid { grid-template-columns: 1fr; }
+  .event-list { grid-template-columns: 1fr; }
+}
+
+.discount-event-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.home-promo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 30px;
+}
+
+.home-promo-group .section-title {
+  text-align: center;
+}
+
+.home-promo .coupon-grid,
+.home-promo .event-list {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.home-promo .coupon-card .img-box {
+  height: 80px;
+}
+
+.home-promo .event-card .img-box {
+  height: 140px;
+  background: transparent;
+}
+
+.home-page .home-promo .event-card .img-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.home-promo-more {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.home-promo-more .button {
+  display: table;
+  margin: 0 auto;
+}
+
+@media (max-width: 800px) {
+  .home-promo {
+    grid-template-columns: 1fr;
+  }
+}

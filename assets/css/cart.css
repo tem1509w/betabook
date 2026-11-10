@@ -1,0 +1,155 @@
+/* =====================================================
+   CART.CSS - Trang giỏ hàng & thanh toán
+   Dùng chung màu (--cam, --do, --den, --xam-nhat) và .button,
+   .img-box, .price từ style.css => PHẢI link style.css trước.
+   Mục lục:
+   1. Khung trang & các bước
+   2. Hộp nội dung (.box)
+   3. Danh sách sản phẩm
+   4. Biểu mẫu
+   5. Vận chuyển & thanh toán
+   6. Tóm tắt đơn hàng
+   7. Điện thoại
+   ===================================================== */
+
+
+/* ---------- 1. KHUNG TRANG & CÁC BƯỚC ---------- */
+.cart-page { padding-top: 30px; padding-bottom: 50px; }
+.page-title { font-size: 28px; color: var(--den); margin: 0 0 16px; }
+
+.steps { display: flex; gap: 8px; margin: 0 0 24px; padding: 0; list-style: none; }
+.steps li {
+  padding: 6px 16px;
+  border: 1px solid #cccccc;
+  border-radius: 30px;
+  font-weight: bold;
+}
+.steps li.on { background: var(--cam); border-color: var(--cam); color: white; }
+
+/* 2 cột: trái nội dung, phải tóm tắt */
+.cart-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+.cart-main { display: grid; gap: 24px; }
+
+/* Nút trong trang này: cho <button class="button"> trông giống <a class="button"> */
+.cart-page .button { border: 0; cursor: pointer; font-family: inherit; }
+.button.outline { background: white; color: var(--cam); border: 1px solid var(--cam); }
+.button.full { display: block; width: 100%; text-align: center; }
+
+
+/* ---------- 2. HỘP NỘI DUNG ---------- */
+.box { background: white; border: 1px solid #e5e5e5; border-radius: 10px; padding: 24px; }
+.box h2 { font-size: 18px; color: var(--den); margin-bottom: 16px; }
+
+
+/* ---------- 3. DANH SÁCH SẢN PHẨM ---------- */
+/* 5 cột: sản phẩm | đơn giá | số lượng | thành tiền | nút xóa */
+.cart-head, .cart-item {
+  display: grid;
+  grid-template-columns: 3fr 1fr 80px 1fr 70px;
+  gap: 12px;
+  align-items: center;
+}
+.cart-head { font-weight: bold; color: var(--den); padding-bottom: 10px; border-bottom: 2px solid var(--xam-nhat); }
+.cart-item { padding: 16px 0; border-bottom: 1px solid #eeeeee; }
+
+.item-info { display: flex; align-items: center; gap: 14px; }
+.item-img { width: 70px; height: 90px; border-radius: 6px; flex-shrink: 0; }
+.item-info h3 { font-size: 15px; color: var(--den); margin-bottom: 2px; }
+.item-info p { margin: 0; font-size: 13px; }
+
+.qty { width: 70px; height: 38px; padding: 0 8px; border: 1px solid #cccccc; border-radius: 8px; text-align: center; }
+
+.remove { border: 0; background: none; color: #999999; cursor: pointer; font-size: 13px; }
+.remove:hover { color: var(--do); }
+
+.cart-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.cart-actions div { display: flex; gap: 10px; flex-wrap: wrap; }
+
+
+/* ---------- 4. BIỂU MẪU ---------- */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field.full { grid-column: 1 / -1; }
+.field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--den); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+}
+.field input, .field select { height: 42px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--cam); border-color: var(--cam); }
+.field input:user-invalid, .field select:user-invalid { border-color: var(--do); }
+
+
+/* ---------- 5. VẬN CHUYỂN & THANH TOÁN ---------- */
+/* Mỗi dòng lựa chọn vận chuyển */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.option span { flex: 1; }
+.option:has(input:checked) { border-color: var(--cam); background: #fff6ef; }
+.option input { accent-color: var(--cam); }
+
+/* Thanh toán: radio ẩn, nhãn làm nút, chọn cái nào hiện hướng dẫn cái đó */
+.payment > input[type="radio"] { display: none; }
+.pay-options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pay-options label {
+  padding: 9px 18px;
+  border: 1px solid #cccccc;
+  border-radius: 30px;
+  font-weight: bold;
+  color: var(--den);
+  cursor: pointer;
+}
+#pay-cod:checked ~ .pay-options label[for="pay-cod"],
+#pay-bank:checked ~ .pay-options label[for="pay-bank"],
+#pay-wallet:checked ~ .pay-options label[for="pay-wallet"] {
+  background: var(--cam);
+  border-color: var(--cam);
+  color: white;
+}
+
+.pay-detail { display: none; padding: 14px; background: var(--xam-nhat); border-radius: 10px; }
+#pay-cod:checked ~ #detail-cod,
+#pay-bank:checked ~ #detail-bank,
+#pay-wallet:checked ~ #detail-wallet { display: block; }
+.qr { width: 160px; height: 160px; margin-top: 12px; border-radius: 8px; }
+
+
+/* ---------- 6. TÓM TẮT ĐƠN HÀNG ---------- */
+.summary { position: sticky; top: 100px; }   /* cuộn trang vẫn thấy tóm tắt */
+
+.coupon { display: flex; gap: 8px; margin-bottom: 16px; }
+.coupon input { flex: 1; min-width: 0; height: 40px; padding: 0 14px; border: 1px solid #cccccc; border-radius: 20px; }
+.coupon .button { padding: 0 18px; }
+
+.row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eeeeee; }
+.row.total { border: 0; font-weight: bold; color: var(--den); font-size: 16px; }
+.row.total .price { font-size: 20px; }
+
+.agree { display: flex; gap: 8px; margin: 14px 0; font-size: 13px; }
+.agree input { accent-color: var(--cam); flex-shrink: 0; margin-top: 3px; }
+.back { display: block; text-align: center; margin-top: 12px; color: var(--cam); font-weight: bold; }
+
+
+/* ---------- 7. ĐIỆN THOẠI ---------- */
+@media (max-width: 800px) {
+  .cart-layout, .form-grid { grid-template-columns: 1fr; }
+  .summary { position: static; }
+  .steps { flex-wrap: wrap; }
+
+  /* Mỗi sản phẩm xếp dọc, ẩn dòng tiêu đề cột */
+  .cart-head { display: none; }
+  .cart-item { grid-template-columns: 1fr 1fr; }
+  .item-info { grid-column: 1 / -1; }
+  .box { padding: 16px; }
+}

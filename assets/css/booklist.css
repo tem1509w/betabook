@@ -1,0 +1,298 @@
+/* =====================================================
+   BOOKLIST.CSS - Trang Tủ sách - BetaBook
+   Dùng chung biến màu (--cam, --do, --den, --xam-nhat) và các
+   class (.container, .section, .button, .img-box, .product...) từ
+   style.css => PHẢI link style.css TRƯỚC file này.
+   Mục lục:
+   1. Banner đầu trang
+   2. Bố cục: sidebar trái | danh sách sách
+   3. Danh mục và trạng thái đang chọn
+   4. Lưới sản phẩm
+   5. Thanh công cụ tìm kiếm và sắp xếp
+   6. Điện thoại (responsive)
+   ===================================================== */
+
+
+/* ---------- 1. BANNER ĐẦU TRANG ---------- */
+.page-banner {
+  background: linear-gradient(135deg, var(--cam), #ffae6b);
+  color: white;
+  text-align: center;
+  padding: 28px 10px;
+}
+.page-banner h1 { font-size: 36px; text-transform: uppercase; margin: 3px 0 0; }
+.page-banner p { margin: 0; }
+
+.offer-banner { margin-top: 0; }
+.offer-banner img { display: block; width: 100%; height: auto; }
+
+/* ---------- 2. BỐ CỤC: SIDEBAR | DANH SÁCH ---------- */
+.booklist-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);   /* trái: sidebar cố định, phải: sách */
+  gap: 30px;
+  align-items: start;
+}
+
+
+/* ---------- 3. SIDEBAR ---------- */
+.sidebar {
+  position: sticky;      /* danh mục luôn theo khi cuộn */
+  top: 100px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.sidebar h3 {
+  font-size: 15px;
+  text-transform: uppercase;
+  color: var(--den);
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--xam-nhat);
+}
+.sidebar h3 + h3 { margin-top: 24px; }
+
+/* Danh mục cấp 1 */
+.cat-list { display: grid; gap: 4px; }
+.cat-list > li > a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--chu);
+  font-weight: bold;
+}
+.cat-list > li > a:hover { background: #fff2e8; color: var(--cam); }
+
+/* Ô đang được chọn: tô đậm + viền trái cam.
+   Dùng :has() để tô nhãn tương ứng radio đang checked. */
+.cat-list li:has(> input:checked) { background: #fff2e8; }
+.cat-list li:has(> input:checked) > label { color: var(--cam); }
+
+/* Số lượng sách bên phải danh mục (chỉ mang tính minh họa) */
+.cat-list > li.active { background: #fff2e8; border-radius: 8px; }
+.cat-list > li.active > a { color: var(--cam); }
+.cat-count { color: #999999; font-weight: normal; font-size: 13px; }
+
+/* Danh mục con */
+.sub-list { display: none; margin: 4px 0 8px 10px; }
+.cat-list li:hover .sub-list { display: block; }
+.sub-list a {
+  display: block;
+  padding: 7px 12px;
+  border-left: 2px solid var(--xam-nhat);
+  font-size: 13px;
+  color: var(--chu);
+}
+.sub-list a:hover { color: var(--cam); border-left-color: var(--cam); }
+
+/* Khối sắp xếp */
+.sort-list { display: grid; gap: 4px; }
+.sort-list label {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--chu);
+}
+.sort-list label:hover { background: #fff2e8; color: var(--cam); }
+.sort-list li:has(> input:checked) { background: #fff2e8; }
+.sort-list li:has(> input:checked) > label { color: var(--cam); font-weight: bold; }
+
+/* Khối chọn theo mức giá */
+.price-filter { display: grid; gap: 4px; }
+.price-filter label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--chu);
+}
+.price-filter label:hover { background: #fff2e8; color: var(--cam); }
+.price-filter input { accent-color: var(--cam); }
+.price-filter li:has(> label > input:checked) { background: #fff2e8; }
+.price-filter li:has(> label > input:checked) label { color: var(--cam); font-weight: bold; }
+
+
+/* ---------- 4. MŨI TÊN THU GỌN DANH MỤC CON ---------- */
+.cat-list > li.has-sub > label::after,
+.cat-list > li.has-sub > a::after {
+  content: "▾";           /* tự vẽ mũi tên bằng CSS, không cần ảnh */
+  font-size: 12px;
+  color: #999999;
+  margin-left: 8px;
+}
+.cat-list li:hover.has-sub > a::after,
+.cat-list li:hover.has-sub > label::after { color: var(--cam); }  
+
+
+/* ---------- 5. LỌC THEO DANH MỤC (radio + nhãn) ---------- */
+/* Ẩn hết radio dùng làm bộ lọc */
+.filter-input { display: none; }
+
+/* Mặc định: ẩn TẤT CẢ nhóm sách */
+.book-group { display: none; }
+
+/* Khi "Tất cả" được chọn -> hiện mọi nhóm.
+   LƯU Ý: các ô radio nằm ngay dưới <body>, còn danh sách sách nằm TRONG
+   <section class="section"> nên phải viết "~ .section .book-main ..." */
+#dm-tatca:checked ~ .section .book-main .book-group { display: block; }
+
+/* Khi một danh mục cụ thể được chọn -> chỉ hiện nhóm đó */
+#dm-betacards:checked ~ .section .book-main .grp-betacards,
+#dm-vanhoc:checked    ~ .section .book-main .grp-vanhoc,
+#dm-kinhte:checked    ~ .section .book-main .grp-kinhte,
+#dm-tuduy:checked     ~ .section .book-main .grp-tuduy,
+#dm-khoahoc:checked   ~ .section .book-main .grp-khoahoc,
+#dm-dacbiet:checked   ~ .section .book-main .grp-dacbiet { display: block; }
+
+/* Tô nhãn của danh mục đang được chọn ở sidebar */
+#dm-tatca:checked    ~ .section label[for="dm-tatca"],
+#dm-betacards:checked ~ .section label[for="dm-betacards"],
+#dm-vanhoc:checked   ~ .section label[for="dm-vanhoc"],
+#dm-kinhte:checked   ~ .section label[for="dm-kinhte"],
+#dm-tuduy:checked    ~ .section label[for="dm-tuduy"],
+#dm-khoahoc:checked  ~ .section label[for="dm-khoahoc"],
+#dm-dacbiet:checked  ~ .section label[for="dm-dacbiet"] { background: #fff2e8; color: var(--cam); }
+
+/* Tiêu đề nhóm sách */
+.group-title {
+  font-size: 18px;
+  color: var(--cam);
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--xam-nhat);
+}
+.book-count { color: #999999; font-size: 14px; font-weight: normal; }
+
+/* Bộ lọc sắp xếp: chỉ đổi thứ tự, không ẩn nhóm nào (demo thuần CSS) */
+#sap-giatang:checked ~ .book-main .grp-vanhoc,
+#sap-giatang:checked ~ .book-main .grp-kinhte { flex-wrap: wrap; }
+
+
+/* ---------- 6. LƯỚI SẢN PHẨM ---------- */
+.book-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* Kế thừa .product-list của style.css nhưng cột hẹp hơn vì có sidebar */
+.book-main .product-list { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.book-main .product-card-link { min-width: 0; }
+.book-main .product { height: 100%; }
+.book-main .product > p:not(.price) {
+  color: #666666;
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+.booklist-empty {
+  grid-column: 1 / -1;
+  padding: 24px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  text-align: center;
+}
+.booklist-empty a { color: var(--cam); font-weight: bold; }
+
+/* Mỗi nhóm = tiêu đề + lưới sách (.product-list đã chia 3 cột ở trên) */
+.book-group { margin-bottom: 30px; }
+
+/* Thanh công cụ: TÌM KIẾM + SẮP XẾP */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+}
+
+/* Ô tìm kiếm có icon */
+.main-search {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+  height: 42px;
+  background: var(--xam-nhat);
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+  padding: 0 6px 0 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.main-search:focus-within {
+  border-color: var(--cam);
+  box-shadow: 0 0 0 3px #ffe1cc;
+  background: white;
+}
+.main-search .search-icon { display: flex; }
+.main-search .search-icon img { width: 18px; height: 18px; opacity: 0.6; }
+.main-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+/* Hộp chọn sắp xếp */
+.sort-box { display: flex; align-items: center; gap: 8px; }
+.sort-label { color: var(--chu); font-size: 14px; white-space: nowrap; }
+
+.select-wrap { position: relative; display: inline-flex; align-items: center; }
+.select-wrap select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 42px;
+  padding: 0 40px 0 16px;
+  border: 1px solid #e5e5e5;
+  border-radius: 30px;
+  background: var(--xam-nhat);
+  color: var(--den);
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.select-wrap select:focus {
+  border-color: var(--cam);
+  box-shadow: 0 0 0 3px #ffe1cc;
+}
+.select-wrap .chevron {
+  position: absolute;
+  right: 16px;
+  color: var(--cam);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+
+
+
+
+/* ---------- 8. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+@media (max-width: 800px) {
+  .page-banner h1 { font-size: 24px; }
+
+  /* Sidebar lên trên, danh sách xuống dưới */
+  .booklist-layout { grid-template-columns: 1fr; gap: 20px; }
+  .sidebar { position: static; }
+
+  .book-main .product-list { grid-template-columns: 1fr 1fr; }
+}

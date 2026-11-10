@@ -1,0 +1,50 @@
+/* =====================================================
+   INTRODUCTION.CSS - Trang giới thiệu BetaBook
+   Chỉ chứa phần RIÊNG của trang này. Banner, .about, .product-list,
+   .service, .img-box... đã có sẵn trong style.css => PHẢI link style.css trước.
+   Mục lục:
+   1. Tiêu đề trang
+   2. Sứ mệnh - Tầm nhìn - Giá trị
+   3. Con số ấn tượng
+   4. Ghé thăm
+   5. Điện thoại
+   ===================================================== */
+
+
+/* ---------- 1. TIÊU ĐỀ TRANG ---------- */
+.intro-head { text-align: center; padding-top: 40px; padding-bottom: 10px; }
+.intro-head h1 { font-size: 34px; color: var(--den); margin-bottom: 6px; }
+.intro-head p { font-size: 17px; color: var(--cam); font-weight: bold; margin: 0; }
+
+/* ---------- 2. SỨ MỆNH - TẦM NHÌN - GIÁ TRỊ ---------- */
+.values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+.value-card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px 24px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.value-icon { width: 80px; height: 80px; margin: 0 auto 16px; border-radius: 50%; }
+.value-icon img { width: 52px; height: 52px; object-fit: contain; }
+.value-card h3 { font-size: 18px; color: var(--den); }
+.value-card p { margin: 0; }
+
+
+/* ---------- 3. CON SỐ ẤN TƯỢNG ---------- */
+.stats { background: var(--cam); color: white; padding: 44px 0; }
+.stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
+.stats b { display: block; font-size: 34px; line-height: 1.2; }
+
+
+/* ---------- 4. GHÉ THĂM ---------- */
+.visit-img { height: 260px; border-radius: 10px; color: #888888; }
+
+
+/* ---------- 5. ĐIỆN THOẠI ---------- */
+@media (max-width: 800px) {
+  .values { grid-template-columns: 1fr; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .intro-head h1 { font-size: 28px; }
+}

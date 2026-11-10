@@ -1,0 +1,238 @@
+/* =====================================================
+   SERVICE.CSS - Trang Dịch vụ BetaBook
+   Chỉ chứa phần RIÊNG của trang này. Dùng chung biến màu
+   (--cam, --den, --chu, --xam-nhat), .container và .button
+   từ style.css => PHẢI link style.css TRƯỚC file này.
+   Mục lục:
+   1. Banner đầu trang
+   2. Khối dịch vụ (ảnh + chữ)
+   3. Khối nội dung số (ba bìa sách)
+   4. Dải liên hệ
+   5. Hiệu ứng xuất hiện
+   6. Máy tính bảng & điện thoại
+   ===================================================== */
+
+
+/* ---------- 1. BANNER ĐẦU TRANG ---------- */
+.service-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 62px 0 70px;
+  background: var(--xam-nhat);
+}
+
+.service-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: 64px;
+}
+
+.service-hero-copy { animation: service-arrive 650ms ease both; }
+
+/* Dòng chữ nhỏ phía trên tiêu đề */
+.service-eyebrow,
+.service-kicker {
+  color: var(--cam);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+.service-eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 22px; }
+.service-eyebrow span { width: 30px; height: 1px; background: currentColor; }
+
+.service-hero h1 { margin: 0 0 20px; color: var(--den); font-size: 48px; font-weight: 700; line-height: 1.12; }
+.service-hero h1 span { color: var(--cam); }
+
+.service-hero-description { max-width: 470px; margin: 0; font-size: 16px; line-height: 1.8; }
+
+/* Nút: dùng lại .button của style.css (nút bo tròn màu cam) */
+.service-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; margin-top: 30px; }
+.service-hero-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+.service-hero-actions .button:hover { background: #de6711; transform: translateY(-2px); }
+
+.service-action { display: inline-flex; align-items: center; gap: 12px; font-weight: 700; }
+.service-action-secondary { color: var(--den); }
+.service-action-secondary:hover,
+.service-text-link:hover { color: var(--cam); }
+
+.service-hero-visual { position: relative; margin: 0; animation: service-arrive 700ms 100ms ease both; }
+.service-hero-visual img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.8;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+}
+.service-hero-visual figcaption {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 9px 13px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--den);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* ---------- 2. KHỐI DỊCH VỤ (ẢNH + CHỮ) ---------- */
+.service-feature { padding: 88px 0; background: white; }
+
+.service-feature-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: 84px;
+}
+.service-feature-copy { max-width: 500px; }
+
+.service-kicker { display: flex; align-items: center; gap: 12px; margin: 0 0 19px; }
+.service-kicker span {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff2e8;
+  color: var(--cam);
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.service-feature h2 { margin: 0 0 19px; color: var(--den); font-size: 36px; line-height: 1.2; }
+.service-feature-copy > p:not(.service-kicker) { margin: 0; font-size: 15px; line-height: 1.85; }
+
+.service-points { display: grid; gap: 10px; margin: 24px 0 26px; }
+.service-points li { position: relative; padding-left: 23px; color: var(--den); }
+.service-points li::before { position: absolute; left: 0; color: var(--cam); content: "✓"; font-weight: 700; }
+
+.service-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--cam);
+  color: var(--den);
+  font-weight: 700;
+  transition: color 160ms ease;
+}
+
+/* Ảnh có khung cam nhạt lệch phía sau */
+.service-feature-visual { position: relative; margin: 0; padding: 0 0 18px 18px; }
+.service-feature-visual::before {
+  position: absolute;
+  z-index: 0;
+  inset: 18px 0 0 0;
+  border-radius: 12px;
+  background: #fff2e8;
+  content: "";
+}
+.service-feature-visual img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.42;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.service-feature-visual figcaption { position: relative; z-index: 1; padding: 12px 0 0; font-size: 12px; }
+
+
+/* ---------- 3. KHỐI NỘI DUNG SỐ ---------- */
+.service-feature-digital { background: var(--xam-nhat); }
+.service-feature-digital .service-feature-copy { order: 2; }   /* chữ bên phải, ảnh bên trái */
+.service-feature-digital .digital-book-visual { order: 1; }
+
+.digital-book-visual { position: relative; min-height: 390px; overflow: hidden; border-radius: 12px; background: #fff2e8; }
+
+.digital-book {
+  position: absolute;
+  top: 38px;
+  display: block;
+  width: 29%;
+  height: 276px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+  transition: transform 220ms ease;
+}
+.digital-book-one { left: 9%; transform: rotate(-8deg); }
+.digital-book-two { left: 36%; top: 24px; z-index: 1; transform: rotate(2deg); }
+.digital-book-three { left: 63%; transform: rotate(8deg); }
+
+/* Rê chuột: ba bìa sách nhấc lên */
+.digital-book-visual:hover .digital-book-one { transform: translateY(-5px) rotate(-8deg); }
+.digital-book-visual:hover .digital-book-two { transform: translateY(-8px) rotate(2deg); }
+.digital-book-visual:hover .digital-book-three { transform: translateY(-5px) rotate(8deg); }
+
+.digital-book-caption {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  left: 20px;
+  margin: 0;
+  color: var(--cam);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: right;
+}
+
+
+/* ---------- 4. DẢI LIÊN HỆ ---------- */
+.service-contact-band { padding: 30px 0; background: var(--den); color: white; }
+.service-contact-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.service-contact-inner p { margin: 0; font-size: 17px; font-weight: 600; }
+.service-contact-inner a { display: inline-flex; align-items: center; gap: 12px; color: var(--cam); font-weight: 700; }
+.service-contact-inner a:hover { color: white; }
+
+
+/* ---------- 5. HIỆU ỨNG XUẤT HIỆN ---------- */
+@keyframes service-arrive {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-hero-copy,
+  .service-hero-visual { animation: none; }
+  .service-hero-actions .button,
+  .digital-book { transition: none; }
+}
+
+
+/* ---------- 6. MÁY TÍNH BẢNG & ĐIỆN THOẠI ---------- */
+@media (max-width: 900px) {
+  .service-hero-inner,
+  .service-feature-inner { gap: 44px; }
+  .service-hero h1 { font-size: 40px; }
+  .digital-book-visual { min-height: 330px; }
+  .digital-book { top: 30px; height: 230px; }
+  .digital-book-two { top: 18px; }
+}
+
+/* Điện thoại: dùng cùng mốc 800px như các trang khác */
+@media (max-width: 800px) {
+  .service-hero { padding: 40px 0 48px; }
+  .service-hero-inner,
+  .service-feature-inner { grid-template-columns: 1fr; gap: 30px; }
+  .service-hero h1 { font-size: 36px; }
+  .service-hero-visual img { aspect-ratio: 1.55; }
+  .service-feature { padding: 58px 0; }
+  .service-feature h2 { font-size: 30px; }
+  .service-feature-digital .service-feature-copy,
+  .service-feature-digital .digital-book-visual { order: initial; }
+  .digital-book-visual { min-height: 300px; }
+  .digital-book { top: 28px; height: 205px; }
+  .digital-book-two { top: 18px; }
+  .service-contact-inner { align-items: flex-start; flex-direction: column; gap: 14px; }
+}
