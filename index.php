@@ -31,7 +31,7 @@ $routes = [
     'contact' => 'contact/index.php',
 ];
 
-$page = get_param('page', 'home');
+$page = get_param('route', get_param('page', 'home'));
 $isKnownPage = is_string($page) && isset($routes[$page]);
 
 if ($isKnownPage) {
