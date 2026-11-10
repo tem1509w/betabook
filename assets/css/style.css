@@ -470,41 +470,39 @@ h2, h3, h4, p { margin: 0 0 10px; }
 
 
 /* ---------- 9. FOOTER ---------- */
-.footer { background: #262626; color: #bbbbbb; font-size: 18px; }
+.footer { background: #262626; color: #bbbbbb; }
 
 .footer-inner {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 2fr;
   gap: 36px;
-  max-width: 1500px;
-  padding-top: 60px;
-  padding-bottom: 50px;
+  padding-top: 50px;
+  padding-bottom: 40px;
 }
-.footer h4 { color: white; font-size: 18px; margin-top: 16px; }
+.footer h4 { color: white; margin-top: 16px; }
 .footer-inner > div > h4:first-child { margin-top: 0; }
 .footer li { margin-bottom: 8px; }
 .footer a:hover { color: var(--cam); }
 .footer-logo { display: inline-block; margin-bottom: 14px; }
-.footer-brand h4 { margin-top: 20px; }
+.footer-brand h4 { margin-top: 16px; }
 
 .footer-newsletter { display: flex; max-width: 352px; }
 .footer-newsletter input {
   width: 100%;
   min-width: 0;
-  height: 48px;
-  padding: 0 16px;
+  height: 38px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 24px 0 0 24px;
+  border-radius: 20px 0 0 20px;
 }
 .footer-newsletter button {
   flex: 0 0 auto;
-  height: 48px;
-  padding: 0 24px;
+  height: 38px;
+  padding: 0 18px;
   border: 0;
   background: var(--cam);
   color: white;
-  border-left: 4px solid #262626;
-  border-radius: 0 24px 24px 0;
+  border-radius: 0 20px 20px 0;
 }
 
 .copyright { background: #1a1a1a; text-align: center; padding: 14px; }
@@ -531,9 +529,6 @@ h2, h3, h4, p { margin: 0 0 10px; }
   /* Các khối nhiều cột chuyển thành 1 cột */
   .about, .ads, .new-book, .service-inner,
   .reviews, .news, .footer-inner { grid-template-columns: 1fr; }
-  .footer { font-size: 16px; }
-  .footer h4 { font-size: 17px; }
-
   /* Danh sách sách còn 2 cột */
   .product-list { grid-template-columns: 1fr 1fr; }
 }
