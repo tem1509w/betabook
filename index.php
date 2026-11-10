@@ -28,6 +28,7 @@ $routes = [
     'discount-event' => 'discount-event/index.php',
     'product-detail' => 'product-detail/index.php',
     'cart' => 'cart/index.php',
+    'contact' => 'contact/index.php',
 ];
 
 $page = get_param('page', 'home');
