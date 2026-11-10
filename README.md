@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BetaBook PHP
 *Note: 
 Cắt ghép layout cho 3 trang để phục vụ bài tập 3, không phải kết quả cuối cùng / 100% các trang đã đảm nhiệm.
@@ -86,3 +87,7 @@ cần dùng `database/betabook_bt03_deploy.sql`.
 Hiện dự án chưa có luồng đăng nhập; admin router mặc định dùng vai trò Quản lý.
 Khi bổ sung đăng nhập, cần gán `$_SESSION['admin_role_id']` theo vai trò của
 tài khoản đã xác thực.
+=======
+# betabook
+newbie project for Web Developing subject
+>>>>>>> 335abc49947ed6ed6616664aa99ba314fe4fa5dc
