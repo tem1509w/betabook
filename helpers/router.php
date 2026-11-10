@@ -46,7 +46,7 @@ function url(string $page = '', array $params = []): string {
         return base_url($page);
     }
 
-    $params = array_merge(['page' => $page], $params);
+    $params = array_merge(['route' => $page], $params);
     return base_url('index.php?' . http_build_query($params));
 }
 
