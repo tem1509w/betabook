@@ -4,8 +4,8 @@
   <h1>Tủ sách BetaBook</h1>
 </section>
 
-<section class="offer-banner" aria-label="Ưu đãi xả kho mùa thu">
-  <img src="<?php echo e(asset('images/banner/xả-kho-mùa-thu.png')); ?>" alt="Ưu đãi xả kho mùa thu khi mua sách">
+<section class="offer-banner" aria-label="banner booklist">
+  <img src="<?php echo e(asset('images/banner/offer-banner.jpg')); ?>" alt="banner booklist">
 </section>
 
 <!-- ============ NỘI DUNG: SIDEBAR + DANH SÁCH SÁCH ============ -->
