@@ -29,6 +29,7 @@ $routes = [
     'product-detail' => 'product-detail/index.php',
     'cart' => 'cart/index.php',
     'contact' => 'contact/index.php',
+    'login' => 'login/index.php',
 ];
 
 $page = get_param('route', get_param('page', 'home'));

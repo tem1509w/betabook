@@ -105,6 +105,17 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE KEY uk_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Local demo account: username "demo", password "BetaBook2026!".
+INSERT IGNORE INTO users (username, email, password, full_name, role, is_active)
+VALUES (
+    'demo',
+    'demo@betabook.local',
+    '$2y$10$dGQbldWrIL9AmXeTUJBF2ODcsYHnjs10Mn55GhLSNb6VX3krth7lC',
+    'BetaBook Demo',
+    'customer',
+    1
+);
+
 CREATE TABLE IF NOT EXISTS contact_messages (
     message_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(191) NOT NULL,

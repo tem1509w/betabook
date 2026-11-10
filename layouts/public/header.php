@@ -97,7 +97,7 @@
     </button>
   </form>
 
-  <a class="icon-button" href="<?php echo e(url('contact')); ?>" title="Liên hệ BetaBook">
+  <a class="icon-button" href="<?php echo e(url('login')); ?>" title="Tài khoản">
     <img src="<?php echo asset('images/user.ico'); ?>" alt="Tài khoản">
   </a>
 

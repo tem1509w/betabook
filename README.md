@@ -13,6 +13,13 @@ mở trang tại:
 - Trang chủ: <http://localhost/betabook/>
 - Admin: <http://localhost/betabook/admin/>
 
+## Tài khoản đăng nhập mẫu
+
+- Tên đăng nhập: `demo`
+- Mật khẩu: `BetaBook2026!`
+
+Tài khoản mẫu có trong database triển khai `database/betabook_bt03_deploy.sql`.
+
 ## Các trang public
 
 Các trang public được ghép chung layout trong `layouts/public/`:
