@@ -514,6 +514,7 @@ body:has(.admin-wrapper) {
 .admin-form label { display: block; margin-bottom: 6px; color: var(--den); font-weight: 600; }
 .admin-form input[type="text"],
 .admin-form input[type="number"],
+.admin-form input[type="date"],
 .admin-form select,
 .admin-form textarea {
   display: block;
