@@ -1,7 +1,7 @@
 <?php
 $search = trim((string)get_param('q', ''));
 $category = trim((string)get_param('danhmuc', 'tatca'));
-$booksPerPage = 3;
+$booksPerPage = 6;
 $requestedPage = (string)get_param('page', '1');
 $currentPage = ctype_digit($requestedPage) ? max(1, (int)$requestedPage) : 1;
 
