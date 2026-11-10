@@ -114,6 +114,14 @@
 .contact-form .button { border: 0; cursor: pointer; font-family: inherit; }
 .contact-form .button.full { display: block; width: 100%; text-align: center; }
 
+.contact-alert {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+.contact-alert-success { color: #176b36; background: #e8f7ed; }
+.contact-alert-error { color: #a32020; background: #fff0f0; }
+
 
 /* ---------- 5. BẢN ĐỒ ---------- */
 .map-section { padding-top: 0; }
