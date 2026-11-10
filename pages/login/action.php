@@ -2,7 +2,7 @@
 $pageTitle = 'Đăng nhập';
 $bodyClass = 'login-page-body';
 $extraCss = [asset('css/login.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/login.css')];
-$identifier = '';
+$username = '';
 $loginError = null;
 $loginNotice = $_SESSION['login_notice'] ?? null;
 unset($_SESSION['login_notice']);
@@ -12,21 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         $loginError = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại.';
     } elseif (($_POST['login_action'] ?? '') === 'logout') {
-        unset($_SESSION['user'], $_SESSION['csrf_token']);
+        unset($_SESSION['user'], $_SESSION['admin_role_id'], $_SESSION['admin_role'], $_SESSION['csrf_token']);
         session_regenerate_id(true);
         $_SESSION['login_notice'] = 'Bạn đã đăng xuất.';
         redirect(url('login'));
     } else {
-        $identifier = trim(is_string($_POST['identifier'] ?? null) ? $_POST['identifier'] : '');
+        $username = trim(is_string($_POST['username'] ?? null) ? $_POST['username'] : '');
         $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
-        $user = $identifier !== '' && $password !== ''
-            ? auth_login($identifier, $password)
+        $user = $username !== '' && $password !== ''
+            ? auth_login($username, $password)
             : null;
 
         if ($user) {
-            redirect(url('home'));
+            redirect(url(''));
         }
 
-        $loginError = 'Tên đăng nhập, email, số điện thoại hoặc mật khẩu không đúng.';
+        $loginError = 'Tên đăng nhập hoặc mật khẩu không đúng.';
     }
 }

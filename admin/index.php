@@ -15,38 +15,26 @@ require_once __DIR__ . '/../helpers/common.php';
 
 $db = db();
 
-$adminRoleId = filter_var($_SESSION['admin_role_id'] ?? null, FILTER_VALIDATE_INT);
-if ($adminRoleId === false || $adminRoleId === null || $adminRoleId < 1) {
-$legacyRoleKey = (string)($_SESSION['admin_role'] ?? 'admin');
-$roleKeyMap = [
-    'admin' => 'manager',
-    'manager' => 'manager',
-    'staff' => 'employee',
-    'employee' => 'employee',
-    'user' => 'user',
-];
-$roleKey = $roleKeyMap[$legacyRoleKey] ?? '';
-$adminRole = $db->fetchOne(
-    'SELECT role_id FROM admin_roles WHERE role_key = ? AND is_active = 1',
-    [$roleKey]
-);
-$adminRoleId = $adminRole ? (int)$adminRole['role_id'] : 0;
-}
-
-$adminRole = $adminRoleId > 0
-? $db->fetchOne(
-    'SELECT role_id, role_name FROM admin_roles WHERE role_id = ? AND is_active = 1',
-    [$adminRoleId]
-)
-: false;
+$sessionUserId = filter_var($_SESSION['user']['user_id'] ?? null, FILTER_VALIDATE_INT);
+$adminRole = $sessionUserId !== false && $sessionUserId !== null && $sessionUserId > 0
+    ? $db->fetchOne(
+        'SELECT r.role_id, r.role_name
+         FROM users u
+         INNER JOIN roles r ON r.role_id = u.role_id
+         WHERE u.user_id = ? AND u.is_active = 1 AND r.is_active = 1
+           AND u.role_id IN (1, 2)',
+        [$sessionUserId]
+    )
+    : false;
 
 if (!$adminRole) {
     http_response_code(403);
-    exit('Tài khoản không có vai trò quản lý hợp lệ.');
+    exit('Bạn cần đăng nhập bằng tài khoản quản trị viên hoặc nhân viên để truy cập trang admin.');
 }
 
 $adminRoleId = (int)$adminRole['role_id'];
 $_SESSION['admin_role_id'] = $adminRoleId;
+$_SESSION['user']['role_id'] = $adminRoleId;
 $adminRoleName = $adminRole['role_name'];
 $adminMenuItems = $db->fetchAll(
     'SELECT m.menu_key, m.label, m.page_key, m.active_pages, m.icon_class,
@@ -75,6 +63,8 @@ $routes = [
     'categories' => 'pages/categories/index.php',
     'category-form' => 'pages/categories/form.php',
     'promotions' => 'pages/discount-event/index.php',
+    'users' => 'pages/users/index.php',
+    'users-form' => 'pages/users/form.php',
 ];
 
 $actions = [
@@ -86,6 +76,7 @@ $actions = [
     'delete-coupon' => 'pages/discount-event/action.php',
     'save-event' => 'pages/discount-event/action.php',
     'delete-event' => 'pages/discount-event/action.php',
+    'save-user' => 'actions/save-user.php',
 ];
 
 $actionPermissions = [
@@ -97,6 +88,7 @@ $actionPermissions = [
     'delete-coupon' => 'promotions',
     'save-event' => 'promotions',
     'delete-event' => 'promotions',
+    'save-user' => 'users',
 ];
 
 $actionName = get_param('action');
@@ -124,6 +116,8 @@ $pagePermissions = [
     'categories' => 'categories',
     'category-form' => 'categories',
     'promotions' => 'promotions',
+    'users' => 'users',
+    'users-form' => 'users',
 ];
 
 if (is_string($page) && isset($routes[$page])

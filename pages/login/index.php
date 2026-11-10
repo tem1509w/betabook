@@ -14,6 +14,7 @@
         <p class="sub">Bạn đã đăng nhập với tài khoản:</p>
         <p class="login-account-name"><?php echo e((string)($currentUser['full_name'] ?: $currentUser['username'])); ?></p>
         <p><?php echo e($currentUser['email']); ?></p>
+        <p><a class="button full" href="<?php echo e(url('account')); ?>">Thông tin tài khoản</a></p>
         <form action="<?php echo e(url('login')); ?>" method="post">
           <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
           <input type="hidden" name="login_action" value="logout">
@@ -40,16 +41,16 @@
 
           <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
           <div class="field">
-            <label for="identifier">Tên đăng nhập, email hoặc số điện thoại</label>
+            <label for="username">Tên đăng nhập</label>
             <input
               type="text"
-              id="identifier"
-              name="identifier"
-              value="<?php echo e($identifier); ?>"
+              id="username"
+              name="username"
+              value="<?php echo e($username); ?>"
               autocomplete="username"
               required
               autofocus
-              placeholder="Nhập tên đăng nhập, email hoặc SĐT">
+              placeholder="Nhập username">
           </div>
           <div class="field">
             <label for="password">Mật khẩu</label>

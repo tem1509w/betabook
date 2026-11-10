@@ -1,0 +1,126 @@
+.account-banner {
+  padding: 30px 15px;
+  background: var(--xam-nhat);
+  text-align: center;
+}
+.account-banner h1 { margin: 0 0 6px; color: var(--den); }
+.account-banner p { margin: 0; }
+.account-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+}
+.tab-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.account-side,
+.account-main .panel {
+  padding: 22px;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  background: #fff;
+}
+.account-side { align-self: start; text-align: center; }
+.account-avatar {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.account-side h2 { color: var(--den); }
+.side-mail { overflow-wrap: anywhere; }
+.account-avatar-form { margin: 18px 0; text-align: left; }
+.account-avatar-form fieldset { min-width: 0; padding: 0; border: 0; }
+.account-avatar-form legend { margin-bottom: 10px; color: var(--den); font-weight: bold; }
+.account-avatar-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px;
+}
+.account-avatar-option {
+  position: relative;
+  display: block;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.account-avatar-option input:checked + img { outline: 3px solid var(--cam); }
+.account-avatar-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.account-avatar-option input:focus-visible + img { outline: 2px solid var(--den); }
+.account-avatar-option img { display: block; width: 100%; aspect-ratio: 1; border-radius: 50%; object-fit: cover; }
+.account-avatar-form .button { width: 100%; margin-top: 12px; border: 0; cursor: pointer; }
+.side-nav { display: grid; gap: 8px; text-align: left; }
+.side-nav label,
+.side-nav a,
+.side-nav button {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--den);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.side-nav label:hover,
+.side-nav a:hover,
+.side-nav button:hover { background: var(--xam-nhat); }
+.side-nav form { margin: 0; }
+.account-main .panel { display: none; }
+#tab-info:checked ~ .account-main .panel-info,
+#tab-pass:checked ~ .account-main .panel-pass,
+#tab-orders:checked ~ .account-main .panel-orders { display: block; }
+.account-main .panel h2 { margin-bottom: 18px; color: var(--den); }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.form-grid.one { grid-template-columns: 1fr; }
+.field label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--den); }
+.field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.field input[readonly] { background: #f7f7f7; color: var(--chu); }
+.field input:disabled { background: #eee; cursor: not-allowed; }
+.account-main button:disabled { opacity: .55; cursor: not-allowed; }
+.order-head,
+.order summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+.order-head { padding: 10px; font-weight: bold; }
+.order { border-top: 1px solid #e5e5e5; }
+.order summary { padding: 12px 10px; cursor: pointer; }
+.order-body { padding: 0 10px 14px; overflow-x: auto; }
+.mini { width: 100%; border-collapse: collapse; }
+.mini th,
+.mini td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
+.mini .num { text-align: right; }
+.price { color: var(--do); font-weight: bold; }
+.ship-info { margin: 12px 0 0; }
+.form-msg { padding: 10px 14px; margin: 12px auto; }
+.form-msg.success { color: #176b36; background: #edf9f0; }
+.form-msg.error { color: #a61b1b; background: #fff0f0; }
+
+@media (max-width: 800px) {
+  .account-layout { grid-template-columns: 1fr; }
+  .account-side { width: 100%; }
+}
+@media (max-width: 560px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .order-head { display: none; }
+  .order summary { grid-template-columns: 1fr 1fr; }
+}

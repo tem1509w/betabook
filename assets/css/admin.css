@@ -487,6 +487,20 @@ body:has(.admin-wrapper) {
 
 .data-table tbody tr:hover { background: #fffaf6; }
 .data-table form { display: inline; }
+.user-filter { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
+.user-filter input,
+.user-filter select { min-height: 40px; padding: 7px 10px; border: 1px solid #cccccc; border-radius: 6px; background: white; }
+.user-filter input { flex: 1 1 260px; }
+.user-filter .button { align-self: stretch; }
+.user-count { margin: 10px 0; }
+.user-list-identity { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+.user-list-identity img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.user-list-identity small { display: block; color: #777777; }
+.user-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 20px; }
+.alert.success { padding: 12px 16px; border-radius: 8px; color: #176b36; background: #edf9f0; margin-bottom: 16px; }
+.user-admin-form { padding: 22px; background: white; border-radius: 10px; }
+.user-admin-form .form-group > small { display: block; margin-top: 5px; color: #777777; }
+.user-admin-form input[type="password"] { width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid #cccccc; border-radius: 6px; }
 
 .action-edit,
 .action-delete,

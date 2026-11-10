@@ -88,6 +88,20 @@ CREATE TABLE IF NOT EXISTS product_images (
         FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS roles (
+    role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    role_key VARCHAR(50) NOT NULL,
+    role_name VARCHAR(100) NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    UNIQUE KEY uk_roles_role_key (role_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO roles (role_key, role_name, is_active) VALUES
+    ('admin', 'Quản trị viên', 1),
+    ('staff', 'Nhân viên', 1),
+    ('user', 'Khách hàng', 1)
+ON DUPLICATE KEY UPDATE role_name = VALUES(role_name), is_active = VALUES(is_active);
+
 CREATE TABLE IF NOT EXISTS users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(191) NOT NULL,
@@ -95,26 +109,30 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(191),
     phone VARCHAR(20),
-    address TEXT,
-    role ENUM('admin', 'staff', 'customer') DEFAULT 'customer',
+    avatar_image VARCHAR(255) DEFAULT NULL,
+    role_id INT NOT NULL,
     is_active TINYINT(1) DEFAULT 1,
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_users_username (username),
-    UNIQUE KEY uk_users_email (email)
+    UNIQUE KEY uk_users_email (email),
+    INDEX idx_users_role_id (role_id),
+    CONSTRAINT fk_users_role
+        FOREIGN KEY (role_id) REFERENCES roles(role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Local demo account: username "demo", password "BetaBook2026!".
-INSERT IGNORE INTO users (username, email, password, full_name, role, is_active)
-VALUES (
+INSERT IGNORE INTO users (username, email, password, full_name, role_id, is_active)
+SELECT
     'demo',
     'demo@betabook.local',
     '$2y$10$dGQbldWrIL9AmXeTUJBF2ODcsYHnjs10Mn55GhLSNb6VX3krth7lC',
     'BetaBook Demo',
-    'customer',
+    role_id,
     1
-);
+FROM roles
+WHERE role_key = 'user';
 
 CREATE TABLE IF NOT EXISTS contact_messages (
     message_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -137,14 +155,6 @@ CREATE TABLE IF NOT EXISTS settings (
     UNIQUE KEY uk_settings_key (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS admin_roles (
-    role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    role_key VARCHAR(50) NOT NULL,
-    role_name VARCHAR(100) NOT NULL,
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
-    UNIQUE KEY uk_admin_roles_role_key (role_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS admin_menu_items (
     menu_id INT PRIMARY KEY AUTO_INCREMENT,
     menu_key VARCHAR(50) NOT NULL,
@@ -164,17 +174,11 @@ CREATE TABLE IF NOT EXISTS admin_menu_permissions (
     menu_id INT NOT NULL,
     can_view TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (role_id, menu_id),
-    CONSTRAINT fk_admin_menu_permissions_role
-        FOREIGN KEY (role_id) REFERENCES admin_roles(role_id) ON DELETE CASCADE,
+    CONSTRAINT fk_admin_menu_permissions_roles
+        FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE,
     CONSTRAINT fk_admin_menu_permissions_menu
         FOREIGN KEY (menu_id) REFERENCES admin_menu_items(menu_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO admin_roles (role_key, role_name, is_active) VALUES
-    ('manager', 'Quản lý', 1),
-    ('employee', 'Nhân viên', 1),
-    ('user', 'User', 1)
-ON DUPLICATE KEY UPDATE role_name = VALUES(role_name), is_active = VALUES(is_active);
 
 INSERT INTO admin_menu_items
     (menu_key, label, page_key, active_pages, icon_class, is_external, sort_order, is_active)
@@ -183,6 +187,7 @@ VALUES
     ('books', 'Quản lý sách', 'books', 'books,book-form', 'bi bi-book', 0, 20, 1),
     ('categories', 'Quản lý danh mục', 'categories', 'categories,category-form', 'bi bi-tags', 0, 30, 1),
     ('promotions', 'Mã giảm & Sự kiện', 'promotions', 'promotions', 'bi bi-ticket-perforated', 0, 40, 1),
+    ('users', 'Quản lý tài khoản', 'users', 'users,users-form', 'bi bi-people', 0, 5, 1),
     ('public', 'Quay lại Public', NULL, '', 'bi bi-box-arrow-up-right', 1, 90, 1)
 ON DUPLICATE KEY UPDATE
     label = VALUES(label), page_key = VALUES(page_key), active_pages = VALUES(active_pages),
@@ -191,13 +196,13 @@ ON DUPLICATE KEY UPDATE
 
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
-FROM admin_roles r CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'manager' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'public');
+FROM roles r CROSS JOIN admin_menu_items m
+WHERE r.role_key = 'admin' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'users', 'public');
 
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
-FROM admin_roles r CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'employee' AND m.menu_key IN ('dashboard', 'books', 'public');
+FROM roles r CROSS JOIN admin_menu_items m
+WHERE r.role_key = 'staff' AND m.menu_key IN ('dashboard', 'books', 'public');
 
 CREATE TABLE IF NOT EXISTS home_content (
     content_key VARCHAR(100) PRIMARY KEY,
@@ -322,15 +327,15 @@ INSERT INTO products
      price, original_price, stock_quantity, sold_quantity, is_best_seller, is_new_release,
      is_recommended, is_active, cover_image, description, weight)
 VALUES
-('HOME-BS-001', 'who-chuyen-ke-danh-nhan-nikola-tesla', @category_lifestyle_Science, NULL, 'WHO? Chuyện kể về danh nhân thế giới - Nikola Tesla', NULL, NULL, 'paperback', 55000, 60000, 0, 0, 1, 0, 0, 1, 'NikolaTesla.webp', NULL, 0.00),
-('HOME-BS-002', 'shingeki-no-kyojin-11-attack-on-titan', @category_literature, NULL, '進撃の巨人 11 - Attack On Titan 11', NULL, NULL, 'paperback', 135000, 152000, 0, 0, 1, 0, 0, 1, 'AOT11.webp', NULL, 0.00),
-('HOME-BS-003', 'wonka', @category_literature, NULL, 'Wonka', NULL, NULL, 'paperback', 76000, 85000, 0, 0, 1, 0, 0, 1, 'Wonka.webp', NULL, 0.00),
-('HOME-BS-004', 'nha-gia-kim-tai-ban-2025', @category_literature, NULL, 'Nhà Giả Kim (Tái Bản 2025)', NULL, NULL, 'paperback', 72000, 95000, 0, 0, 1, 0, 0, 1, 'NhaGiaKim.webp', NULL, 0.00),
-('HOME-NR-001', 'mon-qua-mua-xuan', @category_literature, NULL, 'Món quà mùa xuân', 'Makiko Toyofuku', NULL, 'paperback', 45000, 50000, 0, 0, 0, 1, 0, 1, 'món-quà-mùa-xuân.webp', '"Một câu chuyện dịu dàng và sâu sắc, giúp ta biến những điều từng không thích ở bản thân thành niềm yêu thương."', 0.00),
-('HOME-RC-001', 'arya-ban-ben-tieng-nga-vol-10', @category_literature, NULL, 'Arya bàn bên thỉnh thoảng lại trêu ghẹo tôi bằng Tiếng Nga(Vol.10)', NULL, NULL, 'paperback', 85000, 100000, 0, 0, 0, 0, 1, 1, 'arya-ban-ben-10-bia.webp', NULL, 0.00),
-('HOME-RC-002', 'mong-vuot-qua-den-2', @category_literature, NULL, 'Móng vuốt quạ đen (II)', NULL, NULL, 'paperback', 90000, 110000, 0, 0, 0, 0, 1, 1, 'móng-vuốt-quạ-đen(II).webp', NULL, 0.00),
-('HOME-RC-003', 'tieu-thuyet-doraemon-nobita-lau-dai-duoi-day-bien', @category_literature, NULL, 'Tiểu thuyết Doraemon - Nobita và lâu đài dưới đáy bể', NULL, NULL, 'paperback', 54000, 60000, 0, 0, 0, 0, 1, 1, 'doraemon-và-lâu-đài-dưới-đáy-biển.webp', NULL, 0.00),
-('HOME-RC-004', 'kheo-khon-voi-tien-tap-1', @category_lifestyle_Science, NULL, 'Khéo khôn với tiền - Tránh những ưu phiền (Tập 1)', NULL, NULL, 'paperback', 100000, 150000, 0, 0, 0, 0, 1, 1, 'khéo-khôn-với-tiền.webp', NULL, 0.00)
+('HOME-BS-001', 'who-chuyen-ke-danh-nhan-nikola-tesla', @category_lifestyle_Science, NULL, 'WHO? Chuyện kể về danh nhân thế giới - Nikola Tesla', NULL, '978-604-2-12046-4', 'paperback', 55000, 60000, 0, 0, 1, 0, 0, 1, 'NikolaTesla.webp', NULL, 0.00),
+('HOME-BS-002', 'shingeki-no-kyojin-11-attack-on-titan', @category_literature, NULL, '進撃の巨人 11 - Attack On Titan 11', NULL, '978-604-1-25569-2', 'paperback', 135000, 152000, 0, 0, 1, 0, 0, 1, 'AOT11.webp', NULL, 0.00),
+('HOME-BS-003', 'wonka', @category_literature, NULL, 'Wonka', NULL, '978-604-2-37185-8', 'paperback', 76000, 85000, 0, 0, 1, 0, 0, 1, 'Wonka.webp', NULL, 0.00),
+('HOME-BS-004', 'nha-gia-kim-tai-ban-2025', @category_literature, NULL, 'Nhà Giả Kim (Tái Bản 2025)', NULL, '978-604-56-5779-9', 'paperback', 72000, 95000, 0, 0, 1, 0, 0, 1, 'NhaGiaKim.webp', NULL, 0.00),
+('HOME-NR-001', 'mon-qua-mua-xuan', @category_literature, NULL, 'Món quà mùa xuân', 'Makiko Toyofuku', '978-604-2-39251-8', 'paperback', 45000, 50000, 0, 0, 0, 1, 0, 1, 'món-quà-mùa-xuân.webp', '"Một câu chuyện dịu dàng và sâu sắc, giúp ta biến những điều từng không thích ở bản thân thành niềm yêu thương."', 0.00),
+('HOME-RC-001', 'arya-ban-ben-tieng-nga-vol-10', @category_literature, NULL, 'Arya bàn bên thỉnh thoảng lại trêu ghẹo tôi bằng Tiếng Nga(Vol.10)', NULL, '978-604-2-39956-2', 'paperback', 85000, 100000, 0, 0, 0, 0, 1, 1, 'arya-ban-ben-10-bia.webp', NULL, 0.00),
+('HOME-RC-002', 'mong-vuot-qua-den-2', @category_literature, NULL, 'Móng vuốt quạ đen (II)', NULL, '978-604-2-16540-2', 'paperback', 90000, 110000, 0, 0, 0, 0, 1, 1, 'móng-vuốt-quạ-đen(II).webp', NULL, 0.00),
+('HOME-RC-003', 'tieu-thuyet-doraemon-nobita-lau-dai-duoi-day-bien', @category_literature, NULL, 'Tiểu thuyết Doraemon - Nobita và lâu đài dưới đáy bể', NULL, '978-604-2-41902-4', 'paperback', 54000, 60000, 0, 0, 0, 0, 1, 1, 'doraemon-và-lâu-đài-dưới-đáy-biển.webp', NULL, 0.00),
+('HOME-RC-004', 'kheo-khon-voi-tien-tap-1', @category_lifestyle_Science, NULL, 'Khéo khôn với tiền - Tránh những ưu phiền (Tập 1)', NULL, '978-604-2-42435-6', 'paperback', 100000, 150000, 0, 0, 0, 0, 1, 1, 'khéo-khôn-với-tiền.webp', NULL, 0.00)
 ON DUPLICATE KEY UPDATE
     slug = VALUES(slug), category_id = VALUES(category_id), publisher_id = VALUES(publisher_id),
     title = VALUES(title), author = VALUES(author), isbn = VALUES(isbn), cover_type = VALUES(cover_type),
@@ -458,3 +463,34 @@ ON DUPLICATE KEY UPDATE
     description = VALUES(description),
     image_path = VALUES(image_path),
     is_active = VALUES(is_active);
+
+INSERT IGNORE INTO users (username, email, password, full_name, role_id, is_active)
+SELECT
+    'admin_demo',
+    'admin_demo@betabook.local',
+    '$2y$10$ZC4OY1eWo.4ZuGXYwoayZ.iZjfdddh28uSUHWENWCGjJ1Du2ZpMMG',
+    'Quản trị viên mẫu',
+    role_id,
+    1
+FROM roles
+WHERE role_key = 'admin'
+UNION ALL
+SELECT
+    'staff_demo',
+    'staff_demo@betabook.local',
+    '$2y$10$ZC4OY1eWo.4ZuGXYwoayZ.iZjfdddh28uSUHWENWCGjJ1Du2ZpMMG',
+    'Nhân viên mẫu',
+    role_id,
+    1
+FROM roles
+WHERE role_key = 'staff'
+UNION ALL
+SELECT
+    'customer_demo',
+    'customer_demo@betabook.local',
+    '$2y$10$ZC4OY1eWo.4ZuGXYwoayZ.iZjfdddh28uSUHWENWCGjJ1Du2ZpMMG',
+    'Khách hàng mẫu',
+    role_id,
+    1
+FROM roles
+WHERE role_key = 'user';

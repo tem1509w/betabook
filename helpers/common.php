@@ -1,7 +1,6 @@
 <?php
 /**
  * Common Helpers - e(), money(), redirect()
- * Tuân theo MiniShop Basic PHP
  */
 
 /**
@@ -56,13 +55,31 @@ function valid_csrf_token($token): bool {
         && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-function auth_login(string $identifier, string $password): ?array {
+function user_avatar_options(): array {
+    return [
+        'pfp-icon-set/Avatar_Aria.webp',
+        'pfp-icon-set/Avatar_Dialyn.webp',
+        'pfp-icon-set/Avatar_Ellen_Joe.webp',
+        'pfp-icon-set/Avatar_Hoshimi_Miyabi.webp',
+        'pfp-icon-set/Avatar_Lucia_Elowen.webp',
+        'pfp-icon-set/Avatar_Nangong_Yu.webp',
+        'pfp-icon-set/Avatar_Pyrois.webp',
+        'pfp-icon-set/Avatar_Remielle_Dan.webp',
+        'pfp-icon-set/Avatar_Roxy_Ifrita_Pryce.webp',
+        'pfp-icon-set/Avatar_Sunna.webp',
+        'pfp-icon-set/Avatar_Vivian_Banshee.webp',
+        'pfp-icon-set/Avatar_Ye_Shunguang.webp',
+        'pfp-icon-set/Avatar_Yixuan.webp',
+    ];
+}
+
+function auth_login(string $username, string $password): ?array {
     $user = db()->fetchOne(
-        'SELECT user_id, username, email, password, full_name, role
+        'SELECT user_id, username, email, password, full_name, role_id, avatar_image
          FROM users
-         WHERE is_active = 1 AND (username = ? OR email = ? OR phone = ?)
+         WHERE is_active = 1 AND username = ?
          LIMIT 1',
-        [$identifier, $identifier, $identifier]
+        [$username]
     );
 
     if (!$user || !password_verify($password, $user['password'])) {
@@ -78,7 +95,8 @@ function auth_login(string $identifier, string $password): ?array {
         'username' => $user['username'],
         'email' => $user['email'],
         'full_name' => $user['full_name'],
-        'role' => $user['role'],
+        'role_id' => (int)$user['role_id'],
+        'avatar_image' => $user['avatar_image'],
     ];
 
     return $_SESSION['user'];
