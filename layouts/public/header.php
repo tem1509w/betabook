@@ -83,7 +83,7 @@
           </ul>
         </li>
         <li><a href="<?php echo e(url('discount-event')); ?>">Mã giảm - Sự kiện</a></li>
-        <li><a href="<?php echo e(url('') . '#contact'); ?>">Liên hệ</a></li>
+        <li><a href="<?php echo e(url('contact')); ?>">Liên hệ</a></li>
       </ul>
     </nav>
 
@@ -97,7 +97,7 @@
     </button>
   </form>
 
-  <a class="icon-button" href="<?php echo e(url('') . '#contact'); ?>" title="Liên hệ BetaBook">
+  <a class="icon-button" href="<?php echo e(url('contact')); ?>" title="Liên hệ BetaBook">
     <img src="<?php echo asset('images/user.ico'); ?>" alt="Tài khoản">
   </a>
 
