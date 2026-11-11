@@ -24,19 +24,19 @@
       <h4>THÔNG TIN</h4>
       <ul>
         <li><a href="<?php echo e(url('') . '#about'); ?>">Giới thiệu</a></li>
-        <li><a href="<?php echo e(url('booklist')); ?>">Hệ thống nhà sách</a></li>
-        <li><a href="<?php echo e(url('contact')); ?>">Tuyển dụng</a></li>
-        <li><a href="<?php echo e(url('') . '#service'); ?>">Hợp tác phân phối</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Hệ thống nhà sách</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Tuyển dụng</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
       </ul>
     </div>
 
     <div>
       <h4>CHÍNH SÁCH</h4>
       <ul>
-        <li><a href="<?php echo e(url('contact')); ?>">Chính sách thanh toán</a></li>
-        <li><a href="<?php echo e(url('contact')); ?>">Chính sách vận chuyển</a></li>
-        <li><a href="<?php echo e(url('contact')); ?>">Chính sách bảo mật</a></li>
-        <li><a href="<?php echo e(url('contact')); ?>">Chính sách đổi trả</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Chính sách thanh toán</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Chính sách vận chuyển</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Chính sách bảo mật</a></li>
+        <li><a href="<?php echo e(url('404')); ?>">Chính sách đổi trả</a></li>
       </ul>
     </div>
 
