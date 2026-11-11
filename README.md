@@ -63,6 +63,9 @@ Các đường dẫn trên tính từ URL gốc của project. Có thể dùng `
 thay cho dạng rút gọn; `index.php?page=...` cũng được hỗ trợ. Trang chủ là
 trang mặc định. Icon tài khoản trên header mở trang tài khoản khi đã đăng nhập,
 hoặc trang đăng nhập khi chưa đăng nhập.
+Các route không tồn tại và URL không trỏ đến file có thật sẽ hiển thị trang 404.
+Để xử lý URL lạ bằng Apache, cần bật `mod_rewrite` và cho phép cấu hình `.htaccess`
+(`AllowOverride`).
 
 Danh sách và chi tiết sách đọc dữ liệu từ database. Giỏ hàng thêm sách từ trang
 chi tiết, lưu trong session hiện tại và cho phép xóa sản phẩm. Hiện chưa có

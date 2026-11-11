@@ -42,6 +42,7 @@ if ($isKnownPage) {
     $file = __DIR__ . '/pages/' . $routes[$page];
     $action = dirname($file) . '/action.php';
 } else {
+    $file = __DIR__ . '/pages/404/Index.php';
     $action = __DIR__ . '/pages/404/action.php';
 }
 
