@@ -2,11 +2,22 @@
 $pageTitle = 'Quản lý sách - Trang quản lý';
 
 if ($page === 'books') {
+    $search = trim((string)get_param('q', ''));
+    $where = '';
+    $params = [];
+    if ($search !== '') {
+        $where = 'WHERE (p.title LIKE ? OR p.isbn LIKE ?)';
+        $searchTerm = '%' . $search . '%';
+        $params = [$searchTerm, $searchTerm];
+    }
+
     $books = $db->fetchAll(
         "SELECT p.*, c.name AS category_name
          FROM products p
          LEFT JOIN categories c ON p.category_id = c.category_id
-         ORDER BY p.is_active DESC, p.is_best_seller DESC, p.product_id DESC"
+         $where
+         ORDER BY p.product_id ASC",
+        $params
     );
     return;
 }
