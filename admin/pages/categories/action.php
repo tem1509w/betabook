@@ -6,7 +6,7 @@ if ($page === 'categories') {
         'SELECT c.*, p.name AS parent_name
          FROM categories c
          LEFT JOIN categories p ON c.parent_id = p.category_id
-         ORDER BY c.parent_id, c.name'
+         ORDER BY c.category_id ASC'
     );
     return;
 }
