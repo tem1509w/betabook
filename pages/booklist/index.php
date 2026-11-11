@@ -54,19 +54,21 @@
       <!-- Thanh công cụ: tìm kiếm + sắp xếp -->
       <div class="toolbar">
 
-        <form class="main-search" action="<?php echo e(url('booklist')); ?>" method="get">
+        <form class="main-search" action="<?php echo e(url('')); ?>" method="get">
+          <input type="hidden" name="route" value="booklist">
           <span class="search-icon">
             <img src="<?php echo e(asset('images/search.ico')); ?>" alt="">
           </span>
           <input type="search" name="q" value="<?php echo e($search); ?>"
                  aria-label="Tìm sách"
-                 placeholder="Tìm kiếm sách theo tên, tác giả...">
+                 placeholder="Tìm kiếm sách theo tên...">
           <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
         </form>
 
         <div class="sort-box">
           <span class="sort-label">Sắp xếp:</span>
-          <form class="select-wrap" action="<?php echo e(url('booklist')); ?>" method="get">
+          <form class="select-wrap" action="<?php echo e(url('')); ?>" method="get">
+            <input type="hidden" name="route" value="booklist">
             <input type="hidden" name="q" value="<?php echo e($search); ?>">
             <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
             <select id="sapxep" name="sapxep" aria-label="Sắp xếp sách"
@@ -152,7 +154,8 @@
             <?php if ($visiblePages[0] > 2): ?>
               <details class="pagination-jump">
                 <summary aria-label="Nhập số trang muốn xem">…</summary>
-                <form action="<?php echo e(url('booklist')); ?>" method="get">
+                <form action="<?php echo e(url('')); ?>" method="get">
+                  <input type="hidden" name="route" value="booklist">
                   <input type="hidden" name="q" value="<?php echo e($search); ?>">
                   <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
                   <input type="hidden" name="sapxep" value="<?php echo e($sort); ?>">
@@ -179,7 +182,8 @@
             <?php if (end($visiblePages) < $totalPages - 1): ?>
               <details class="pagination-jump">
                 <summary aria-label="Nhập số trang muốn xem">…</summary>
-                <form action="<?php echo e(url('booklist')); ?>" method="get">
+                <form action="<?php echo e(url('')); ?>" method="get">
+                  <input type="hidden" name="route" value="booklist">
                   <input type="hidden" name="q" value="<?php echo e($search); ?>">
                   <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
                   <input type="hidden" name="sapxep" value="<?php echo e($sort); ?>">
