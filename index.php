@@ -38,22 +38,17 @@ $isKnownPage = is_string($page) && isset($routes[$page]);
 
 if ($isKnownPage) {
     $file = __DIR__ . '/pages/' . $routes[$page];
+    $action = dirname($file) . '/action.php';
 } else {
-    http_response_code(404);
-    $pageTitle = 'Không tìm thấy trang';
-    $errorMessage = 'Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.';
-    $file = __DIR__ . '/pages/404.php';
+    $action = __DIR__ . '/pages/404/action.php';
 }
 
 $pageTitle = $pageTitle ?? 'BetaBook';
 $bodyClass = $bodyClass ?? 'home-page';
 $extraCss = $extraCss ?? [];
 
-if ($isKnownPage) {
-    $action = dirname($file) . '/action.php';
-    if (is_file($action)) {
-        require $action;
-    }
+if (is_file($action)) {
+    require $action;
 }
 
 require __DIR__ . '/layouts/public/header.php';
