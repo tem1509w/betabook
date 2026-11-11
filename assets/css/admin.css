@@ -487,6 +487,8 @@ body:has(.admin-wrapper) {
 
 .data-table tbody tr:hover { background: #fffaf6; }
 .data-table form { display: inline; }
+.book-actions { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.book-actions form { display: inline-flex; margin: 0; }
 .user-filter { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 8px; }
 .user-filter input,
 .user-filter select { min-height: 40px; padding: 7px 10px; border: 1px solid #cccccc; border-radius: 6px; background: white; }
