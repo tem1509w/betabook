@@ -5,7 +5,7 @@ if (!is_string($productId) || !ctype_digit($productId) || (int)$productId < 1) {
     http_response_code(400);
     $pageTitle = 'Thiếu mã sách';
     $errorMessage = 'Vui lòng cung cấp mã sách hợp lệ.';
-    $file = __DIR__ . '/../404.php';
+    $file = __DIR__ . '/../404/Index.php';
     return;
 }
 
@@ -29,7 +29,7 @@ if (!$product) {
     http_response_code(404);
     $pageTitle = 'Không tìm thấy sách';
     $errorMessage = 'Sách bạn đang tìm kiếm không tồn tại hoặc đã bị ẩn.';
-    $file = __DIR__ . '/../404.php';
+    $file = __DIR__ . '/../404/Index.php';
     return;
 }
 
