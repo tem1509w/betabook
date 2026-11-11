@@ -14,7 +14,13 @@
   <nav class="breadcrumb" aria-label="Đường dẫn">
     <a href="<?php echo e(url('')); ?>">Trang chủ</a>
     <span>›</span>
-    <a href="<?php echo e(url('booklist')); ?>"><strong>Tủ sách</strong></a>
+    <?php if ($category === 'tatca'): ?>
+      <strong>Tủ sách</strong>
+    <?php else: ?>
+      <a href="<?php echo e(url('booklist')); ?>">Tủ sách</a>
+      <span>›</span>
+      <strong><?php echo e($categoryName); ?></strong>
+    <?php endif; ?>
   </nav>
 
   <div class="booklist-layout">
