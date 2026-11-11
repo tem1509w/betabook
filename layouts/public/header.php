@@ -90,9 +90,11 @@
     <!-- Tìm kiếm, tài khoản, giỏ hàng -->
 <div class="tools">
 
-  <form class="search-form" action="<?php echo url('booklist'); ?>" method="get">
-    <input type="text" name="q" placeholder="Tìm kiếm sản phẩm...">
-    <button type="submit" class="search-button">
+  <form class="search-form" action="<?php echo e(url('')); ?>" method="get">
+    <input type="hidden" name="route" value="booklist">
+    <input type="search" name="q" value="<?php echo isset($search) ? e($search) : ''; ?>"
+           placeholder="Tìm kiếm sản phẩm..." aria-label="Tìm kiếm sản phẩm theo tên">
+    <button type="submit" class="search-button" aria-label="Tìm kiếm">
       <img src="<?php echo asset('images/search.ico'); ?>" alt="Tìm">
     </button>
   </form>
