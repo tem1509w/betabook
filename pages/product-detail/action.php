@@ -11,7 +11,7 @@ if (!is_string($productId) || !ctype_digit($productId) || (int)$productId < 1) {
 
 $product = $db->fetchOne(
     "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-            pub.publisher_name, ratings.rating_average, ratings.rating_count,
+            pub.publisher_name,
             (SELECT pi.image_url
              FROM product_images pi
              WHERE pi.product_id = p.product_id
@@ -20,7 +20,6 @@ $product = $db->fetchOne(
      FROM products p
      LEFT JOIN categories c ON p.category_id = c.category_id
      LEFT JOIN publishers pub ON p.publisher_id = pub.publisher_id
-     LEFT JOIN home_product_ratings ratings ON p.product_id = ratings.product_id
      WHERE p.product_id = ? AND p.is_active = 1",
     [(int)$productId]
 );
@@ -39,28 +38,12 @@ $relatedProducts = $db->fetchAll(
              FROM product_images pi
              WHERE pi.product_id = p.product_id
              ORDER BY pi.is_primary DESC, pi.sort_order ASC, pi.image_id ASC
-             LIMIT 1) AS image_url,
-            ratings.rating_average, ratings.rating_count
+             LIMIT 1) AS image_url
      FROM products p
      LEFT JOIN categories c ON p.category_id = c.category_id
-     LEFT JOIN home_product_ratings ratings ON p.product_id = ratings.product_id
      WHERE p.is_recommended = 1 AND p.product_id != ? AND p.is_active = 1
      ORDER BY p.product_code ASC
      LIMIT 4",
-    [(int)$productId]
-);
-$ratingBreakdown = $db->fetchAll(
-    'SELECT star_rating, rating_percentage
-     FROM product_rating_breakdown
-     WHERE product_id = ?
-     ORDER BY star_rating DESC',
-    [(int)$productId]
-);
-$productReviews = $db->fetchAll(
-    'SELECT reviewer_name, rating, review_text, reviewed_at, avatar_image
-     FROM product_reviews
-     WHERE product_id = ?
-     ORDER BY reviewed_at DESC, review_id DESC',
     [(int)$productId]
 );
 

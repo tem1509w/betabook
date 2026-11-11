@@ -52,5 +52,19 @@
   <div class="copyright">© BetaBook, 2026</div>
 </footer>
 
+<?php if (is_string($flashMessage) && $flashMessage !== ''): ?>
+<script>
+  window.setTimeout(() => {
+    const flashMessage = document.getElementById('flash-message');
+    if (!flashMessage) {
+      return;
+    }
+
+    flashMessage.classList.add('is-hiding');
+    window.setTimeout(() => flashMessage.remove(), 250);
+  }, 3000);
+</script>
+<?php endif; ?>
+
 </body>
 </html>

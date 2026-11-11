@@ -22,6 +22,16 @@
 </head>
 <body class="<?php echo isset($bodyClass) ? e($bodyClass) : 'home-page'; ?>">
 
+<?php
+$flashMessage = $_SESSION['flash_message'] ?? null;
+unset($_SESSION['flash_message']);
+?>
+<?php if (is_string($flashMessage) && $flashMessage !== ''): ?>
+  <div id="flash-message" class="flash-message" role="status" aria-live="polite">
+    <?php echo e($flashMessage); ?>
+  </div>
+<?php endif; ?>
+
 <!-- ============ 1. HEADER ============ -->
 <header class="header">
   <div class="container header-inner">

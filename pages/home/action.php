@@ -6,11 +6,9 @@ $bestSellers = $db->fetchAll(
              FROM product_images pi
              WHERE pi.product_id = p.product_id
              ORDER BY pi.is_primary DESC, pi.sort_order ASC, pi.image_id ASC
-             LIMIT 1) AS image_url,
-            r.rating_average, r.rating_count
+             LIMIT 1) AS image_url
      FROM products p
      LEFT JOIN categories c ON p.category_id = c.category_id
-     LEFT JOIN home_product_ratings r ON p.product_id = r.product_id
      WHERE p.is_active = 1
      ORDER BY p.is_best_seller DESC, p.is_new_release DESC, p.is_recommended DESC, p.product_code ASC
      LIMIT 8"
@@ -36,11 +34,9 @@ $recommended = $db->fetchAll(
              FROM product_images pi
              WHERE pi.product_id = p.product_id
              ORDER BY pi.is_primary DESC, pi.sort_order ASC, pi.image_id ASC
-             LIMIT 1) AS image_url,
-            r.rating_average, r.rating_count
+             LIMIT 1) AS image_url
      FROM products p
      LEFT JOIN categories c ON p.category_id = c.category_id
-     LEFT JOIN home_product_ratings r ON p.product_id = r.product_id
      WHERE p.is_active = 1
      ORDER BY p.is_recommended DESC, p.is_new_release DESC, p.is_best_seller DESC, p.product_code ASC
      LIMIT 8"

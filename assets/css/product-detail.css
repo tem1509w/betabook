@@ -1,15 +1,14 @@
 /* =====================================================
    PRODUCT-DETAIL.CSS - Trang chi tiết sản phẩm BetaBook
    Dùng chung biến màu, .container, .section, .button, .img-box,
-   .rating, .stars, .price, .old-price, .product từ style.css
+   .price, .old-price, .product từ style.css
    => PHẢI link style.css TRƯỚC file này. .../PHP.
    Mục lục:
    1. Khung trang & đường dẫn
    2. Thư viện ảnh (đổi ảnh bằng radio)
    3. Thông tin mua hàng
-   4. Tab mô tả / thông tin / đánh giá
-   5. Đánh giá
-   6. Điện thoại
+   4. Tab mô tả / thông tin
+   5. Điện thoại
    ===================================================== */
 
 
@@ -81,9 +80,6 @@
 
 /* ---------- 3. THÔNG TIN MUA HÀNG ---------- */
 .info h1 { font-size: 26px; line-height: 1.35; color: var(--den); margin: 0 0 10px; }
-
-.info .rating { margin-bottom: 14px; }
-.divider { color: #cccccc; }
 
 /* Khối giá */
 .price-box {
@@ -178,13 +174,11 @@
 }
 .tab-bar label:hover { border-color: var(--cam); color: var(--cam); }
 #tab-mota:checked ~ .tab-bar label[for="tab-mota"],
-#tab-thongtin:checked ~ .tab-bar label[for="tab-thongtin"],
-#tab-danhgia:checked ~ .tab-bar label[for="tab-danhgia"] { background: var(--cam); border-color: var(--cam); color: white; }
+#tab-thongtin:checked ~ .tab-bar label[for="tab-thongtin"] { background: var(--cam); border-color: var(--cam); color: white; }
 
 .tab-panel { display: none; }
 #tab-mota:checked ~ .panel-mota,
-#tab-thongtin:checked ~ .panel-thongtin,
-#tab-danhgia:checked ~ .panel-danhgia { display: block; }
+#tab-thongtin:checked ~ .panel-thongtin { display: block; }
 
 .panel-mota h2 { font-size: 20px; color: var(--den); }
 .panel-mota p { max-width: 820px; }
@@ -195,40 +189,7 @@
 .spec th { width: 200px; background: var(--xam-nhat); color: var(--den); }
 
 
-/* ---------- 5. ĐÁNH GIÁ ---------- */
-.review-summary {
-  display: grid;
-  grid-template-columns: 160px 1fr auto;
-  gap: 30px;
-  align-items: center;
-  padding: 20px;
-  margin-bottom: 20px;
-  background: var(--xam-nhat);
-  border-radius: 10px;
-}
-.review-summary .bars { display: grid; gap: 7px; }
-.review-summary .button { white-space: nowrap; text-align: center; }
-.score { text-align: center; }
-.score b { display: block; font-size: 44px; line-height: 1.1; color: var(--cam); }
-.score small { display: block; }
-
-.bar { display: grid; grid-template-columns: 50px 1fr 40px; gap: 10px; align-items: center; font-size: 13px; }
-.bar i {
-  height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--cam) var(--w), #dddddd var(--w));   /* độ dài thanh theo --w */
-}
-
-.review-item { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid #eeeeee; }
-.review-item .avatar { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; }
-.review-item b { color: var(--den); }
-.review-item .rating { margin: 2px 0 6px; }
-.review-item p { margin: 0; }
-.review-item .rating small { color: #999999; }
-.no-reviews { padding: 18px 0; color: #888888; }
-
-
-/* ---------- 6. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
+/* ---------- 5. ĐIỆN THOẠI (màn hình nhỏ hơn 800px) ---------- */
 @media (max-width: 800px) {
   .detail-top { grid-template-columns: 1fr; gap: 24px; }
   .gallery { position: static; }
@@ -237,6 +198,5 @@
   .buy-actions { flex-wrap: wrap; }
   .perks { grid-template-columns: 1fr; }
   .detail-tabs { padding: 16px; }
-  .review-summary { grid-template-columns: 1fr; gap: 16px; }
   .spec th { width: 120px; }
 }

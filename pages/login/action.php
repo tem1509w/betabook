@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             : null;
 
         if ($user) {
+            $_SESSION['flash_message'] = 'Xin chào, ' . $user['username'];
             redirect(url(''));
         }
 

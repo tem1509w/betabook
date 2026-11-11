@@ -210,42 +210,6 @@ CREATE TABLE IF NOT EXISTS home_content (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS home_product_ratings (
-    product_id INT PRIMARY KEY,
-    rating_average DECIMAL(2,1) NOT NULL,
-    rating_count INT UNSIGNED NOT NULL DEFAULT 0,
-    CONSTRAINT fk_home_product_ratings_product
-        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS product_rating_breakdown (
-    product_id INT NOT NULL,
-    star_rating TINYINT UNSIGNED NOT NULL,
-    rating_percentage TINYINT UNSIGNED NOT NULL DEFAULT 0,
-    PRIMARY KEY (product_id, star_rating),
-    CONSTRAINT chk_product_rating_breakdown_star CHECK (star_rating BETWEEN 1 AND 5),
-    CONSTRAINT chk_product_rating_breakdown_percentage CHECK (rating_percentage <= 100),
-    CONSTRAINT fk_product_rating_breakdown_product
-        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS product_reviews (
-    review_id INT PRIMARY KEY AUTO_INCREMENT,
-    product_id INT NOT NULL,
-    reviewer_name VARCHAR(191) NOT NULL,
-    rating TINYINT UNSIGNED NOT NULL,
-    review_text TEXT NOT NULL,
-    reviewed_at DATE NOT NULL,
-    avatar_image VARCHAR(255),
-    is_sample TINYINT(1) NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_product_reviews_product_date (product_id, reviewed_at),
-    UNIQUE KEY uk_product_reviews_sample (product_id, reviewer_name, reviewed_at, is_sample),
-    CONSTRAINT chk_product_reviews_rating CHECK (rating BETWEEN 1 AND 5),
-    CONSTRAINT fk_product_reviews_product
-        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS home_reviews (
     review_id INT PRIMARY KEY AUTO_INCREMENT,
     reviewer_name VARCHAR(191) NOT NULL,
@@ -367,62 +331,6 @@ WHERE NOT EXISTS (
       AND existing.image_url = images.image_url
 );
     
-INSERT INTO home_product_ratings (product_id, rating_average, rating_count)
-SELECT p.product_id, ratings.rating_average, ratings.rating_count
-FROM (
-    SELECT 'HOME-BS-001' AS product_code, 4.2 AS rating_average, 360 AS rating_count
-    UNION ALL SELECT 'HOME-BS-002', 4.3, 311
-    UNION ALL SELECT 'HOME-BS-003', 4.4, 296
-    UNION ALL SELECT 'HOME-BS-004', 4.7, 441
-    UNION ALL SELECT 'HOME-RC-001', 4.5, 120
-    UNION ALL SELECT 'HOME-RC-002', 4.2, 95
-    UNION ALL SELECT 'HOME-RC-003', 4.0, 76
-    UNION ALL SELECT 'HOME-RC-004', 5.0, 17
-) AS ratings
-INNER JOIN products p ON p.product_code = ratings.product_code
-ON DUPLICATE KEY UPDATE
-    rating_average = VALUES(rating_average),
-    rating_count = VALUES(rating_count);
-
-INSERT INTO product_rating_breakdown (product_id, star_rating, rating_percentage)
-SELECT p.product_id, breakdown.star_rating, breakdown.rating_percentage
-FROM (
-    SELECT 'HOME-BS-001' AS product_code, 5 AS star_rating, 62 AS rating_percentage
-    UNION ALL SELECT 'HOME-BS-001', 4, 20
-    UNION ALL SELECT 'HOME-BS-001', 3, 10
-    UNION ALL SELECT 'HOME-BS-001', 2, 5
-    UNION ALL SELECT 'HOME-BS-001', 1, 3
-) AS breakdown
-INNER JOIN products p ON p.product_code = breakdown.product_code
-ON DUPLICATE KEY UPDATE rating_percentage = VALUES(rating_percentage);
-
-INSERT INTO product_reviews
-    (product_id, reviewer_name, rating, review_text, reviewed_at, avatar_image, is_sample)
-SELECT p.product_id, reviews.reviewer_name, reviews.rating, reviews.review_text,
-       reviews.reviewed_at, reviews.avatar_image, 1
-FROM (
-    SELECT 'HOME-BS-001' AS product_code, 'bienkiet_1242' AS reviewer_name, 5 AS rating,
-           'Nội dung đánh giá mẫu. Sách in đẹp, nội dung dễ hiểu.' AS review_text,
-           '2026-10-12' AS reviewed_at, 'pfp-icon-set/Avatar_Lucia_Elowen.webp' AS avatar_image
-    UNION ALL
-    SELECT 'HOME-BS-001', 'chumeonangmua_', 4,
-           'Nội dung đánh giá mẫu. Giao hàng nhanh, đóng gói cẩn thận.',
-           '2026-10-05', 'pfp-icon-set/Avatar_Dialyn.webp'
-) AS reviews
-INNER JOIN products p ON p.product_code = reviews.product_code
-WHERE NOT EXISTS (
-    SELECT 1
-    FROM product_reviews existing
-    WHERE existing.product_id = p.product_id
-      AND existing.reviewer_name = reviews.reviewer_name
-      AND existing.reviewed_at = reviews.reviewed_at
-      AND existing.is_sample = 1
-)
-ON DUPLICATE KEY UPDATE
-    rating = VALUES(rating),
-    review_text = VALUES(review_text),
-    avatar_image = VALUES(avatar_image);
-
 INSERT INTO home_content (content_key, content_value) VALUES
 ('banner_image', 'images/banner/main-banner.png'),
 ('about_image', 'images/banner/about-us.png'),

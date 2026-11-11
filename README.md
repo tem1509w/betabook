@@ -105,13 +105,12 @@ liệu chính gồm:
 - `users`, `roles`: tài khoản và vai trò; `users.role_id` tham chiếu `roles`.
 - `admin_menu_items`, `admin_menu_permissions`: cấu hình menu và quyền menu
   admin.
-- `home_content`, `home_product_ratings`, `product_rating_breakdown`,
-  `product_reviews`, `home_reviews`, `home_coupons`, `home_events`: nội dung
+- `home_content`, `home_reviews`, `home_coupons`, `home_events`: nội dung
   trang chủ và dữ liệu hiển thị mẫu.
 - `contact_messages`, `settings`: tin nhắn liên hệ và cấu hình.
 
-Schema hiện tại chưa có bảng đơn hàng. Đánh giá mẫu sản phẩm được lưu theo sản
-phẩm/người đánh giá, chưa liên kết với tài khoản đăng nhập.
+Schema hiện tại chưa có bảng đơn hàng. `home_reviews` lưu lời nhận xét về
+BetaBook được hiển thị trên trang chủ.
 
 Nếu đang dùng database cũ, sao lưu database trước rồi chỉ chạy các migration
 phù hợp với schema hiện có. Đối với database cũ còn dùng `admin_roles` và
@@ -129,6 +128,8 @@ Các migration cập nhật schema người dùng:
   `users.avatar_image` nếu chưa có.
 - `database/migrations/admin_account_management.sql`: thêm menu và quyền menu
   Quản lý tài khoản cho role `admin` sau khi đã có bảng `roles` và menu admin.
+- `database/migrations/20261111_remove_product_ratings.sql`: xóa dữ liệu và
+  bảng rating/đánh giá sản phẩm khỏi database hiện có.
 
 Các migration chuyển đổi cấu trúc như role, `address` và avatar chỉ chạy khi
 database còn ở trạng thái cần chuyển đổi; không chạy lại nếu thay đổi đã có.
@@ -160,7 +161,6 @@ Các dấu hiệu sau trong mã nguồn và database cho thấy project vẫn l�
 | Giỏ hàng và đặt mua | Có thể thêm/xóa sách, nhưng giỏ chỉ lưu trong PHP session, không lưu vào database. Chưa có checkout, thanh toán hoặc tạo đơn hàng. | `action.php` lưu giỏ vào `$_SESSION['cart']`; schema trong `database/betabook_bt03_deploy.sql` chưa có bảng đơn hàng. |
 | Lịch sử đơn hàng | Đang hiển thị dữ liệu minh họa, không lấy từ giao dịch thực. | Các khối đơn hàng được viết sẵn trong `pages/account/index.php`. |
 | Liên hệ | Form trên trang liên hệ hiện hiển thị thông báo cảm ơn nhưng không lưu nội dung gửi. | `pages/contact/action.php` không ghi database; dù schema có `contact_messages` và `action.php` có endpoint JSON riêng, form hiện tại chưa nối vào endpoint đó. |
-| Đánh giá sản phẩm | Có dữ liệu đánh giá để hiển thị, nhưng chưa gắn với tài khoản người dùng đã đăng nhập. | Bảng `product_reviews` lưu tên người đánh giá, không có `user_id`. |
 | Kiểm thử và vận hành | README chỉ hướng dẫn chạy local; project chưa được mô tả là đã triển khai production. | Cấu hình mặc định trong `config/database.php` dùng database local và tài khoản `root` không mật khẩu. |
 
 Một số phần đã hoạt động như đọc danh sách/chi tiết sách, quản lý dữ liệu trong
