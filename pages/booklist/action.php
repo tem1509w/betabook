@@ -48,9 +48,9 @@ $totalAll = (int)$db->fetchOne(
 $conditions = ['p.is_active = 1'];
 $params = [];
 if ($search !== '') {
-    $conditions[] = '(p.title LIKE ? OR p.author LIKE ? OR p.product_code LIKE ?)';
+    $conditions[] = 'p.title LIKE ?';
     $searchTerm = '%' . $search . '%';
-    array_push($params, $searchTerm, $searchTerm, $searchTerm);
+    $params[] = $searchTerm;
 }
 if ($category !== '' && $category !== 'tatca') {
     $conditions[] = 'c.slug = ? AND c.is_active = 1';
