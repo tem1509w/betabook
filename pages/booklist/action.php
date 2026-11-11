@@ -94,4 +94,6 @@ foreach ($categories as $bookCategory) {
 
 $pageTitle = $categoryName;
 $bodyClass = 'booklist-page';
-$extraCss = [asset('css/booklist.css')];
+$extraCss = [
+    asset('css/booklist.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/booklist.css'),
+];

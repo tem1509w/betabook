@@ -272,37 +272,38 @@
 /* Thanh công cụ: TÌM KIẾM + SẮP XẾP */
 .toolbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 24px;
-  padding: 14px 16px;
-  background: white;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
+  gap: 16px;
+  margin-bottom: 26px;
+  padding: 16px;
+  background: linear-gradient(135deg, #ffffff, #fffaf6);
+  border: 1px solid #f0e5dc;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(80, 48, 24, 0.05);
 }
 
 /* Ô tìm kiếm có icon */
 .main-search {
   display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 220px;
-  height: 42px;
-  background: var(--xam-nhat);
-  border: 1px solid #e5e5e5;
-  border-radius: 30px;
-  padding: 0 6px 0 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1 1 320px;
+  min-width: min(100%, 220px);
+  height: 48px;
+  background: white;
+  border: 1px solid #e3ddd7;
+  border-radius: 10px;
+  padding: 0 5px 0 15px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 .main-search:focus-within {
   border-color: var(--cam);
-  box-shadow: 0 0 0 3px #ffe1cc;
+  box-shadow: 0 0 0 3px rgba(255, 143, 64, 0.16);
   background: white;
 }
 .main-search .search-icon { display: flex; }
-.main-search .search-icon img { width: 18px; height: 18px; opacity: 0.6; }
+.main-search .search-icon img { width: 19px; height: 19px; opacity: 0.65; }
 .main-search input {
   flex: 1;
   min-width: 0;
@@ -310,36 +311,78 @@
   border: 0;
   outline: none;
   background: transparent;
-  padding: 0 10px;
+  padding: 0 12px;
+  color: var(--den);
+  font: inherit;
   font-size: 14px;
+}
+.main-search input::placeholder { color: #999; }
+.search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--cam);
+  color: white;
+  font: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.search-submit:hover { background: #d96512; }
+.search-submit:active { transform: scale(0.98); }
+.search-submit:focus-visible,
+.select-wrap select:focus-visible {
+  outline: 3px solid rgba(255, 143, 64, 0.25);
+  outline-offset: 2px;
 }
 
 /* Hộp chọn sắp xếp */
-.sort-box { display: flex; align-items: center; gap: 8px; }
-.sort-label { color: var(--chu); font-size: 14px; white-space: nowrap; }
+.sort-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 4px 5px 4px 14px;
+  background: #fff3e9;
+  border: 1px solid #f5dfce;
+  border-radius: 10px;
+}
+.sort-label {
+  color: #704b32;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
 
 .select-wrap { position: relative; display: inline-flex; align-items: center; }
 .select-wrap select {
   appearance: none;
   -webkit-appearance: none;
-  height: 42px;
-  padding: 0 40px 0 16px;
-  border: 1px solid #e5e5e5;
-  border-radius: 30px;
-  background: var(--xam-nhat);
+  height: 38px;
+  padding: 0 36px 0 12px;
+  border: 1px solid #ead8c9;
+  border-radius: 7px;
+  background: white;
   color: var(--den);
-  font-weight: bold;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .select-wrap select:focus {
   border-color: var(--cam);
-  box-shadow: 0 0 0 3px #ffe1cc;
+  box-shadow: 0 0 0 3px rgba(255, 143, 64, 0.16);
 }
 .select-wrap .chevron {
   position: absolute;
-  right: 16px;
+  right: 13px;
   color: var(--cam);
   font-size: 12px;
   pointer-events: none;
@@ -358,4 +401,15 @@
   .sidebar { position: static; }
 
   .book-main .product-list { grid-template-columns: 1fr 1fr; }
+  .main-search { flex-basis: 100%; }
+  .sort-box { justify-content: space-between; }
+}
+
+@media (max-width: 480px) {
+  .toolbar { gap: 12px; padding: 12px; }
+  .main-search { height: 44px; padding-left: 11px; }
+  .search-submit { min-height: 34px; padding: 0 11px; }
+  .sort-box { width: 100%; min-height: 44px; }
+  .select-wrap { flex: 1; }
+  .select-wrap select { width: 100%; }
 }

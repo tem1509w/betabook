@@ -69,10 +69,11 @@
                  aria-label="Tìm sách"
                  placeholder="Tìm kiếm sách theo tên...">
           <input type="hidden" name="danhmuc" value="<?php echo e($category); ?>">
+          <button type="submit" class="search-submit">Tìm sách</button>
         </form>
 
         <div class="sort-box">
-          <span class="sort-label">Sắp xếp:</span>
+          <label class="sort-label" for="sapxep">Sắp xếp</label>
           <form class="select-wrap" action="<?php echo e(url('')); ?>" method="get">
             <input type="hidden" name="route" value="booklist">
             <input type="hidden" name="q" value="<?php echo e($search); ?>">
