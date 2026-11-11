@@ -1,15 +1,7 @@
 /* =====================================================
    INTRODUCTION.CSS - Trang giới thiệu BetaBook
-   Chỉ chứa phần RIÊNG của trang này. Banner, .about, .product-list,
-   .service, .img-box... đã có sẵn trong style.css => PHẢI link style.css trước.
-   Mục lục:
-   1. Tiêu đề trang
-   2. Sứ mệnh - Tầm nhìn - Giá trị
-   3. Con số ấn tượng
-   4. Ghé thăm
-   5. Điện thoại
+   Chỉ chứa phần riêng của trang giới thiệu.
    ===================================================== */
-
 
 /* ---------- 1. TIÊU ĐỀ TRANG ---------- */
 .intro-head { text-align: center; padding-top: 40px; padding-bottom: 10px; }
@@ -31,16 +23,14 @@
 .value-card h3 { font-size: 18px; color: var(--den); }
 .value-card p { margin: 0; }
 
-
 /* ---------- 3. CON SỐ ẤN TƯỢNG ---------- */
 .stats { background: var(--cam); color: white; padding: 44px 0; }
 .stats-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
 .stats b { display: block; font-size: 34px; line-height: 1.2; }
 
-
 /* ---------- 4. GHÉ THĂM ---------- */
 .visit-img { height: 260px; border-radius: 10px; color: #888888; }
-
+.visit-img img { object-fit: cover; }
 
 /* ---------- 5. ĐIỆN THOẠI ---------- */
 @media (max-width: 800px) {

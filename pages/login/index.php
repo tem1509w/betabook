@@ -1,7 +1,7 @@
 <main class="login-page">
   <div class="login-box">
     <div class="img-box login-img">
-      <img src="<?php echo e(asset('images/banner/main-banner.png')); ?>" alt="BetaBook">
+      <img src="<?php echo e(asset('images/banner/signin.jpg')); ?>" alt="BetaBook">
     </div>
 
     <div class="login-form">

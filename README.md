@@ -50,6 +50,7 @@ khẩu mẫu khi triển khai thật.
 | Trang | URL mẫu |
 |---|---|
 | Trang chủ | `/` |
+| Giới thiệu | `/?route=introduction` |
 | Danh sách sách | `/?route=booklist` |
 | Chi tiết sách | `/?route=product-detail&id=33` |
 | Sự kiện/khuyến mãi | `/?route=discount-event` |

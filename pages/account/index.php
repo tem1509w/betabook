@@ -200,7 +200,7 @@
         <!-- Khi chưa có đơn nào: PHP in khối này thay cho danh sách ở trên -->
         <div class="empty" hidden>
           <p>Bạn chưa có đơn hàng nào.</p>
-          <a class="button" href="booklist.html">Khám phá tủ sách</a>
+          <a class="button" href="<?php echo e(url('booklist')); ?>">Khám phá tủ sách</a>
         </div>
       </section>
 

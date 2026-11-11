@@ -45,7 +45,7 @@ unset($_SESSION['flash_message']);
     <nav class="menu">
       <ul>
         <li><a href="<?php echo url(''); ?>">Trang chủ</a></li>
-        <li><a href="<?php echo e(url('') . '#about'); ?>">Về BetaBook</a></li>
+        <li><a href="<?php echo e(url('introduction')); ?>">Về BetaBook</a></li>
         <li>
           <a href="<?php echo url('booklist'); ?>">Tủ sách</a>
           <?php
@@ -86,10 +86,10 @@ unset($_SESSION['flash_message']);
           <?php endif; ?>
         </li>
         <li>
-          <a href="<?php echo e(url('') . '#service'); ?>">Dịch vụ</a>
+          <a href="<?php echo e(url('404')); ?>">Dịch vụ</a>
           <ul class="submenu">
-            <li><a href="<?php echo e(url('') . '#service'); ?>">Hợp tác phân phối</a></li>
-            <li><a href="<?php echo e(url('') . '#service'); ?>">Nội dung số</a></li>
+            <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
+            <li><a href="<?php echo e(url('404')); ?>">Nội dung số</a></li>
           </ul>
         </li>
         <li><a href="<?php echo e(url('discount-event')); ?>">Mã giảm - Sự kiện</a></li>
