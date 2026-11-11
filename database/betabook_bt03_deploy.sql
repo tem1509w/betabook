@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(191),
     phone VARCHAR(20),
-    avatar_image VARCHAR(255) DEFAULT NULL,
+    avatar_image VARCHAR(255) NOT NULL DEFAULT 'pfp-icon-set/Avatar-Pyrois.webp',
     role_id INT NOT NULL,
     is_active TINYINT(1) DEFAULT 1,
     last_login TIMESTAMP NULL,
@@ -120,6 +120,66 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_users_role_id (role_id),
     CONSTRAINT fk_users_role
         FOREIGN KEY (role_id) REFERENCES roles(role_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS orders (
+    order_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    order_code VARCHAR(32) NOT NULL,
+    user_id INT DEFAULT NULL,
+    customer_name VARCHAR(191) NOT NULL,
+    email VARCHAR(191) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    address_line VARCHAR(255) NOT NULL,
+    ward VARCHAR(191) NOT NULL,
+    district VARCHAR(191) NOT NULL,
+    city VARCHAR(191) NOT NULL,
+    customer_note TEXT DEFAULT NULL,
+    payment_method ENUM('cod', 'bank_transfer') NOT NULL DEFAULT 'cod',
+    payment_status ENUM('unpaid', 'pending', 'paid', 'refunded') NOT NULL DEFAULT 'unpaid',
+    order_status ENUM('pending', 'confirmed', 'shipping', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    retention_started_at TIMESTAMP NULL DEFAULT NULL,
+    subtotal DECIMAL(12,2) NOT NULL,
+    shipping_fee DECIMAL(12,2) NOT NULL DEFAULT 0,
+    discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_amount DECIMAL(12,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_orders_code (order_code),
+    INDEX idx_orders_user_created (user_id, created_at),
+    INDEX idx_orders_status_created (order_status, created_at),
+    INDEX idx_orders_retention_cleanup (retention_started_at, order_status, payment_status),
+    CONSTRAINT fk_orders_user FOREIGN KEY (user_id)
+        REFERENCES users(user_id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS order_items (
+    order_item_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    order_id BIGINT UNSIGNED NOT NULL,
+    product_id INT DEFAULT NULL,
+    product_title VARCHAR(255) NOT NULL,
+    product_code VARCHAR(50) NOT NULL,
+    cover_image VARCHAR(255) DEFAULT NULL,
+    unit_price DECIMAL(12,2) NOT NULL,
+    quantity INT UNSIGNED NOT NULL,
+    line_total DECIMAL(12,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_order_items_order (order_id),
+    CONSTRAINT fk_order_items_order FOREIGN KEY (order_id)
+        REFERENCES orders(order_id) ON DELETE CASCADE,
+    CONSTRAINT fk_order_items_product FOREIGN KEY (product_id)
+        REFERENCES products(product_id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_cart_items (
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT UNSIGNED NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, product_id),
+    CONSTRAINT fk_user_cart_items_user FOREIGN KEY (user_id)
+        REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_cart_items_product FOREIGN KEY (product_id)
+        REFERENCES products(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Local demo account: username "demo", password "BetaBook2026!".
@@ -188,6 +248,7 @@ VALUES
     ('categories', 'Quản lý danh mục', 'categories', 'categories,category-form', 'bi bi-tags', 0, 30, 1),
     ('promotions', 'Mã giảm & Sự kiện', 'promotions', 'promotions', 'bi bi-ticket-perforated', 0, 40, 1),
     ('users', 'Quản lý tài khoản', 'users', 'users,users-form', 'bi bi-people', 0, 5, 1),
+    ('orders', 'Quản lý đơn hàng', 'orders', 'orders', 'bi bi-receipt', 0, 25, 1),
     ('public', 'Quay lại Public', NULL, '', 'bi bi-box-arrow-up-right', 1, 90, 1)
 ON DUPLICATE KEY UPDATE
     label = VALUES(label), page_key = VALUES(page_key), active_pages = VALUES(active_pages),
@@ -197,12 +258,18 @@ ON DUPLICATE KEY UPDATE
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
 FROM roles r CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'admin' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'users', 'public');
+WHERE r.role_key = 'admin' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'users', 'orders', 'public');
 
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
 FROM roles r CROSS JOIN admin_menu_items m
 WHERE r.role_key = 'staff' AND m.menu_key IN ('dashboard', 'books', 'public');
+
+INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id, can_view)
+SELECT r.role_id, m.menu_id, 1
+FROM roles r
+CROSS JOIN admin_menu_items m
+WHERE r.role_key = 'staff' AND m.menu_key = 'orders';
 
 CREATE TABLE IF NOT EXISTS home_content (
     content_key VARCHAR(100) PRIMARY KEY,
@@ -402,3 +469,11 @@ SELECT
     1
 FROM roles
 WHERE role_key = 'user';
+
+INSERT INTO admin_menu_permissions (role_id, menu_id, can_view)
+SELECT r.role_id, m.menu_id, 1
+FROM roles AS r
+JOIN admin_menu_items AS m ON m.menu_key = 'orders'
+WHERE r.role_id = 2
+  AND r.role_key = 'staff'
+ON DUPLICATE KEY UPDATE can_view = 1;

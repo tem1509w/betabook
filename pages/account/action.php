@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../helpers/orders.php';
+
 $pageTitle = 'Tài khoản của tôi';
 $bodyClass = 'account-page-body';
 $extraCss = [asset('css/account.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/account.css')];
@@ -6,7 +8,10 @@ $avatarOptions = user_avatar_options();
 $accountError = null;
 $profileFormData = [];
 $accountNotice = $_SESSION['account_notice'] ?? null;
-$accountActiveTab = $_SESSION['account_active_tab'] ?? 'info';
+$accountActiveTab = $_SESSION['account_active_tab'] ?? get_param('tab', 'info');
+if (!in_array($accountActiveTab, ['info', 'password', 'orders'], true)) {
+    $accountActiveTab = 'info';
+}
 unset($_SESSION['account_notice'], $_SESSION['account_active_tab']);
 
 if (empty($_SESSION['user']['user_id'])) {
@@ -24,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         $accountError = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại.';
     } elseif (($_POST['account_action'] ?? '') === 'logout') {
+        unset($_SESSION['cart']);
         unset($_SESSION['user'], $_SESSION['admin_role_id'], $_SESSION['admin_role'], $_SESSION['csrf_token'], $_SESSION['account_notice']);
         session_regenerate_id(true);
         $_SESSION['login_notice'] = 'Bạn đã đăng xuất.';
@@ -168,9 +174,13 @@ if (!$accountUser) {
 $accountUser['role_id'] = (int)$accountUser['role_id'];
 $accountUser['avatar_image'] = in_array($accountUser['avatar_image'], $avatarOptions, true)
     ? $accountUser['avatar_image']
-    : $avatarOptions[0];
+    : user_default_avatar();
 $_SESSION['user']['role_id'] = $accountUser['role_id'];
 $_SESSION['user']['avatar_image'] = $accountUser['avatar_image'];
 $canAccessAdmin = in_array($accountUser['role_id'], [1, 2], true)
     && (int)$accountUser['role_is_active'] === 1;
 $profileData = array_merge($accountUser, $profileFormData);
+$accountOrders = orders_with_items($db->fetchAll(
+    'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50',
+    [$accountUserId]
+));

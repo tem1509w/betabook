@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(400);
         $loginError = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại.';
     } elseif (($_POST['login_action'] ?? '') === 'logout') {
+        unset($_SESSION['cart']);
         unset($_SESSION['user'], $_SESSION['admin_role_id'], $_SESSION['admin_role'], $_SESSION['csrf_token']);
         session_regenerate_id(true);
         $_SESSION['login_notice'] = 'Bạn đã đăng xuất.';

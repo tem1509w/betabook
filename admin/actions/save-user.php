@@ -72,7 +72,7 @@ if ($errors) {
     redirect(admin_url('?page=users-form' . ($userId > 0 ? '&id=' . $userId : '')));
 }
 
-$avatarImage = $avatarImage !== '' ? $avatarImage : null;
+$avatarImage = $avatarImage !== '' ? $avatarImage : user_default_avatar();
 $fullName = $fullName !== '' ? $fullName : null;
 $phone = $phone !== '' ? $phone : null;
 

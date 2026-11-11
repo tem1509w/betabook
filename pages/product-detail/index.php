@@ -114,18 +114,19 @@ $soldLabel = $soldQuantity >= 1000
       </div>
 
       <!-- Số lượng + nút mua -->
-      <form class="buy" action="<?php echo url('action.php'); ?>" method="post">
-        <input type="hidden" name="action" value="add_to_cart">
+      <form class="buy" action="<?php echo e(url('cart')); ?>" method="post">
+        <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
+        <input type="hidden" name="cart_action" value="add">
         <input type="hidden" name="product_id" value="<?php echo (int)$product['product_id']; ?>">
         <div class="field-row">
           <span class="field-label">Số lượng</span>
-          <input type="number" class="qty" name="quantity" value="1" min="1" max="<?php echo (int)$product['stock_quantity']; ?>" aria-label="Số lượng">
+          <input type="number" class="qty" name="quantity" value="1" min="1" max="<?php echo max(1, min(99, (int)$product['stock_quantity'])); ?>" aria-label="Số lượng">
           <span class="stock">Còn <?php echo number_format((int)$product['stock_quantity']); ?> cuốn</span>
         </div>
 
         <div class="buy-actions">
-          <button type="submit" class="button outline">Thêm vào giỏ</button>
-          <button type="submit" class="button" data-go-cart="true">Mua ngay</button>
+          <button type="submit" name="intent" value="add" class="button outline">Thêm vào giỏ</button>
+          <button type="submit" name="intent" value="buy_now" class="button" data-go-cart="true">Mua ngay</button>
           <button type="button" class="wish" title="Yêu thích">♥</button>
         </div>
       </form>
@@ -143,29 +144,47 @@ $soldLabel = $soldQuantity >= 1000
 
   <script>
   document.querySelectorAll('form.buy').forEach((form) => {
-    let goToCart = false;
     const message = document.createElement('p');
     message.setAttribute('aria-live', 'polite');
     form.appendChild(message);
 
-    form.addEventListener('click', (event) => {
-      goToCart = Boolean(event.target.closest('[data-go-cart]'));
-    });
-
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const goToCart = Boolean(event.submitter && event.submitter.dataset.goCart === 'true');
       message.textContent = 'Đang thêm sách vào giỏ...';
       try {
-        const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        const body = new FormData(form);
+        body.set('intent', goToCart ? 'buy_now' : 'add');
+        const response = await fetch(form.getAttribute('action'), {
+          method: 'POST',
+          body,
+          headers: { 'Accept': 'application/json' },
+          credentials: 'same-origin'
+        });
         const result = await response.json();
         message.textContent = result.message || 'Không thể cập nhật giỏ hàng.';
-        if (response.ok && result.status === 'success' && goToCart) {
-          window.location.href = '<?php echo url('cart'); ?>';
+        const cartLink = document.querySelector('.tools a[title="Giỏ hàng"]');
+        if (response.ok && result.status === 'success') {
+          if (cartLink) {
+            cartLink.setAttribute('aria-label', 'Giỏ hàng, ' + result.cart_count + ' loại sản phẩm');
+            let badge = cartLink.querySelector('.cart-count');
+            if (!badge && Number(result.cart_count) > 0) {
+              badge = document.createElement('span');
+              badge.className = 'cart-count';
+              badge.setAttribute('aria-hidden', 'true');
+              cartLink.appendChild(badge);
+            }
+            if (badge) {
+              badge.textContent = result.cart_count;
+            }
+          }
+          if (goToCart) {
+            window.location.href = '<?php echo e(url('cart')); ?>';
+          }
         }
       } catch (error) {
         message.textContent = 'Không thể kết nối máy chủ. Vui lòng thử lại.';
       }
-      goToCart = false;
     });
   });
   </script>

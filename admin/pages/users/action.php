@@ -1,6 +1,7 @@
 <?php
 $pageTitle = 'Quản lý tài khoản - Trang quản lý';
 $avatarOptions = user_avatar_options();
+$canDeleteUsers = $adminRoleKey === 'admin';
 
 if ($page === 'users') {
     $search = trim((string)get_param('q', ''));
@@ -82,7 +83,7 @@ if ($formData) {
 }
 $data['avatar_image'] = in_array($data['avatar_image'] ?? '', $avatarOptions, true)
     ? $data['avatar_image']
-    : '';
+    : user_default_avatar();
 
 if ($userId > 0 && !$user) {
     http_response_code(404);

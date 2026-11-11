@@ -15,9 +15,9 @@
   <div class="account-layout">
 
     <!-- Radio ẩn: chọn mục nào thì hiện mục đó. Mặc định: Thông tin cá nhân -->
-    <input class="tab-input" type="radio" name="muc" id="tab-info" <?php echo $accountActiveTab === 'password' ? '' : 'checked'; ?>>
+    <input class="tab-input" type="radio" name="muc" id="tab-info" <?php echo $accountActiveTab === 'info' ? 'checked' : ''; ?>>
     <input class="tab-input" type="radio" name="muc" id="tab-pass" <?php echo $accountActiveTab === 'password' ? 'checked' : ''; ?>>
-    <input class="tab-input" type="radio" name="muc" id="tab-orders">
+    <input class="tab-input" type="radio" name="muc" id="tab-orders" <?php echo $accountActiveTab === 'orders' ? 'checked' : ''; ?>>
 
     <!-- ----- Cột trái: hồ sơ + menu ----- -->
     <aside class="account-side">
@@ -133,75 +133,60 @@
       <!-- MỤC 3: ĐƠN HÀNG CỦA TÔI (bảng orders + order_items) -->
       <section class="panel panel-orders">
         <h2>Đơn hàng của tôi</h2>
-
-        <div class="order-head">
-          <span>Mã đơn</span><span>Ngày đặt</span><span>Tổng tiền</span><span>Trạng thái</span><span></span>
-        </div>
-
-        <!-- Muốn thêm đơn: copy nguyên một khối <details class="order"> (PHP sẽ lặp khối này bằng foreach) -->
-        <details class="order">
-          <summary>
-            <span class="code">BB-000140</span>
-            <span>08/11/2026</span>
-            <span class="price">97.000₫</span>
-            <span><b class="badge cho">Chờ xử lý</b></span>
-            <span class="view">Xem chi tiết</span>
-          </summary>
-          <div class="order-body">
-            <table class="mini">
-              <tr><th>Sản phẩm</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr>
-              <tr><td>Nhà Giả Kim (Tái Bản 2025)</td><td class="num">1</td><td class="num">72.000₫</td><td class="num">72.000₫</td></tr>
-              <tr><td colspan="3">Phí vận chuyển</td><td class="num">25.000₫</td></tr>
-              <tr class="total"><td colspan="3">Tổng cộng</td><td class="num price">97.000₫</td></tr>
-            </table>
-            <p class="ship-info">Giao tới: Nguyễn Văn A - 0912345678 - Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành</p>
+        <?php if (!$accountOrders): ?>
+          <div class="empty">
+            <p>Bạn chưa có đơn hàng nào.</p>
+            <a class="button" href="<?php echo e(url('booklist')); ?>">Khám phá tủ sách</a>
           </div>
-        </details>
-
-        <details class="order">
-          <summary>
-            <span class="code">BB-000131</span>
-            <span>05/11/2026</span>
-            <span class="price">177.000₫</span>
-            <span><b class="badge giao">Đang giao</b></span>
-            <span class="view">Xem chi tiết</span>
-          </summary>
-          <div class="order-body">
-            <table class="mini">
-              <tr><th>Sản phẩm</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr>
-              <tr><td>Wonka</td><td class="num">2</td><td class="num">76.000₫</td><td class="num">152.000₫</td></tr>
-              <tr><td colspan="3">Phí vận chuyển</td><td class="num">25.000₫</td></tr>
-              <tr class="total"><td colspan="3">Tổng cộng</td><td class="num price">177.000₫</td></tr>
-            </table>
-            <p class="ship-info">Giao tới: Nguyễn Văn A - 0912345678 - Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành</p>
+        <?php else: ?>
+          <div class="order-head">
+            <span>Mã đơn</span><span>Ngày đặt</span><span>Tổng tiền</span><span>Trạng thái</span><span></span>
           </div>
-        </details>
-
-        <details class="order">
-          <summary>
-            <span class="code">BB-000125</span>
-            <span>12/10/2026</span>
-            <span class="price">215.000₫</span>
-            <span><b class="badge xong">Hoàn thành</b></span>
-            <span class="view">Xem chi tiết</span>
-          </summary>
-          <div class="order-body">
-            <table class="mini">
-              <tr><th>Sản phẩm</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr>
-              <tr><td>WHO? Chuyện kể về danh nhân thế giới - Nikola Tesla</td><td class="num">1</td><td class="num">55.000₫</td><td class="num">55.000₫</td></tr>
-              <tr><td>進撃の巨人 11 - Attack On Titan 11</td><td class="num">1</td><td class="num">135.000₫</td><td class="num">135.000₫</td></tr>
-              <tr><td colspan="3">Phí vận chuyển</td><td class="num">25.000₫</td></tr>
-              <tr class="total"><td colspan="3">Tổng cộng</td><td class="num price">215.000₫</td></tr>
-            </table>
-            <p class="ship-info">Giao tới: Nguyễn Văn A - 0912345678 - Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành</p>
-          </div>
-        </details>
-
-        <!-- Khi chưa có đơn nào: PHP in khối này thay cho danh sách ở trên -->
-        <div class="empty" hidden>
-          <p>Bạn chưa có đơn hàng nào.</p>
-          <a class="button" href="<?php echo e(url('booklist')); ?>">Khám phá tủ sách</a>
-        </div>
+          <?php foreach ($accountOrders as $order): ?>
+            <?php $statusClass = 'status-' . $order['order_status']; ?>
+            <details class="order">
+              <summary>
+                <span class="code"><?php echo e($order['order_code']); ?></span>
+                <span><?php echo e(date('d/m/Y', strtotime($order['created_at']))); ?></span>
+                <span class="price"><?php echo money($order['total_amount']); ?></span>
+                <span><b class="order-status <?php echo e($statusClass); ?>"><?php echo e(order_status_label($order['order_status'])); ?></b></span>
+                <span class="view">Xem chi tiết</span>
+              </summary>
+              <div class="order-body">
+                <table class="mini">
+                  <thead><tr><th>Sản phẩm</th><th class="num">SL</th><th class="num">Đơn giá</th><th class="num">Thành tiền</th></tr></thead>
+                  <tbody>
+                    <?php foreach ($order['items'] as $item): ?>
+                      <tr>
+                        <td><?php echo e($item['product_title']); ?></td>
+                        <td class="num"><?php echo (int)$item['quantity']; ?></td>
+                        <td class="num"><?php echo money($item['unit_price']); ?></td>
+                        <td class="num"><?php echo money($item['line_total']); ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                    <?php if ((float)$order['discount_amount'] > 0): ?>
+                      <tr><td colspan="3">Giảm giá</td><td class="num">-<?php echo money($order['discount_amount']); ?></td></tr>
+                    <?php endif; ?>
+                    <tr class="total"><td colspan="3">Tổng cộng</td><td class="num price"><?php echo money($order['total_amount']); ?></td></tr>
+                  </tbody>
+                </table>
+                <p class="ship-info">
+                  Giao tới: <?php echo e($order['customer_name']); ?> -
+                  <?php echo e($order['phone']); ?> -
+                  <?php echo e(implode(', ', array_filter([
+                      $order['address_line'], $order['ward'], $order['district'], $order['city'],
+                  ]))); ?>
+                </p>
+                <p>Thanh toán: <?php echo e(order_payment_label($order['payment_method'])); ?>
+                  (<?php echo e(order_payment_status_label($order['payment_status'])); ?>)
+                </p>
+                <?php if ($order['customer_note']): ?>
+                  <p>Ghi chú: <?php echo e($order['customer_note']); ?></p>
+                <?php endif; ?>
+              </div>
+            </details>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </section>
 
     </div>

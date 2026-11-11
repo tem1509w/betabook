@@ -28,6 +28,7 @@ $routes = [
     'discount-event' => 'discount-event/index.php',
     'product-detail' => 'product-detail/index.php',
     'cart' => 'cart/index.php',
+    'order-complete' => 'order-complete/index.php',
     'contact' => 'contact/index.php',
     'login' => 'login/index.php',
     'account' => 'account/index.php',

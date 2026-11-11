@@ -21,8 +21,8 @@
 }
 .account-side { align-self: start; text-align: center; }
 .account-avatar {
-  width: 96px;
-  height: 96px;
+  width: 84px;
+  height: 84px;
   margin: 0 auto 12px;
   border-radius: 50%;
   object-fit: cover;
@@ -104,6 +104,12 @@
 .order-head { padding: 10px; font-weight: bold; }
 .order { border-top: 1px solid #e5e5e5; }
 .order summary { padding: 12px 10px; cursor: pointer; }
+.order-status { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; white-space: nowrap; }
+.status-pending { background: #fff1df; color: #a65300; }
+.status-confirmed { background: #e6f0ff; color: #245da8; }
+.status-shipping { background: #e6f0ff; color: #245da8; }
+.status-completed { background: #e3f5ea; color: #176b36; }
+.status-cancelled { background: #fde8e8; color: #a61b1b; }
 .order-body { padding: 0 10px 14px; overflow-x: auto; }
 .mini { width: 100%; border-collapse: collapse; }
 .mini th,

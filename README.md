@@ -67,14 +67,14 @@ Các route không tồn tại và URL không trỏ đến file có thật sẽ h
 Để xử lý URL lạ bằng Apache, cần bật `mod_rewrite` và cho phép cấu hình `.htaccess`
 (`AllowOverride`).
 
-Danh sách và chi tiết sách đọc dữ liệu từ database. Giỏ hàng thêm sách từ trang
-chi tiết, lưu trong session hiện tại và cho phép xóa sản phẩm. Hiện chưa có
-checkout, thanh toán hoặc lưu đơn hàng vào database.
+Danh sách và chi tiết sách đọc dữ liệu từ database. Giỏ hàng của khách lưu
+trong session; khi đăng nhập, giỏ khách được gộp vào giỏ riêng của tài khoản.
+Có thể đặt hàng bằng COD hoặc chuyển khoản chờ xác nhận; hệ thống lưu đơn và
+chi tiết đơn vào database.
 
 Trang tài khoản hỗ trợ cập nhật username, họ tên, email, số điện thoại; đổi mật
 khẩu sau khi nhập mật khẩu hiện tại; chọn avatar trong
-`assets/images/pfp-icon-set/`; và đăng xuất. Lịch sử đơn hàng hiển thị trên
-trang hiện là nội dung mẫu, chưa lấy từ đơn hàng lưu trong database.
+`assets/images/pfp-icon-set/`; xem lịch sử đơn hàng; và đăng xuất.
 
 ### Admin
 
@@ -87,18 +87,19 @@ trang hiện là nội dung mẫu, chưa lấy từ đơn hàng lưu trong datab
 | Thêm/sửa danh mục | `/admin/?page=category-form` |
 | Khuyến mãi/sự kiện | `/admin/?page=promotions` |
 | Quản lý tài khoản | `/admin/?page=users` |
+| Quản lý đơn hàng | `/admin/?page=orders` |
 
 Các màn hình quản trị cần người dùng đăng nhập và có role ID `1` hoặc `2`;
 trên database mới, thứ tự role là `1` quản trị viên, `2` nhân viên và `3` khách
-hàng. Mã hiện tại dựa vào các ID này; nếu database cũ có ID khác, cần điều
-chỉnh ID dữ liệu hoặc logic phân quyền cho khớp. Quyền xem từng menu/trang và
-quyền thực hiện action được kiểm tra dựa trên `admin_menu_permissions`. Menu
-được lấy từ `admin_menu_items`, nhưng mỗi route và action vẫn phải được đăng ký
-trong `admin/index.php`.
+hàng. Quyền xem từng menu/trang và quyền thực hiện action được kiểm tra dựa
+trên `admin_menu_permissions`. Admin và Staff được cấp quyền quản lý đơn hàng;
+chỉ Admin được xóa tài khoản. Menu được lấy từ `admin_menu_items`, nhưng mỗi
+route và action vẫn phải được đăng ký trong `admin/index.php`.
 
-Quản lý tài khoản hiện dành cho quản trị viên: tìm kiếm, tạo và cập nhật tài
-khoản, vai trò, trạng thái và avatar; không hỗ trợ xóa tài khoản. Nhân viên
-không có quyền menu này theo dữ liệu triển khai mặc định.
+Quản lý tài khoản dành cho Admin: tìm kiếm, tạo, cập nhật và xóa tài khoản,
+vai trò, trạng thái và avatar. Không thể xóa tài khoản đang đăng nhập hoặc
+Admin hoạt động cuối cùng. Staff có thể xem, lọc và cập nhật trạng thái đơn,
+cũng như xóa đơn; đơn đang chờ/xác nhận được xóa kèm hoàn tồn kho.
 
 ## Database và migrations
 
@@ -109,12 +110,13 @@ liệu chính gồm:
 - `users`, `roles`: tài khoản và vai trò; `users.role_id` tham chiếu `roles`.
 - `admin_menu_items`, `admin_menu_permissions`: cấu hình menu và quyền menu
   admin.
+- `orders`, `order_items`, `user_cart_items`: đơn hàng, chi tiết đơn và giỏ
+  hàng lưu riêng theo tài khoản.
 - `home_content`, `home_reviews`, `home_coupons`, `home_events`: nội dung
   trang chủ và dữ liệu hiển thị mẫu.
 - `contact_messages`, `settings`: tin nhắn liên hệ và cấu hình.
 
-Schema hiện tại chưa có bảng đơn hàng. `home_reviews` lưu lời nhận xét về
-BetaBook được hiển thị trên trang chủ.
+`home_reviews` lưu lời nhận xét về BetaBook được hiển thị trên trang chủ.
 
 Nếu đang dùng database cũ, sao lưu database trước rồi chỉ chạy các migration
 phù hợp với schema hiện có. Đối với database cũ còn dùng `admin_roles` và
@@ -130,15 +132,23 @@ Các migration cập nhật schema người dùng:
   nếu database cũ còn cột này.
 - `database/migrations/20261110_users_avatar_image.sql`: thêm
   `users.avatar_image` nếu chưa có.
+- `database/migrations/20261111_users_default_avatar.sql`: đặt avatar Pyrois
+  làm mặc định cho tài khoản chưa có avatar và các tài khoản tạo mới.
 - `database/migrations/admin_account_management.sql`: thêm menu và quyền menu
   Quản lý tài khoản cho role `admin` sau khi đã có bảng `roles` và menu admin.
 - `database/migrations/20261111_remove_product_ratings.sql`: xóa dữ liệu và
   bảng rating/đánh giá sản phẩm khỏi database hiện có.
+- `database/migrations/20261111_orders_checkout.sql`: tạo bảng đơn hàng, chi tiết
+  đơn, giỏ hàng theo tài khoản và thêm quyền menu Quản lý đơn hàng cho role
+  `admin` và `staff`. Có thể chạy lại trên database đã cập nhật.
+- `database/migrations/20261111_order_retention.sql`: thêm mốc lưu trữ đơn 30
+  ngày và quyền Quản lý đơn hàng cho Staff. Chỉ chạy một lần sau migration đơn
+  hàng nếu database đã có bảng `orders`; file deploy mới đã có sẵn thay đổi này.
 
 Các migration chuyển đổi cấu trúc như role, `address` và avatar chỉ chạy khi
 database còn ở trạng thái cần chuyển đổi; không chạy lại nếu thay đổi đã có.
 Migration `admin_account_management.sql` có thể chạy lặp lại. Database mới tạo
-từ file deploy đã có schema `roles`, `users.role_id`, `avatar_image` và menu tài
+từ file deploy đã có schema `roles`, `users.role_id`, avatar mặc định và menu tài
 khoản.
 
 ## Cấu trúc source chính
@@ -146,6 +156,9 @@ khoản.
 - `index.php`: router public và layout public.
 - `pages/<page>/`: giao diện và xử lý dữ liệu của từng trang public.
 - `action.php`: endpoint JSON cho thao tác public như thêm vào giỏ.
+- `helpers/cart.php`, `helpers/orders.php`: nghiệp vụ giỏ hàng theo session,
+  tạo đơn và cập nhật trạng thái đơn hàng.
+- `scripts/cleanup_orders.php`: tác vụ CLI xóa đơn đủ điều kiện sau 30 ngày.
 - `admin/index.php`: xác thực quyền, router và layout admin.
 - `admin/pages/`, `admin/actions/`: màn hình và thao tác quản trị.
 - `layouts/`: layout dùng chung public/admin.
@@ -162,8 +175,12 @@ Các dấu hiệu sau trong mã nguồn và database cho thấy project vẫn l�
 |---|---|---|
 | Đăng ký tài khoản | Chưa xử lý tạo tài khoản. | Form đăng ký trong `pages/login/index.php` mới có các ô nhập và nút `type="button"`, chưa gửi dữ liệu tới backend. |
 | Đăng nhập Google | Chưa tích hợp OAuth hoặc dịch vụ xác thực bên thứ ba. | Nút Google chỉ là nút giao diện, không có luồng xác thực tương ứng. |
-| Giỏ hàng và đặt mua | Có thể thêm/xóa sách, nhưng giỏ chỉ lưu trong PHP session, không lưu vào database. Chưa có checkout, thanh toán hoặc tạo đơn hàng. | `action.php` lưu giỏ vào `$_SESSION['cart']`; schema trong `database/betabook_bt03_deploy.sql` chưa có bảng đơn hàng. |
-| Lịch sử đơn hàng | Đang hiển thị dữ liệu minh họa, không lấy từ giao dịch thực. | Các khối đơn hàng được viết sẵn trong `pages/account/index.php`. |
+| Giỏ hàng và đặt mua | Giỏ khách lưu trong session; giỏ đăng nhập lưu riêng theo tài khoản và được gộp khi đăng nhập. Badge đếm loại sách. Đặt hàng không thu phí vận chuyển; có COD hoặc chuyển khoản chờ xác nhận. | `helpers/cart.php`, `helpers/orders.php`, `pages/cart/` và các bảng `user_cart_items`, `orders`, `order_items`. |
+| Quản lý đơn hàng | Admin và Staff có thể xem/tìm/lọc đơn, cập nhật trạng thái đơn và trạng thái thanh toán. Hủy đơn chưa giao sẽ hoàn tồn kho. | `admin/pages/orders/`; menu cấp cho role `admin` và `staff`. |
+| Xóa dữ liệu | Admin có thể xóa tài khoản (không tự xóa hoặc xóa Admin hoạt động cuối cùng); Staff và Admin có thể xóa đơn. Đơn pending/confirmed bị xóa sẽ hoàn tồn kho. Đơn hoàn thành + đã thanh toán, đã hoàn tiền hoặc đã hủy tự xóa sau 30 ngày đủ điều kiện. | `admin/actions/delete-user.php`, `helpers/orders.php`, `scripts/cleanup_orders.php`. |
+| Lịch sử đơn hàng | Tài khoản đăng nhập xem tối đa 50 đơn gần nhất, thông tin giao hàng, sản phẩm và trạng thái. Khách vẫn có thể đặt nhưng không có lịch sử tài khoản. | `pages/account/index.php` đọc dữ liệu theo `user_id`. |
+| Thanh toán trực tuyến / mã giảm | Chưa kết nối cổng thanh toán; chuyển khoản cần admin xác nhận thủ công. Ô mã giảm được giữ nguyên giao diện nhưng chưa xử lý/áp dụng. | Trạng thái thanh toán được quản lý trong admin; discount hiện bằng 0. |
+| Avatar trên header | Khi đăng nhập, icon tài khoản hiển thị avatar hiện được chọn trong hồ sơ. | `layouts/public/header.php`. |
 | Liên hệ | Form trên trang liên hệ hiện hiển thị thông báo cảm ơn nhưng không lưu nội dung gửi. | `pages/contact/action.php` không ghi database; dù schema có `contact_messages` và `action.php` có endpoint JSON riêng, form hiện tại chưa nối vào endpoint đó. |
 | Kiểm thử và vận hành | README chỉ hướng dẫn chạy local; project chưa được mô tả là đã triển khai production. | Cấu hình mặc định trong `config/database.php` dùng database local và tài khoản `root` không mật khẩu. |
 
@@ -173,3 +190,17 @@ chức năng còn thiếu ở trên khiến luồng mua hàng, chăm sóc khách
 chưa khép kín. Dữ liệu demo và thông tin đăng nhập mẫu chỉ phục vụ học tập, thử
 nghiệm trên máy local; cần bổ sung bảo mật, kiểm thử, cấu hình triển khai và
 hoàn thiện các quy trình trước khi cân nhắc sử dụng thực tế.
+
+### Lên lịch tự xóa đơn hàng trên Windows
+
+Tác vụ chỉ xóa đơn đủ 30 ngày kể từ `retention_started_at` và thỏa một trong
+các điều kiện: hoàn thành + đã thanh toán, đã hoàn tiền, hoặc đã hủy. Trên
+Windows/XAMPP, tạo tác vụ trong Task Scheduler chạy mỗi ngày:
+
+- Program/script: `C:\xampp\htdocs\betabook\betabook\scripts\run_order_cleanup.bat`
+- Start in: `C:\xampp\htdocs\betabook\betabook\scripts`
+
+Nếu XAMPP được cài ở đường dẫn khác, sửa `PHP_BIN` trong file `.bat`. Tác vụ
+cần chạy bằng tài khoản Windows có quyền đọc project và truy cập MariaDB. Đơn
+bị xóa sẽ mất khỏi lịch sử tài khoản/admin; các dòng `order_items` tự xóa theo
+khóa ngoại.

@@ -73,6 +73,10 @@ function user_avatar_options(): array {
     ];
 }
 
+function user_default_avatar(): string {
+    return 'pfp-icon-set/Avatar-Pyrois.webp';
+}
+
 function auth_login(string $username, string $password): ?array {
     $user = db()->fetchOne(
         'SELECT user_id, username, email, password, full_name, role_id, avatar_image
@@ -86,6 +90,17 @@ function auth_login(string $username, string $password): ?array {
         return null;
     }
 
+    $avatarImage = is_string($user['avatar_image'])
+        && in_array($user['avatar_image'], user_avatar_options(), true)
+        ? $user['avatar_image']
+        : user_default_avatar();
+    if ($avatarImage !== $user['avatar_image']) {
+        db()->execute(
+            'UPDATE users SET avatar_image = ? WHERE user_id = ?',
+            [$avatarImage, (int)$user['user_id']]
+        );
+    }
+
     db()->execute('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE user_id = ?', [(int)$user['user_id']]);
 
     session_regenerate_id(true);
@@ -96,8 +111,11 @@ function auth_login(string $username, string $password): ?array {
         'email' => $user['email'],
         'full_name' => $user['full_name'],
         'role_id' => (int)$user['role_id'],
-        'avatar_image' => $user['avatar_image'],
+        'avatar_image' => $avatarImage,
     ];
+
+    require_once __DIR__ . '/cart.php';
+    cart_merge_guest();
 
     return $_SESSION['user'];
 }

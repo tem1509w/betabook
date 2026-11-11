@@ -32,6 +32,7 @@
 
 /* Nút trong trang này: cho <button class="button"> trông giống <a class="button"> */
 .cart-page .button { border: 0; cursor: pointer; font-family: inherit; }
+.cart-page button:disabled { opacity: .55; cursor: not-allowed; }
 .button.outline { background: white; color: var(--cam); border: 1px solid var(--cam); }
 .button.full { display: block; width: 100%; text-align: center; }
 
@@ -54,8 +55,12 @@
 
 .item-info { display: flex; align-items: center; gap: 14px; }
 .item-img { width: 70px; height: 90px; border-radius: 6px; flex-shrink: 0; }
+.item-img img { width: 100%; height: 100%; object-fit: cover; }
 .item-info h3 { font-size: 15px; color: var(--den); margin-bottom: 2px; }
 .item-info p { margin: 0; font-size: 13px; }
+.cart-stock-error { margin-top: 5px !important; color: var(--do); font-size: 12px !important; }
+.cart-empty { text-align: center; }
+.cart-empty p { margin-bottom: 20px; }
 
 .qty { width: 70px; height: 38px; padding: 0 8px; border: 1px solid #cccccc; border-radius: 8px; text-align: center; }
 

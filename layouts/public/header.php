@@ -2,6 +2,8 @@
 /**
  * Public Header - Từ index.html gốc BetaBook
  */
+require_once __DIR__ . '/../../helpers/cart.php';
+$headerCartCount = cart_count();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -109,12 +111,29 @@ unset($_SESSION['flash_message']);
     </button>
   </form>
 
+  <?php
+  $headerAvatar = $_SESSION['user']['avatar_image'] ?? user_default_avatar();
+  $headerAvatarIsValid = is_string($headerAvatar)
+      && in_array($headerAvatar, user_avatar_options(), true)
+      && is_file(__DIR__ . '/../../assets/images/' . $headerAvatar);
+  if (!$headerAvatarIsValid && !empty($_SESSION['user'])) {
+      $headerAvatar = user_default_avatar();
+      $headerAvatarIsValid = is_file(__DIR__ . '/../../assets/images/' . $headerAvatar);
+  }
+  ?>
   <a class="icon-button" href="<?php echo e(url(!empty($_SESSION['user']) ? 'account' : 'login')); ?>" title="Tài khoản">
-    <img src="<?php echo asset('images/user.ico'); ?>" alt="Tài khoản">
+    <img
+      class="<?php echo $headerAvatarIsValid ? 'account-header-avatar' : ''; ?>"
+      src="<?php echo e(asset($headerAvatarIsValid ? 'images/' . $headerAvatar : 'images/user.ico')); ?>"
+      alt="<?php echo $headerAvatarIsValid ? 'Ảnh đại diện tài khoản' : 'Tài khoản'; ?>">
   </a>
 
-  <a class="icon-button" href="<?php echo url('cart'); ?>" title="Giỏ hàng">
+  <a class="icon-button cart-icon-button" href="<?php echo e(url('cart')); ?>"
+     title="Giỏ hàng" aria-label="Giỏ hàng, <?php echo $headerCartCount; ?> loại sản phẩm">
     <img src="<?php echo asset('images/cart.ico'); ?>" alt="Giỏ hàng">
+    <?php if ($headerCartCount > 0): ?>
+      <span class="cart-count" aria-hidden="true"><?php echo $headerCartCount; ?></span>
+    <?php endif; ?>
   </a>
 
 </div>
