@@ -21,61 +21,59 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $action = get_param('action');
 
 if ($action === 'add_to_cart') {
-    require_once __DIR__ . '/helpers/cart.php';
-    if (!valid_csrf_token($_POST['csrf_token'] ?? null)) {
-        http_response_code(403);
-        echo json_encode(['status' => 'error', 'message' => 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.']);
-        exit;
-    }
-
     $productId = filter_input(INPUT_POST, 'product_id', FILTER_VALIDATE_INT);
     $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT);
     $quantity = $quantity === null ? 1 : $quantity;
 
-    $error = !$productId || $quantity < 1
-        ? 'Sản phẩm hoặc số lượng không hợp lệ.'
-        : cart_add((int)$productId, (int)$quantity);
-    if ($error !== null) {
-        http_response_code(422);
+    if (!$productId || $productId < 1 || $quantity < 1) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Sản phẩm hoặc số lượng không hợp lệ.']);
+        exit;
     }
+
+    $product = db()->fetchOne(
+        'SELECT product_id, title, stock_quantity FROM products WHERE product_id = ? AND is_active = 1',
+        [$productId]
+    );
+    if (!$product) {
+        http_response_code(404);
+        echo json_encode(['status' => 'error', 'message' => 'Sách không tồn tại hoặc đã bị ẩn.']);
+        exit;
+    }
+
+    $cart = $_SESSION['cart'] ?? [];
+    $currentQuantity = (int)($cart[$productId] ?? 0);
+    if ($currentQuantity + $quantity > (int)$product['stock_quantity']) {
+        http_response_code(409);
+        echo json_encode(['status' => 'error', 'message' => 'Số lượng trong giỏ vượt quá tồn kho.']);
+        exit;
+    }
+
+    $cart[$productId] = $currentQuantity + $quantity;
+    $_SESSION['cart'] = $cart;
     echo json_encode([
-        'status' => $error === null ? 'success' : 'error',
-        'message' => $error ?? 'Đã thêm sách vào giỏ hàng.',
-        'cart_count' => cart_count(),
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        'status' => 'success',
+        'message' => $product['title'] . ' đã được thêm vào giỏ hàng.',
+        'cart_count' => array_sum($cart),
+    ]);
     exit;
 }
 
 if ($action === 'contact') {
     $name = trim(is_string($_POST['name'] ?? null) ? $_POST['name'] : '');
     $email = trim(is_string($_POST['email'] ?? null) ? $_POST['email'] : '');
-    $phone = trim(is_string($_POST['phone'] ?? null) ? $_POST['phone'] : '');
     $subject = trim(is_string($_POST['subject'] ?? null) ? $_POST['subject'] : '');
     $message = trim(is_string($_POST['message'] ?? null) ? $_POST['message'] : '');
-    $stringLength = static function (string $value): int {
-        $characterCount = preg_match_all('/./us', $value);
-        return $characterCount === false ? strlen($value) : $characterCount;
-    };
 
-    if (!valid_csrf_token($_POST['csrf_token'] ?? null)) {
-        http_response_code(403);
-        echo json_encode(['status' => 'error', 'message' => 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang.']);
-        exit;
-    }
-
-    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $message === ''
-        || strlen($message) > 65535
-        || $stringLength($name) > 191 || $stringLength($email) > 191
-        || $stringLength($phone) > 20 || $stringLength($subject) > 255
-        || ($phone !== '' && !preg_match('/^0[0-9]{9}$/', $phone))) {
+    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $message === '') {
         http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Vui lòng kiểm tra tên, email, số điện thoại, chủ đề và nội dung.']);
+        echo json_encode(['status' => 'error', 'message' => 'Vui lòng nhập tên, email hợp lệ và nội dung.']);
         exit;
     }
 
     db()->execute(
-        'INSERT INTO contact_messages (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)',
-        [$name, $email, $phone !== '' ? $phone : null, $subject !== '' ? $subject : null, $message]
+        'INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)',
+        [$name, $email, $subject, $message]
     );
     echo json_encode(['status' => 'success', 'message' => 'Gửi tin nhắn thành công.']);
     exit;

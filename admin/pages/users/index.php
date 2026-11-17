@@ -48,7 +48,7 @@
                         <?php
                         $avatar = in_array($user['avatar_image'], $avatarOptions, true)
                             ? $user['avatar_image']
-                            : user_default_avatar();
+                            : $avatarOptions[0];
                         ?>
                         <tr>
                             <td><?= (int)$user['user_id'] ?></td>
@@ -66,22 +66,7 @@
                             <td><?= (int)$user['is_active'] === 1 ? 'Hoạt động' : 'Đã khóa' ?></td>
                             <td><?= e((string)$user['created_at']) ?></td>
                             <td><?= e((string)($user['last_login'] ?? 'Chưa đăng nhập')) ?></td>
-                            <td>
-                                <div class="user-action-buttons">
-                                    <a class="action-edit" href="<?= admin_url('?page=users-form&id=' . (int)$user['user_id']) ?>">Sửa</a>
-                                    <?php if ($canDeleteUsers && (int)$user['user_id'] !== (int)($_SESSION['user']['user_id'] ?? 0)): ?>
-                                        <form method="post" action="<?= e(admin_url('?action=delete-user')) ?>" class="inline-delete-form"
-                                              onsubmit="return confirm('Xóa vĩnh viễn tài khoản này? Lịch sử đơn hàng sẽ được giữ lại nhưng không còn gắn với tài khoản.');">
-                                            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-                                            <input type="hidden" name="user_id" value="<?= (int)$user['user_id'] ?>">
-                                            <input type="hidden" name="q" value="<?= e($search) ?>">
-                                            <input type="hidden" name="role_id" value="<?= $roleId ? (int)$roleId : '' ?>">
-                                            <input type="hidden" name="status" value="<?= e((string)$status) ?>">
-                                            <button class="action-delete-button" type="submit">Xóa</button>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
+                            <td><a class="action-edit" href="<?= admin_url('?page=users-form&id=' . (int)$user['user_id']) ?>">Sửa</a></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

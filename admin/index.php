@@ -18,7 +18,7 @@ $db = db();
 $sessionUserId = filter_var($_SESSION['user']['user_id'] ?? null, FILTER_VALIDATE_INT);
 $adminRole = $sessionUserId !== false && $sessionUserId !== null && $sessionUserId > 0
     ? $db->fetchOne(
-        'SELECT r.role_id, r.role_key, r.role_name
+        'SELECT r.role_id, r.role_name
          FROM users u
          INNER JOIN roles r ON r.role_id = u.role_id
          WHERE u.user_id = ? AND u.is_active = 1 AND r.is_active = 1
@@ -33,7 +33,6 @@ if (!$adminRole) {
 }
 
 $adminRoleId = (int)$adminRole['role_id'];
-$adminRoleKey = $adminRole['role_key'];
 $_SESSION['admin_role_id'] = $adminRoleId;
 $_SESSION['user']['role_id'] = $adminRoleId;
 $adminRoleName = $adminRole['role_name'];
@@ -66,8 +65,8 @@ $routes = [
     'promotions' => 'pages/discount-event/index.php',
     'users' => 'pages/users/index.php',
     'users-form' => 'pages/users/form.php',
-    'orders' => 'pages/orders/index.php',
-    'contact' => 'pages/contact/index.php',
+    'policies' => 'pages/policies/index.php',
+    'policy-form' => 'pages/policies/form.php',
 ];
 
 $actions = [
@@ -80,10 +79,8 @@ $actions = [
     'save-event' => 'pages/discount-event/action.php',
     'delete-event' => 'pages/discount-event/action.php',
     'save-user' => 'actions/save-user.php',
-    'delete-user' => 'actions/delete-user.php',
-    'update-order-status' => 'pages/orders/update.php',
-    'delete-order' => 'pages/orders/delete.php',
-    'mark-contact-read' => 'pages/contact/action.php',
+    'save-policy' => 'actions/save-policy.php',
+    'delete-policy' => 'actions/delete-policy.php',
 ];
 
 $actionPermissions = [
@@ -96,19 +93,12 @@ $actionPermissions = [
     'save-event' => 'promotions',
     'delete-event' => 'promotions',
     'save-user' => 'users',
-    'delete-user' => 'users',
-    'update-order-status' => 'orders',
-    'delete-order' => 'orders',
-    'mark-contact-read' => 'contact',
+    'save-policy' => 'policies',
+    'delete-policy' => 'policies',
 ];
 
 $actionName = get_param('action');
 if (is_string($actionName) && isset($actions[$actionName])) {
-    if ($actionName === 'delete-user' && $adminRoleKey !== 'admin') {
-        http_response_code(403);
-        exit('Chỉ quản trị viên mới được xóa tài khoản.');
-    }
-
     if (!in_array($actionPermissions[$actionName], $allowedMenuKeys, true)) {
         http_response_code(403);
         exit('Bạn không có quyền thực hiện thao tác này.');
@@ -134,8 +124,8 @@ $pagePermissions = [
     'promotions' => 'promotions',
     'users' => 'users',
     'users-form' => 'users',
-    'orders' => 'orders',
-    'contact' => 'contact',
+    'policies' => 'policies',
+    'policy-form' => 'policies',
 ];
 
 if (is_string($page) && isset($routes[$page])

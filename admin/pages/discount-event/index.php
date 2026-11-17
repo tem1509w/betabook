@@ -43,30 +43,6 @@ $eventSortDefault = $events
                     <input id="coupon_description" type="text" name="description" maxlength="255" value="<?= e((string)($data['description'] ?? '')) ?>" required>
                 </div>
                 <div class="form-group">
-                    <label for="coupon_discount_type">Loại giảm giá <span class="required">*</span></label>
-                    <select id="coupon_discount_type" name="discount_type" required>
-                        <option value="percentage" <?= ($data['discount_type'] ?? 'percentage') === 'percentage' ? 'selected' : '' ?>>Giảm theo phần trăm</option>
-                        <option value="fixed" <?= ($data['discount_type'] ?? '') === 'fixed' ? 'selected' : '' ?>>Giảm số tiền cố định</option>
-                        <option value="free_shipping" <?= ($data['discount_type'] ?? '') === 'free_shipping' ? 'selected' : '' ?>>Miễn phí vận chuyển</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="coupon_discount_value">Giá trị giảm <span class="required">*</span></label>
-                    <input id="coupon_discount_value" type="number" name="discount_value" min="0"
-                           step="0.01" value="<?= e((string)($data['discount_value'] ?? '10')) ?>" required>
-                    <small>Phần trăm: nhập 10 cho 10%; số tiền cố định: nhập số tiền VND; freeship: nhập 0.</small>
-                </div>
-                <div class="form-group">
-                    <label for="coupon_minimum_order">Đơn hàng tối thiểu (₫)</label>
-                    <input id="coupon_minimum_order" type="number" name="minimum_order" min="0" step="1"
-                           value="<?= e((string)($data['minimum_order'] ?? '0')) ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="coupon_minimum_quantity">Số lượng sách tối thiểu</label>
-                    <input id="coupon_minimum_quantity" type="number" name="minimum_quantity" min="0" step="1"
-                           value="<?= e((string)($data['minimum_quantity'] ?? '0')) ?>" required>
-                </div>
-                <div class="form-group">
                     <label for="expires_at">Ngày hết hạn <span class="required">*</span></label>
                     <input id="expires_at" type="date" name="expires_at" value="<?= e((string)($data['expires_at'] ?? '')) ?>" required>
                 </div>

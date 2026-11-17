@@ -48,9 +48,9 @@ $totalAll = (int)$db->fetchOne(
 $conditions = ['p.is_active = 1'];
 $params = [];
 if ($search !== '') {
-    $conditions[] = 'p.title LIKE ?';
+    $conditions[] = '(p.title LIKE ? OR p.author LIKE ? OR p.product_code LIKE ?)';
     $searchTerm = '%' . $search . '%';
-    $params[] = $searchTerm;
+    array_push($params, $searchTerm, $searchTerm, $searchTerm);
 }
 if ($category !== '' && $category !== 'tatca') {
     $conditions[] = 'c.slug = ? AND c.is_active = 1';
@@ -94,6 +94,4 @@ foreach ($categories as $bookCategory) {
 
 $pageTitle = $categoryName;
 $bodyClass = 'booklist-page';
-$extraCss = [
-    asset('css/booklist.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/booklist.css'),
-];
+$extraCss = [asset('css/booklist.css')];

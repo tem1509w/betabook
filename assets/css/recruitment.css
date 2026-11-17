@@ -1,0 +1,175 @@
+/* ============================================================
+   CSS RIÊNG CHO TRANG TUYỂN DỤNG (recruitment)
+   ============================================================ */
+
+.contact-banner {
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  padding: 50px 20px;
+  margin-bottom: 30px;
+}
+.contact-banner h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.contact-banner p {
+  font-size: 1.1rem;
+  color: #ccc;
+}
+body, input, select, textarea, button {
+  font-family: "Be Vietnam Pro", Arial, sans-serif;
+}
+
+/* --- Cột trái: Danh sách vị trí tuyển dụng --- */
+.contact-info h2 {
+  font-size: 1.5rem;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #111;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+.contact-info h2:first-child {
+  margin-top: 0;
+}
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background-color: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  transition: all 0.2s ease-in-out;
+}
+.info-item:hover {
+  background-color: #fff;
+  border-color: #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.info-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.info-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: #222;
+}
+.info-item p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 3px 0;
+}
+.info-item p strong {
+  color: #333;
+}
+
+/* --- Cột phải: Hướng dẫn ứng tuyển --- */
+.contact-form {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+.contact-form h2 {
+  font-size: 1.6rem;
+  margin-bottom: 5px;
+  color: #111;
+}
+.contact-form .sub {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.apply-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+.apply-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+}
+.step-num {
+  background: #ff6600;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 5px 9px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.apply-card h3 {
+  font-size: 1.05rem;
+  color: #111;
+  margin-bottom: 6px;
+}
+.apply-card p {
+  font-size: 0.92rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 4px 0;
+}
+.email-tag {
+  display: inline-block;
+  background: #fff3eb;
+  color: #d95300;
+  border: 1px solid #ffd3b6;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin: 6px 0;
+}
+.apply-note {
+  font-size: 0.85rem !important;
+  color: #777 !important;
+}
+
+.support-direct {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+.support-direct p {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 12px;
+}
+.support-direct .btn {
+  display: inline-block;
+  width: 100%;
+  background: #ff6600;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.support-direct .btn:hover {
+  background: #e65c00;
+}
+
+@media (max-width: 768px) {
+  .contact-form {
+    padding: 20px;
+  }
+}

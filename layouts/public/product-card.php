@@ -13,7 +13,12 @@ $productOriginalPrice = $product['original_price'] && $product['original_price']
             <img src="<?= $productImage ?>" alt="<?= $productTitle ?>">
         </div>
         <h3><?= $productTitle ?></h3>
-        <p class="product-author"><?= e($product['author'] ?? '') ?: '&nbsp;' ?></p>
+        <?php if (!empty($product['rating_count'])): ?>
+            <div class="rating" title="<?= e($product['rating_average']) ?> trên 5 sao">
+                <span class="stars" style="--rating: <?= e($product['rating_average']) ?>"></span>
+                <span class="rating-count">(<?= (int)$product['rating_count'] ?>)</span>
+            </div>
+        <?php endif; ?>
         <p class="price">
             <span class="current-price"><?= $productPrice ?></span>
             <?php if ($productOriginalPrice !== ''): ?>

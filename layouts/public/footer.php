@@ -20,25 +20,25 @@
       </div>
     </div>
 
-    <div>
-      <h4>THÔNG TIN</h4>
-      <ul>
-        <li><a href="<?php echo e(url('introduction')); ?>">Giới thiệu</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Hệ thống nhà sách</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Tuyển dụng</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
-      </ul>
-    </div>
+<div>
+  <h4>THÔNG TIN</h4>
+  <ul>
+    <li><a href="<?php echo e(url('') . '#about'); ?>">Giới thiệu</a></li>
+    <li><a href="<?php echo e(url('contact')); ?>">Hệ thống nhà sách</a></li>
+    <li><a href="<?php echo e(url('recruitment')); ?>">Tuyển dụng</a></li>
+    <li><a href="<?php echo e(url('distribution')); ?>">Hợp tác phân phối</a></li>
+  </ul>
+</div>
 
-    <div>
-      <h4>CHÍNH SÁCH</h4>
-      <ul>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách thanh toán</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách vận chuyển</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách bảo mật</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách đổi trả</a></li>
-      </ul>
-    </div>
+<div>
+  <h4>CHÍNH SÁCH</h4>
+  <ul>
+    <li><a href="<?php echo e(url('policies')); ?>">Chính sách thanh toán</a></li>
+    <li><a href="<?php echo e(url('policies')); ?>">Chính sách vận chuyển</a></li>
+    <li><a href="<?php echo e(url('policies')); ?>">Chính sách bảo mật</a></li>
+    <li><a href="<?php echo e(url('policies')); ?>">Chính sách đổi trả</a></li>
+  </ul>
+</div>
 
     <div id="contact">
       <h4>LIÊN HỆ</h4>
@@ -51,20 +51,6 @@
 
   <div class="copyright">© BetaBook, 2026</div>
 </footer>
-
-<?php if (is_string($flashMessage) && $flashMessage !== ''): ?>
-<script>
-  window.setTimeout(() => {
-    const flashMessage = document.getElementById('flash-message');
-    if (!flashMessage) {
-      return;
-    }
-
-    flashMessage.classList.add('is-hiding');
-    window.setTimeout(() => flashMessage.remove(), 250);
-  }, 3000);
-</script>
-<?php endif; ?>
 
 </body>
 </html>

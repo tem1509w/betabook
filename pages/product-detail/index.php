@@ -23,6 +23,8 @@ $pages = (int)($product['page_count'] ?? 0);
 $dimensions = e($product['dimensions'] ?? '');
 $publishYear = (int)($product['publication_year'] ?? 0);
 $weight = (float)($product['weight'] ?? 0);
+$ratingAverage = isset($product['rating_average']) ? (float)$product['rating_average'] : 0;
+$ratingCount = (int)($product['rating_count'] ?? 0);
 $soldQuantity = (int)($product['sold_quantity'] ?? 0);
 $soldLabel = $soldQuantity >= 1000
     ? number_format($soldQuantity / 1000, 1, '.', '') . 'k'
@@ -85,8 +87,14 @@ $soldLabel = $soldQuantity >= 1000
     <div class="info">
       <h1><?php echo $title; ?></h1>
 
-      <?php if ($soldQuantity > 0): ?>
-        <p>Đã bán <?php echo e($soldLabel); ?></p>
+      <!-- Đánh giá (dùng lại .rating và .stars của style.css) -->
+      <?php if ($ratingCount > 0): ?>
+        <div class="rating" title="<?php echo e(number_format($ratingAverage, 1)); ?> trên 5 sao">
+          <span class="stars" style="--rating: <?php echo e(number_format($ratingAverage, 1)); ?>"></span>
+          <span class="rating-count">(<?php echo number_format($ratingCount); ?> đánh giá)</span>
+          <span class="divider">|</span>
+          <span class="rating-count">Đã bán <?php echo e($soldLabel); ?></span>
+        </div>
       <?php endif; ?>
 
       <!-- Giá -->
@@ -114,19 +122,18 @@ $soldLabel = $soldQuantity >= 1000
       </div>
 
       <!-- Số lượng + nút mua -->
-      <form class="buy" action="<?php echo e(url('cart')); ?>" method="post">
-        <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
-        <input type="hidden" name="cart_action" value="add">
+      <form class="buy" action="<?php echo url('action.php'); ?>" method="post">
+        <input type="hidden" name="action" value="add_to_cart">
         <input type="hidden" name="product_id" value="<?php echo (int)$product['product_id']; ?>">
         <div class="field-row">
           <span class="field-label">Số lượng</span>
-          <input type="number" class="qty" name="quantity" value="1" min="1" max="<?php echo max(1, min(99, (int)$product['stock_quantity'])); ?>" aria-label="Số lượng">
+          <input type="number" class="qty" name="quantity" value="1" min="1" max="<?php echo (int)$product['stock_quantity']; ?>" aria-label="Số lượng">
           <span class="stock">Còn <?php echo number_format((int)$product['stock_quantity']); ?> cuốn</span>
         </div>
 
         <div class="buy-actions">
-          <button type="submit" name="intent" value="add" class="button outline">Thêm vào giỏ</button>
-          <button type="submit" name="intent" value="buy_now" class="button" data-go-cart="true">Mua ngay</button>
+          <button type="submit" class="button outline">Thêm vào giỏ</button>
+          <button type="submit" class="button" data-go-cart="true">Mua ngay</button>
           <button type="button" class="wish" title="Yêu thích">♥</button>
         </div>
       </form>
@@ -144,59 +151,43 @@ $soldLabel = $soldQuantity >= 1000
 
   <script>
   document.querySelectorAll('form.buy').forEach((form) => {
+    let goToCart = false;
     const message = document.createElement('p');
     message.setAttribute('aria-live', 'polite');
     form.appendChild(message);
 
+    form.addEventListener('click', (event) => {
+      goToCart = Boolean(event.target.closest('[data-go-cart]'));
+    });
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const goToCart = Boolean(event.submitter && event.submitter.dataset.goCart === 'true');
       message.textContent = 'Đang thêm sách vào giỏ...';
       try {
-        const body = new FormData(form);
-        body.set('intent', goToCart ? 'buy_now' : 'add');
-        const response = await fetch(form.getAttribute('action'), {
-          method: 'POST',
-          body,
-          headers: { 'Accept': 'application/json' },
-          credentials: 'same-origin'
-        });
+        const response = await fetch(form.action, { method: 'POST', body: new FormData(form) });
         const result = await response.json();
         message.textContent = result.message || 'Không thể cập nhật giỏ hàng.';
-        const cartLink = document.querySelector('.tools a[title="Giỏ hàng"]');
-        if (response.ok && result.status === 'success') {
-          if (cartLink) {
-            cartLink.setAttribute('aria-label', 'Giỏ hàng, ' + result.cart_count + ' loại sản phẩm');
-            let badge = cartLink.querySelector('.cart-count');
-            if (!badge && Number(result.cart_count) > 0) {
-              badge = document.createElement('span');
-              badge.className = 'cart-count';
-              badge.setAttribute('aria-hidden', 'true');
-              cartLink.appendChild(badge);
-            }
-            if (badge) {
-              badge.textContent = result.cart_count;
-            }
-          }
-          if (goToCart) {
-            window.location.href = '<?php echo e(url('cart')); ?>';
-          }
+        if (response.ok && result.status === 'success' && goToCart) {
+          window.location.href = '<?php echo url('cart'); ?>';
         }
       } catch (error) {
         message.textContent = 'Không thể kết nối máy chủ. Vui lòng thử lại.';
       }
+      goToCart = false;
     });
   });
   </script>
 
-  <!-- ============ 4. TAB: MÔ TẢ / THÔNG TIN ============ -->
+  <!-- ============ 4. TAB: MÔ TẢ / THÔNG TIN / ĐÁNH GIÁ ============ -->
   <section class="detail-tabs">
     <input class="tab-input" type="radio" name="tab" id="tab-mota" checked>
     <input class="tab-input" type="radio" name="tab" id="tab-thongtin">
+    <input class="tab-input" type="radio" name="tab" id="tab-danhgia">
 
     <div class="tab-bar">
       <label for="tab-mota">Mô tả sản phẩm</label>
       <label for="tab-thongtin">Thông tin chi tiết</label>
+      <label for="tab-danhgia">Đánh giá<?php if ($ratingCount > 0): ?> (<?php echo number_format($ratingCount); ?>)<?php endif; ?></label>
     </div>
 
     <!-- Tab 1: mô tả -->
@@ -225,6 +216,57 @@ $soldLabel = $soldQuantity >= 1000
       </table>
     </div>
 
+    <!-- Tab 3: đánh giá -->
+    <div class="tab-panel panel-danhgia">
+
+      <!-- Tổng quan sao -->
+      <div class="review-summary">
+        <div class="score">
+          <b><?php echo $ratingCount > 0 ? e(number_format($ratingAverage, 1)) : '0.0'; ?></b>
+          <span class="stars" style="--rating: <?php echo e(number_format($ratingAverage, 1)); ?>"></span>
+          <small><?php echo number_format($ratingCount); ?> đánh giá</small>
+        </div>
+        <div class="bars">
+          <?php
+          $ratingPercentages = [];
+          foreach ($ratingBreakdown as $ratingRow) {
+              $ratingPercentages[(int)$ratingRow['star_rating']] = (int)$ratingRow['rating_percentage'];
+          }
+          ?>
+          <?php for ($stars = 5; $stars >= 1; $stars--): ?>
+            <?php $percentage = $ratingPercentages[$stars] ?? 0; ?>
+            <div class="bar">
+              <span><?php echo $stars; ?> sao</span>
+              <i style="--w: <?php echo $percentage; ?>%"></i>
+              <span><?php echo $percentage; ?>%</span>
+            </div>
+          <?php endfor; ?>
+        </div>
+        <a class="button" href="#tab-danhgia">Xem đánh giá</a>
+      </div>
+
+      <?php if (!empty($productReviews)): ?>
+        <?php foreach ($productReviews as $review): ?>
+          <div class="review-item">
+            <div class="img-box avatar">
+              <?php if (!empty($review['avatar_image'])): ?>
+                <img src="<?php echo e(asset('images/' . $review['avatar_image'])); ?>" alt="">
+              <?php endif; ?>
+            </div>
+            <div>
+              <b><?php echo e($review['reviewer_name']); ?></b>
+              <div class="rating">
+                <span class="stars" style="--rating: <?php echo (int)$review['rating']; ?>"></span>
+                <small><?php echo e(date('d/m/Y', strtotime($review['reviewed_at']))); ?></small>
+              </div>
+              <p><?php echo e($review['review_text']); ?></p>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <p class="no-reviews">Sản phẩm chưa có đánh giá.</p>
+      <?php endif; ?>
+    </div>
   </section>
 
 </main>

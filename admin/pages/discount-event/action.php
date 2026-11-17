@@ -47,10 +47,6 @@ if (in_array($discountAction, ['save-coupon', 'save-event', 'delete-coupon', 'de
     $sortOrderInput = is_string($_POST['sort_order'] ?? null) ? $_POST['sort_order'] : '';
     $sortOrder = filter_var($sortOrderInput, FILTER_VALIDATE_INT);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
-    $discountType = is_string($_POST['discount_type'] ?? null) ? $_POST['discount_type'] : '';
-    $discountValueInput = is_string($_POST['discount_value'] ?? null) ? trim($_POST['discount_value']) : '';
-    $minimumOrderInput = is_string($_POST['minimum_order'] ?? null) ? trim($_POST['minimum_order']) : '';
-    $minimumQuantityInput = is_string($_POST['minimum_quantity'] ?? null) ? trim($_POST['minimum_quantity']) : '';
     $errors = [];
 
     if ($id < 0) {
@@ -70,43 +66,6 @@ if (in_array($discountAction, ['save-coupon', 'save-event', 'delete-coupon', 'de
     }
     if ($isCoupon && $stringLength($description) > 255) {
         $errors[] = 'Mô tả mã giảm giá không được vượt quá 255 ký tự.';
-    }
-    if ($isCoupon) {
-        if (!in_array($discountType, ['percentage', 'fixed', 'free_shipping'], true)) {
-            $errors[] = 'Loại giảm giá không hợp lệ.';
-        }
-        if (
-            $discountValueInput === ''
-            || !is_numeric($discountValueInput)
-            || (float)$discountValueInput < 0
-            || (float)$discountValueInput > 99999999.99
-        ) {
-            $errors[] = 'Giá trị giảm phải là số không âm.';
-        } elseif ($discountType !== 'free_shipping' && (float)$discountValueInput <= 0) {
-            $errors[] = 'Giá trị giảm phải lớn hơn 0.';
-        } elseif ($discountType === 'percentage' && (float)$discountValueInput > 100) {
-            $errors[] = 'Mức giảm theo phần trăm không được vượt quá 100%.';
-        } elseif ($discountType === 'fixed' && floor((float)$discountValueInput) !== (float)$discountValueInput) {
-            $errors[] = 'Mức giảm cố định phải là số nguyên VND.';
-        }
-
-        if (
-            $minimumOrderInput === ''
-            || !is_numeric($minimumOrderInput)
-            || (float)$minimumOrderInput < 0
-            || (float)$minimumOrderInput > 99999999.99
-        ) {
-            $errors[] = 'Giá trị đơn hàng tối thiểu phải là số không âm.';
-        } elseif (floor((float)$minimumOrderInput) !== (float)$minimumOrderInput) {
-            $errors[] = 'Giá trị đơn hàng tối thiểu phải là số nguyên VND.';
-        }
-
-        $minimumQuantity = filter_var($minimumQuantityInput, FILTER_VALIDATE_INT);
-        if ($minimumQuantity === false || $minimumQuantity < 0 || $minimumQuantity > 4294967295) {
-            $errors[] = 'Số lượng sách tối thiểu phải là số nguyên không âm.';
-        }
-    } else {
-        $minimumQuantity = 0;
     }
 
     $parsedDate = DateTime::createFromFormat('!Y-m-d', $date);
@@ -173,34 +132,18 @@ if (in_array($discountAction, ['save-coupon', 'save-event', 'delete-coupon', 'de
     }
 
     if ($isCoupon) {
-        $discountValue = $discountType === 'free_shipping' ? 0 : (float)$discountValueInput;
-        $minimumOrder = (float)$minimumOrderInput;
-        $values = [
-            $title,
-            $description,
-            $date,
-            $discountType,
-            $discountValue,
-            $minimumOrder,
-            (int)$minimumQuantity,
-            $imagePath !== '' ? $imagePath : null,
-            (int)$sortOrder,
-            $isActive
-        ];
+        $values = [$title, $description, $date, $imagePath !== '' ? $imagePath : null, (int)$sortOrder, $isActive];
         if ($id > 0) {
             $result = $db->execute(
                 'UPDATE home_coupons
-                 SET coupon_code = ?, description = ?, expires_at = ?, discount_type = ?, discount_value = ?,
-                     minimum_order = ?, minimum_quantity = ?, image_path = ?, sort_order = ?, is_active = ?
+                 SET coupon_code = ?, description = ?, expires_at = ?, image_path = ?, sort_order = ?, is_active = ?
                  WHERE coupon_id = ?',
                 array_merge($values, [$id])
             );
         } else {
             $result = $db->execute(
-                'INSERT INTO home_coupons
-                 (coupon_code, description, expires_at, discount_type, discount_value, minimum_order,
-                  minimum_quantity, image_path, sort_order, is_active)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO home_coupons (coupon_code, description, expires_at, image_path, sort_order, is_active)
+                 VALUES (?, ?, ?, ?, ?, ?)',
                 $values
             );
         }

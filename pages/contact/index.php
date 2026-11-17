@@ -77,34 +77,33 @@ $contactError = $contactError ?? '';
       <form class="contact-form" method="post" action="<?= e(url('contact')) ?>">
         <h2>Gửi tin nhắn cho chúng tôi</h2>
         <p class="sub">Điền thông tin bên dưới, BetaBook sẽ phản hồi sớm nhất có thể.</p>
-        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
 
         <div class="form-grid">
           <div class="field">
             <label for="ten">Họ và tên *</label>
-            <input type="text" id="ten" name="contact_name" maxlength="191" required
+            <input type="text" id="ten" name="contact_name" required
                    placeholder="Nhập họ và tên"
-                   value="<?= e(is_string($_POST['contact_name'] ?? null) ? $_POST['contact_name'] : '') ?>">
+                   value="<?= e((string)($_POST['contact_name'] ?? '')) ?>">
           </div>
 
           <div class="field">
             <label for="email">Email *</label>
-            <input type="email" id="email" name="contact_email" maxlength="191" required
+            <input type="email" id="email" name="contact_email" required
                    placeholder="Nhập địa chỉ email"
-                   value="<?= e(is_string($_POST['contact_email'] ?? null) ? $_POST['contact_email'] : '') ?>">
+                   value="<?= e((string)($_POST['contact_email'] ?? '')) ?>">
           </div>
 
           <div class="field">
             <label for="sdt">Số điện thoại</label>
-            <input type="tel" id="sdt" name="contact_phone" maxlength="20" pattern="0[0-9]{9}"
+            <input type="tel" id="sdt" name="contact_phone" pattern="0[0-9]{9}"
                    title="Số điện thoại gồm 10 chữ số, bắt đầu bằng 0."
                    placeholder="Ví dụ: 0912345678"
-                   value="<?= e(is_string($_POST['contact_phone'] ?? null) ? $_POST['contact_phone'] : '') ?>">
+                   value="<?= e((string)($_POST['contact_phone'] ?? '')) ?>">
           </div>
 
           <div class="field">
             <label for="chude">Chủ đề</label>
-            <?php $selectedSubject = is_string($_POST['contact_subject'] ?? null) ? $_POST['contact_subject'] : ''; ?>
+            <?php $selectedSubject = (string)($_POST['contact_subject'] ?? ''); ?>
             <select id="chude" name="contact_subject">
               <option value="">-- Chọn chủ đề --</option>
               <option value="Hỏi về sản phẩm" <?= $selectedSubject === 'Hỏi về sản phẩm' ? 'selected' : '' ?>>Hỏi về sản phẩm</option>
@@ -118,7 +117,7 @@ $contactError = $contactError ?? '';
           <div class="field full">
             <label for="noidung">Nội dung *</label>
             <textarea id="noidung" name="contact_message" required
-                      placeholder="Nhập nội dung bạn muốn gửi..."><?= e(is_string($_POST['contact_message'] ?? null) ? $_POST['contact_message'] : '') ?></textarea>
+                      placeholder="Nhập nội dung bạn muốn gửi..."><?= e((string)($_POST['contact_message'] ?? '')) ?></textarea>
           </div>
         </div>
 

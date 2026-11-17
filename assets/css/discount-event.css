@@ -13,17 +13,6 @@
 
 
 /* ---------- 1. BANNER ĐẦU TRANG ---------- */
-.discount-event-rule {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding: 14px 18px;
-  border-radius: 10px;
-  background: #fff6ef;
-}
-
 .page-banner {
   background: linear-gradient(135deg, var(--cam), #ffae6b);
   color: white;
@@ -87,7 +76,6 @@
   padding: 18px;
   text-align: center;
 }
-.coupon-card-locked { opacity: .55; }
 .coupon-card .img-box {
   height: 120px;
   border-radius: 8px;
@@ -114,9 +102,7 @@
   margin-bottom: 6px;
 }
 .coupon-card small { color: #999999; display: block; margin-bottom: 12px; }
-.coupon-card form { margin-top: auto; }
 .coupon-card .button { margin-top: auto; }
-.coupon-card form .button { cursor: pointer; }
 
 
 /* ---------- 4. DANH SÁCH SỰ KIỆN ---------- */
@@ -149,9 +135,6 @@
 
   .coupon-grid { grid-template-columns: 1fr; }
   .event-list { grid-template-columns: 1fr; }
-}
-@media (max-width: 600px) {
-  .discount-event-rule { align-items: flex-start; flex-direction: column; }
 }
 
 .discount-event-empty {

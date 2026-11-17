@@ -28,12 +28,12 @@ $routes = [
     'discount-event' => 'discount-event/index.php',
     'product-detail' => 'product-detail/index.php',
     'cart' => 'cart/index.php',
-    'order-complete' => 'order-complete/index.php',
     'contact' => 'contact/index.php',
     'login' => 'login/index.php',
     'account' => 'account/index.php',
-    'introduction' => 'introduction/index.php',
-    '404' => '404/Index.php',
+    'policies' => 'policies/index.php',
+    'distribution' => 'distribution/index.php',
+    'recruitment' => 'recruitment/index.php',
 ];
 
 $page = get_param('route', get_param('page', 'home'));
@@ -43,7 +43,6 @@ if ($isKnownPage) {
     $file = __DIR__ . '/pages/' . $routes[$page];
     $action = dirname($file) . '/action.php';
 } else {
-    $file = __DIR__ . '/pages/404/Index.php';
     $action = __DIR__ . '/pages/404/action.php';
 }
 

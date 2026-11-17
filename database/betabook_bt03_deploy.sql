@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(191),
     phone VARCHAR(20),
-    avatar_image VARCHAR(255) NOT NULL DEFAULT 'pfp-icon-set/Avatar-Pyrois.webp',
+    avatar_image VARCHAR(255) DEFAULT NULL,
     role_id INT NOT NULL,
     is_active TINYINT(1) DEFAULT 1,
     last_login TIMESTAMP NULL,
@@ -120,67 +120,6 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_users_role_id (role_id),
     CONSTRAINT fk_users_role
         FOREIGN KEY (role_id) REFERENCES roles(role_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS orders (
-    order_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    order_code VARCHAR(32) NOT NULL,
-    user_id INT DEFAULT NULL,
-    customer_name VARCHAR(191) NOT NULL,
-    email VARCHAR(191) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    address_line VARCHAR(255) NOT NULL,
-    ward VARCHAR(191) NOT NULL,
-    district VARCHAR(191) NOT NULL,
-    city VARCHAR(191) NOT NULL,
-    customer_note TEXT DEFAULT NULL,
-    payment_method ENUM('cod', 'bank_transfer') NOT NULL DEFAULT 'cod',
-    payment_status ENUM('unpaid', 'pending', 'paid', 'refunded') NOT NULL DEFAULT 'unpaid',
-    order_status ENUM('pending', 'confirmed', 'shipping', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
-    retention_started_at TIMESTAMP NULL DEFAULT NULL,
-    subtotal DECIMAL(12,2) NOT NULL,
-    shipping_fee DECIMAL(12,2) NOT NULL DEFAULT 0,
-    discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
-    coupon_code VARCHAR(50) DEFAULT NULL,
-    total_amount DECIMAL(12,2) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_orders_code (order_code),
-    INDEX idx_orders_user_created (user_id, created_at),
-    INDEX idx_orders_status_created (order_status, created_at),
-    INDEX idx_orders_retention_cleanup (retention_started_at, order_status, payment_status),
-    CONSTRAINT fk_orders_user FOREIGN KEY (user_id)
-        REFERENCES users(user_id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS order_items (
-    order_item_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    order_id BIGINT UNSIGNED NOT NULL,
-    product_id INT DEFAULT NULL,
-    product_title VARCHAR(255) NOT NULL,
-    product_code VARCHAR(50) NOT NULL,
-    cover_image VARCHAR(255) DEFAULT NULL,
-    unit_price DECIMAL(12,2) NOT NULL,
-    quantity INT UNSIGNED NOT NULL,
-    line_total DECIMAL(12,2) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_order_items_order (order_id),
-    CONSTRAINT fk_order_items_order FOREIGN KEY (order_id)
-        REFERENCES orders(order_id) ON DELETE CASCADE,
-    CONSTRAINT fk_order_items_product FOREIGN KEY (product_id)
-        REFERENCES products(product_id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS user_cart_items (
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT UNSIGNED NOT NULL,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, product_id),
-    CONSTRAINT fk_user_cart_items_user FOREIGN KEY (user_id)
-        REFERENCES users(user_id) ON DELETE CASCADE,
-    CONSTRAINT fk_user_cart_items_product FOREIGN KEY (product_id)
-        REFERENCES products(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Local demo account: username "demo", password "BetaBook2026!".
@@ -249,8 +188,6 @@ VALUES
     ('categories', 'Quản lý danh mục', 'categories', 'categories,category-form', 'bi bi-tags', 0, 30, 1),
     ('promotions', 'Mã giảm & Sự kiện', 'promotions', 'promotions', 'bi bi-ticket-perforated', 0, 40, 1),
     ('users', 'Quản lý tài khoản', 'users', 'users,users-form', 'bi bi-people', 0, 5, 1),
-    ('orders', 'Quản lý đơn hàng', 'orders', 'orders', 'bi bi-receipt', 0, 25, 1),
-    ('contact', 'Tin nhắn liên hệ', 'contact', 'contact', 'bi bi-envelope', 0, 26, 1),
     ('public', 'Quay lại Public', NULL, '', 'bi bi-box-arrow-up-right', 1, 90, 1)
 ON DUPLICATE KEY UPDATE
     label = VALUES(label), page_key = VALUES(page_key), active_pages = VALUES(active_pages),
@@ -260,29 +197,53 @@ ON DUPLICATE KEY UPDATE
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
 FROM roles r CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'admin' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'users', 'orders', 'contact', 'public');
+WHERE r.role_key = 'admin' AND m.menu_key IN ('dashboard', 'books', 'categories', 'promotions', 'users', 'public');
 
 INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id)
 SELECT r.role_id, m.menu_id
 FROM roles r CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'staff' AND m.menu_key IN ('dashboard', 'books', 'promotions', 'contact', 'public');
-
-INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id, can_view)
-SELECT r.role_id, m.menu_id, 1
-FROM roles r
-CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'staff' AND m.menu_key = 'orders';
-
-INSERT IGNORE INTO admin_menu_permissions (role_id, menu_id, can_view)
-SELECT r.role_id, m.menu_id, 1
-FROM roles r
-CROSS JOIN admin_menu_items m
-WHERE r.role_key = 'admin' AND m.menu_key = 'contact';
+WHERE r.role_key = 'staff' AND m.menu_key IN ('dashboard', 'books', 'public');
 
 CREATE TABLE IF NOT EXISTS home_content (
     content_key VARCHAR(100) PRIMARY KEY,
     content_value TEXT NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS home_product_ratings (
+    product_id INT PRIMARY KEY,
+    rating_average DECIMAL(2,1) NOT NULL,
+    rating_count INT UNSIGNED NOT NULL DEFAULT 0,
+    CONSTRAINT fk_home_product_ratings_product
+        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS product_rating_breakdown (
+    product_id INT NOT NULL,
+    star_rating TINYINT UNSIGNED NOT NULL,
+    rating_percentage TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (product_id, star_rating),
+    CONSTRAINT chk_product_rating_breakdown_star CHECK (star_rating BETWEEN 1 AND 5),
+    CONSTRAINT chk_product_rating_breakdown_percentage CHECK (rating_percentage <= 100),
+    CONSTRAINT fk_product_rating_breakdown_product
+        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS product_reviews (
+    review_id INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT NOT NULL,
+    reviewer_name VARCHAR(191) NOT NULL,
+    rating TINYINT UNSIGNED NOT NULL,
+    review_text TEXT NOT NULL,
+    reviewed_at DATE NOT NULL,
+    avatar_image VARCHAR(255),
+    is_sample TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_product_reviews_product_date (product_id, reviewed_at),
+    UNIQUE KEY uk_product_reviews_sample (product_id, reviewer_name, reviewed_at, is_sample),
+    CONSTRAINT chk_product_reviews_rating CHECK (rating BETWEEN 1 AND 5),
+    CONSTRAINT fk_product_reviews_product
+        FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS home_reviews (
@@ -301,10 +262,6 @@ CREATE TABLE IF NOT EXISTS home_coupons (
     coupon_code VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
     expires_at DATE NOT NULL,
-    discount_type ENUM('percentage', 'fixed', 'free_shipping') NOT NULL DEFAULT 'percentage',
-    discount_value DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    minimum_order DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    minimum_quantity INT UNSIGNED NOT NULL DEFAULT 0,
     image_path VARCHAR(255),
     sort_order INT NOT NULL DEFAULT 0,
     is_active TINYINT(1) NOT NULL DEFAULT 1,
@@ -410,6 +367,62 @@ WHERE NOT EXISTS (
       AND existing.image_url = images.image_url
 );
     
+INSERT INTO home_product_ratings (product_id, rating_average, rating_count)
+SELECT p.product_id, ratings.rating_average, ratings.rating_count
+FROM (
+    SELECT 'HOME-BS-001' AS product_code, 4.2 AS rating_average, 360 AS rating_count
+    UNION ALL SELECT 'HOME-BS-002', 4.3, 311
+    UNION ALL SELECT 'HOME-BS-003', 4.4, 296
+    UNION ALL SELECT 'HOME-BS-004', 4.7, 441
+    UNION ALL SELECT 'HOME-RC-001', 4.5, 120
+    UNION ALL SELECT 'HOME-RC-002', 4.2, 95
+    UNION ALL SELECT 'HOME-RC-003', 4.0, 76
+    UNION ALL SELECT 'HOME-RC-004', 5.0, 17
+) AS ratings
+INNER JOIN products p ON p.product_code = ratings.product_code
+ON DUPLICATE KEY UPDATE
+    rating_average = VALUES(rating_average),
+    rating_count = VALUES(rating_count);
+
+INSERT INTO product_rating_breakdown (product_id, star_rating, rating_percentage)
+SELECT p.product_id, breakdown.star_rating, breakdown.rating_percentage
+FROM (
+    SELECT 'HOME-BS-001' AS product_code, 5 AS star_rating, 62 AS rating_percentage
+    UNION ALL SELECT 'HOME-BS-001', 4, 20
+    UNION ALL SELECT 'HOME-BS-001', 3, 10
+    UNION ALL SELECT 'HOME-BS-001', 2, 5
+    UNION ALL SELECT 'HOME-BS-001', 1, 3
+) AS breakdown
+INNER JOIN products p ON p.product_code = breakdown.product_code
+ON DUPLICATE KEY UPDATE rating_percentage = VALUES(rating_percentage);
+
+INSERT INTO product_reviews
+    (product_id, reviewer_name, rating, review_text, reviewed_at, avatar_image, is_sample)
+SELECT p.product_id, reviews.reviewer_name, reviews.rating, reviews.review_text,
+       reviews.reviewed_at, reviews.avatar_image, 1
+FROM (
+    SELECT 'HOME-BS-001' AS product_code, 'bienkiet_1242' AS reviewer_name, 5 AS rating,
+           'Nội dung đánh giá mẫu. Sách in đẹp, nội dung dễ hiểu.' AS review_text,
+           '2026-10-12' AS reviewed_at, 'pfp-icon-set/Avatar_Lucia_Elowen.webp' AS avatar_image
+    UNION ALL
+    SELECT 'HOME-BS-001', 'chumeonangmua_', 4,
+           'Nội dung đánh giá mẫu. Giao hàng nhanh, đóng gói cẩn thận.',
+           '2026-10-05', 'pfp-icon-set/Avatar_Dialyn.webp'
+) AS reviews
+INNER JOIN products p ON p.product_code = reviews.product_code
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM product_reviews existing
+    WHERE existing.product_id = p.product_id
+      AND existing.reviewer_name = reviews.reviewer_name
+      AND existing.reviewed_at = reviews.reviewed_at
+      AND existing.is_sample = 1
+)
+ON DUPLICATE KEY UPDATE
+    rating = VALUES(rating),
+    review_text = VALUES(review_text),
+    avatar_image = VALUES(avatar_image);
+
 INSERT INTO home_content (content_key, content_value) VALUES
 ('banner_image', 'images/banner/main-banner.png'),
 ('about_image', 'images/banner/about-us.png'),
@@ -428,24 +441,18 @@ ON DUPLICATE KEY UPDATE
     avatar_image = VALUES(avatar_image),
     is_active = VALUES(is_active);
 
-INSERT INTO home_coupons
-    (coupon_code, description, expires_at, image_path, sort_order, is_active,
-     discount_type, discount_value, minimum_order, minimum_quantity) VALUES
-('BETA10', 'Giảm 10% đơn đầu tiên', '2026-12-31', 'voucher.ico', 1, 1, 'percentage', 10, 0, 0),
-('SACH50K', 'Giảm 50.000₫ cho đơn từ 300.000₫', '2026-11-30', 'voucher.ico', 2, 1, 'fixed', 50000, 300000, 0),
-('FREESHIP', 'Miễn phí vận chuyển toàn quốc', '2026-10-31', 'voucher.ico', 3, 1, 'free_shipping', 0, 0, 0),
-('COMBO20', 'Giảm 20% khi mua combo 3 cuốn', '2026-12-15', 'voucher.ico', 4, 1, 'percentage', 20, 0, 3),
-('HSSV15', 'Ưu đãi 15% cho học sinh - sinh viên', '2026-12-31', 'voucher.ico', 5, 1, 'percentage', 15, 0, 0),
-('BETA50K', 'Giảm 50.000₫ cho hội viên mới', '2027-02-28', 'voucher.ico', 6, 1, 'fixed', 50000, 0, 0)
+INSERT INTO home_coupons (coupon_code, description, expires_at, image_path, sort_order, is_active) VALUES
+('BETA10', 'Giảm 10% đơn đầu tiên', '2026-12-31', 'voucher.ico', 1, 1),
+('SACH50K', 'Giảm 50.000₫ cho đơn từ 300.000₫', '2026-11-30', 'voucher.ico', 2, 1),
+('FREESHIP', 'Miễn phí vận chuyển toàn quốc', '2026-10-31', 'voucher.ico', 3, 1),
+('COMBO20', 'Giảm 20% khi mua combo 3 cuốn', '2026-12-15', 'voucher.ico', 4, 1),
+('HSSV15', 'Ưu đãi 15% cho học sinh - sinh viên', '2026-12-31', 'voucher.ico', 5, 1),
+('BETA50K', 'Giảm 50.000₫ cho hội viên mới', '2027-02-28', 'voucher.ico', 6, 1)
 ON DUPLICATE KEY UPDATE
     description = VALUES(description),
     expires_at = VALUES(expires_at),
     image_path = VALUES(image_path),
-    is_active = VALUES(is_active),
-    discount_type = VALUES(discount_type),
-    discount_value = VALUES(discount_value),
-    minimum_order = VALUES(minimum_order),
-    minimum_quantity = VALUES(minimum_quantity);
+    is_active = VALUES(is_active);
 
 INSERT INTO home_events (event_slug, event_date, title, description, image_path, sort_order, is_active) VALUES
 ('xa-kho-mua-thu-2026', '2026-10-04', 'Chương trình xả kho - Mùa thu 2026', 'Đặc biệt giảm giá lên đến 50% cho tất cả các sản phẩm trong chương trình.', 'banner/xả-kho-mùa-thu.png', 1, 1),
@@ -487,11 +494,85 @@ SELECT
     1
 FROM roles
 WHERE role_key = 'user';
+-- ============================================================
+-- BẢNG CHÍNH SÁCH (POLICIES) & DỮ LIỆU MẪU
+-- ============================================================
+CREATE TABLE IF NOT EXISTS `policies` (
+    `policy_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `title` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL,
+    `page_group` VARCHAR(50) DEFAULT 'Chính sách',
+    `sort_order` INT DEFAULT 0,
+    `is_active` TINYINT(1) DEFAULT 1,
+    `content` TEXT NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO admin_menu_permissions (role_id, menu_id, can_view)
-SELECT r.role_id, m.menu_id, 1
-FROM roles AS r
-JOIN admin_menu_items AS m ON m.menu_key = 'orders'
-WHERE r.role_id = 2
-  AND r.role_key = 'staff'
-ON DUPLICATE KEY UPDATE can_view = 1;
+INSERT IGNORE INTO `policies` (`policy_id`, `title`, `slug`, `page_group`, `sort_order`, `is_active`, `content`) VALUES
+(1, 'Chính sách thanh toán', 'chinh-sach-thanh-toan', 'Chính sách', 1, 1, 
+'Ba cách thanh toán, chọn cách nào tiện nhất với bạn.
+
+BetaBook hỗ trợ các phương thức thanh toán sau khi bạn đặt hàng tại trang giỏ hàng:
+- Thanh toán khi nhận hàng (COD): Trả tiền mặt cho nhân viên giao hàng khi nhận sách.
+- Chuyển khoản: Chuyển đúng số tiền vào tài khoản của BetaBook, ghi nội dung: số điện thoại + họ tên.
+- Ví điện tử: Quét mã QR hiển thị sau khi đặt hàng để thanh toán.
+
+Lưu ý khi thanh toán:
+- Giá trên website đã bao gồm thuế VAT, chưa gồm phí vận chuyển.
+- Đơn chuyển khoản hoặc ví điện tử được xử lý sau khi BetaBook xác nhận đã nhận tiền.
+- Mã giảm giá được nhập ở bước giỏ hàng và không áp dụng đồng thời nhiều mã trên một đơn.
+
+Chuyển nhầm hoặc chuyển dư? Liên hệ hotline 0123 456 789 kèm ảnh giao dịch, BetaBook sẽ hoàn lại trong 3 ngày làm việc.'),
+
+(2, 'Chính sách vận chuyển', 'chinh-sach-van-chuyen', 'Chính sách', 2, 1, 
+'Giao hàng toàn quốc, theo dõi được đơn của bạn.
+
+Phí và thời gian giao hàng:
+- Giao tiêu chuẩn: 3 - 5 ngày 
+- Giao nhanh: 1 - 2 ngày 
+
+Quy trình giao hàng:
+1. Xác nhận đơn: BetaBook gọi hoặc nhắn tin xác nhận trong vòng 24 giờ.
+2. Đóng gói và bàn giao: Sách được bọc kỹ rồi giao cho đơn vị vận chuyển.
+3. Nhận hàng: Bạn kiểm tra kiện hàng trước khi thanh toán hoặc ký nhận.
+
+Điều cần biết:
+- Thời gian giao tính từ lúc đơn được xác nhận, không tính Chủ nhật và ngày lễ.
+- Vùng xa hoặc hải đảo có thể lâu hơn 1 - 2 ngày so với thời gian dự kiến.
+- Đơn dùng mã FREESHIP được miễn phí vận chuyển theo điều kiện của mã.'),
+
+(3, 'Chính sách bảo mật', 'chinh-sach-bao-mat', 'Chính sách', 3, 1, 
+'BetaBook thu thập ít nhất có thể và không bán dữ liệu của bạn.
+
+Thông tin chúng tôi thu thập:
+- Họ tên, số điện thoại, email và địa chỉ giao hàng khi bạn đăng ký hoặc đặt hàng.
+- Lịch sử đơn hàng và sách bạn đã xem để gợi ý sách phù hợp hơn.
+
+Chúng tôi dùng thông tin để:
+- Xử lý và giao đơn hàng, hỗ trợ bạn khi có vấn đề.
+- Gửi thông tin ưu đãi, nếu bạn đồng ý nhận.
+
+Cam kết của BetaBook:
+- Không bán hoặc trao đổi thông tin cá nhân cho bên thứ ba vì mục đích thương mại.
+- Chỉ chia sẻ thông tin cần thiết cho đơn vị vận chuyển để giao hàng cho bạn.
+- Bạn có quyền xem, sửa hoặc yêu cầu xóa thông tin bất cứ lúc nào.
+
+Muốn xóa tài khoản hoặc hủy nhận email? Gửi yêu cầu đến mkt.betabook@gmail.com, BetaBook xử lý trong vòng 48 giờ.'),
+
+(4, 'Chính sách đổi trả', 'chinh-sach-doi-tra', 'Chính sách', 4, 1, 
+'Đổi trả trong vòng 7 ngày kể từ khi nhận sách.
+
+Được đổi trả khi:
+- Sách bị lỗi in ấn, thiếu trang, rách hoặc hư hỏng do vận chuyển.
+- BetaBook giao sai tên sách hoặc sai số lượng so với đơn đặt.
+
+Không áp dụng khi:
+- Sách đã qua sử dụng, viết vẽ, ướt hoặc mất bao bọc, tem nhãn.
+- Quá 7 ngày kể từ ngày nhận hàng.
+- Sản phẩm thuộc chương trình xả kho, trừ khi bị lỗi từ nhà xuất bản.
+
+Cách đổi trả:
+1. Liên hệ BetaBook qua hotline hoặc biểu mẫu liên hệ, kèm mã đơn và ảnh sản phẩm.
+2. Gửi sách về theo hướng dẫn. BetaBook chịu phí gửi nếu lỗi thuộc về BetaBook.
+3. Nhận sách mới hoặc hoàn tiền trong 3 - 5 ngày làm việc sau khi BetaBook nhận được sách.');

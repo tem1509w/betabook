@@ -2,8 +2,6 @@
 /**
  * Public Header - Từ index.html gốc BetaBook
  */
-require_once __DIR__ . '/../../helpers/cart.php';
-$headerCartCount = cart_count();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -24,16 +22,6 @@ $headerCartCount = cart_count();
 </head>
 <body class="<?php echo isset($bodyClass) ? e($bodyClass) : 'home-page'; ?>">
 
-<?php
-$flashMessage = $_SESSION['flash_message'] ?? null;
-unset($_SESSION['flash_message']);
-?>
-<?php if (is_string($flashMessage) && $flashMessage !== ''): ?>
-  <div id="flash-message" class="flash-message" role="status" aria-live="polite">
-    <?php echo e($flashMessage); ?>
-  </div>
-<?php endif; ?>
-
 <!-- ============ 1. HEADER ============ -->
 <header class="header">
   <div class="container header-inner">
@@ -47,7 +35,7 @@ unset($_SESSION['flash_message']);
     <nav class="menu">
       <ul>
         <li><a href="<?php echo url(''); ?>">Trang chủ</a></li>
-        <li><a href="<?php echo e(url('introduction')); ?>">Về BetaBook</a></li>
+        <li><a href="<?php echo e(url('') . '#about'); ?>">Về BetaBook</a></li>
         <li>
           <a href="<?php echo url('booklist'); ?>">Tủ sách</a>
           <?php
@@ -88,10 +76,10 @@ unset($_SESSION['flash_message']);
           <?php endif; ?>
         </li>
         <li>
-          <a href="<?php echo e(url('404')); ?>">Dịch vụ</a>
+          <a href="<?php echo e(url('') . '#service'); ?>">Dịch vụ</a>
           <ul class="submenu">
-            <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
-            <li><a href="<?php echo e(url('404')); ?>">Nội dung số</a></li>
+            <li><a href="<?php echo e(url('') . '#service'); ?>">Hợp tác phân phối</a></li>
+            <li><a href="<?php echo e(url('') . '#service'); ?>">Nội dung số</a></li>
           </ul>
         </li>
         <li><a href="<?php echo e(url('discount-event')); ?>">Mã giảm - Sự kiện</a></li>
@@ -102,38 +90,19 @@ unset($_SESSION['flash_message']);
     <!-- Tìm kiếm, tài khoản, giỏ hàng -->
 <div class="tools">
 
-  <form class="search-form" action="<?php echo e(url('')); ?>" method="get">
-    <input type="hidden" name="route" value="booklist">
-    <input type="search" name="q" value="<?php echo isset($search) ? e($search) : ''; ?>"
-           placeholder="Tìm kiếm sản phẩm..." aria-label="Tìm kiếm sản phẩm theo tên">
-    <button type="submit" class="search-button" aria-label="Tìm kiếm">
+  <form class="search-form" action="<?php echo url('booklist'); ?>" method="get">
+    <input type="text" name="q" placeholder="Tìm kiếm sản phẩm...">
+    <button type="submit" class="search-button">
       <img src="<?php echo asset('images/search.ico'); ?>" alt="Tìm">
     </button>
   </form>
 
-  <?php
-  $headerAvatar = $_SESSION['user']['avatar_image'] ?? user_default_avatar();
-  $headerAvatarIsValid = is_string($headerAvatar)
-      && in_array($headerAvatar, user_avatar_options(), true)
-      && is_file(__DIR__ . '/../../assets/images/' . $headerAvatar);
-  if (!$headerAvatarIsValid && !empty($_SESSION['user'])) {
-      $headerAvatar = user_default_avatar();
-      $headerAvatarIsValid = is_file(__DIR__ . '/../../assets/images/' . $headerAvatar);
-  }
-  ?>
   <a class="icon-button" href="<?php echo e(url(!empty($_SESSION['user']) ? 'account' : 'login')); ?>" title="Tài khoản">
-    <img
-      class="<?php echo $headerAvatarIsValid ? 'account-header-avatar' : ''; ?>"
-      src="<?php echo e(asset($headerAvatarIsValid ? 'images/' . $headerAvatar : 'images/user.ico')); ?>"
-      alt="<?php echo $headerAvatarIsValid ? 'Ảnh đại diện tài khoản' : 'Tài khoản'; ?>">
+    <img src="<?php echo asset('images/user.ico'); ?>" alt="Tài khoản">
   </a>
 
-  <a class="icon-button cart-icon-button" href="<?php echo e(url('cart')); ?>"
-     title="Giỏ hàng" aria-label="Giỏ hàng, <?php echo $headerCartCount; ?> loại sản phẩm">
+  <a class="icon-button" href="<?php echo url('cart'); ?>" title="Giỏ hàng">
     <img src="<?php echo asset('images/cart.ico'); ?>" alt="Giỏ hàng">
-    <?php if ($headerCartCount > 0): ?>
-      <span class="cart-count" aria-hidden="true"><?php echo $headerCartCount; ?></span>
-    <?php endif; ?>
   </a>
 
 </div>

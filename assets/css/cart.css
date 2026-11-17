@@ -32,7 +32,6 @@
 
 /* Nút trong trang này: cho <button class="button"> trông giống <a class="button"> */
 .cart-page .button { border: 0; cursor: pointer; font-family: inherit; }
-.cart-page button:disabled { opacity: .55; cursor: not-allowed; }
 .button.outline { background: white; color: var(--cam); border: 1px solid var(--cam); }
 .button.full { display: block; width: 100%; text-align: center; }
 
@@ -55,12 +54,8 @@
 
 .item-info { display: flex; align-items: center; gap: 14px; }
 .item-img { width: 70px; height: 90px; border-radius: 6px; flex-shrink: 0; }
-.item-img img { width: 100%; height: 100%; object-fit: cover; }
 .item-info h3 { font-size: 15px; color: var(--den); margin-bottom: 2px; }
 .item-info p { margin: 0; font-size: 13px; }
-.cart-stock-error { margin-top: 5px !important; color: var(--do); font-size: 12px !important; }
-.cart-empty { text-align: center; }
-.cart-empty p { margin-bottom: 20px; }
 
 .qty { width: 70px; height: 38px; padding: 0 8px; border: 1px solid #cccccc; border-radius: 8px; text-align: center; }
 
@@ -136,19 +131,6 @@
 .coupon { display: flex; gap: 8px; margin-bottom: 16px; }
 .coupon input { flex: 1; min-width: 0; height: 40px; padding: 0 14px; border: 1px solid #cccccc; border-radius: 20px; }
 .coupon .button { padding: 0 18px; }
-.cart-coupon-status {
-  display: grid;
-  gap: 6px;
-  margin: 0 0 12px;
-  padding: 12px;
-  border: 1px solid #b8dfc7;
-  border-radius: 8px;
-  background: #f0fff5;
-}
-.cart-coupon-status p { margin: 0; }
-.cart-coupon-status .cart-coupon-error { color: #a94442; }
-.cart-coupon-status .button { justify-self: start; }
-.summary > small { display: block; margin: -8px 0 12px; color: #777777; }
 
 .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eeeeee; }
 .row.total { border: 0; font-weight: bold; color: var(--den); font-size: 16px; }

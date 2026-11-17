@@ -1,0 +1,154 @@
+/* ============================================================
+   CSS RIÊNG CHO TRANG HỢP TÁC PHÂN PHỐI (distribution)
+   ============================================================ */
+
+.contact-banner {
+  background-color: #1a1a1a;
+  color: #fff;
+  text-align: center;
+  padding: 55px 20px;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #ff6600;
+}
+body, input, select, textarea, button {
+  font-family: "Be Vietnam Pro", Arial, sans-serif;
+}
+.contact-banner h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.contact-banner p {
+  font-size: 1.1rem;
+  color: #ddd;
+}
+
+/* --- Cột trái: Quyền lợi đối tác --- */
+.contact-info h2 {
+  font-size: 1.5rem;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: #111;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+.contact-info h2:first-child {
+  margin-top: 0;
+}
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background-color: #fcfcfc;
+  padding: 18px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-left: 4px solid #111;
+  border-top: 1px solid #eee;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+.info-item:hover {
+  background-color: #fff;
+  border-left-color: #ff6600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.info-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.info-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  color: #111;
+}
+.info-item p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* --- Cột phải: Quy trình hợp tác --- */
+.contact-form {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+.contact-form h2 {
+  font-size: 1.6rem;
+  margin-bottom: 5px;
+  color: #111;
+}
+.contact-form .sub {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+.process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.process-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+.process-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ff6600;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.process-item h4 {
+  font-size: 1rem;
+  color: #111;
+  margin-bottom: 4px;
+}
+.process-item p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.partner-contact-card {
+  background: #fff8f3;
+  border: 1px solid #ffd8bd;
+  border-radius: 8px;
+  padding: 18px;
+}
+.partner-contact-card h3 {
+  font-size: 1.05rem;
+  color: #111;
+  margin-bottom: 8px;
+}
+.partner-contact-card p {
+  font-size: 0.92rem;
+  color: #444;
+  margin: 4px 0;
+}
+
+@media (max-width: 768px) {
+  .contact-form {
+    padding: 20px;
+  }
+}
