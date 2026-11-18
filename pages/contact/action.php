@@ -1,5 +1,6 @@
 <?php
-$extraCss[] = asset('css/contact.css');
+$bodyClass = 'contact-page';
+$extraCss[] = asset('css/contact.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/contact.css');
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     return;

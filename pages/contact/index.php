@@ -131,7 +131,7 @@ $contactError = $contactError ?? '';
 <section class="container section map-section">
   <h2 class="section-title">Bản đồ chỉ đường</h2>
   <div class="img-box map-box">
-    <img src="<?= e(asset('images/cửa hàng fake.png')) ?>" alt="Bản đồ chỉ đường đến BetaBook">
+    <img src="<?= e(asset('images/fake-store.png')) ?>" alt="Bản đồ chỉ đường đến BetaBook">
   </div>
 </section>
 
