@@ -58,6 +58,8 @@ $routes = [
     'users-form' => 'pages/users/form.php',
     'orders' => 'pages/orders/index.php',
     'contact' => 'pages/contact/index.php',
+    'policies' => 'pages/policies/index.php',
+    'policy-form' => 'pages/policies/form.php',
 ];
 
 $actions = [
@@ -74,6 +76,8 @@ $actions = [
     'update-order-status' => 'pages/orders/update.php',
     'delete-order' => 'pages/orders/delete.php',
     'mark-contact-read' => 'pages/contact/action.php',
+    'save-policy' => 'actions/save-policy.php',
+    'delete-policy' => 'actions/delete-policy.php',
 ];
 
 $actionPermissions = [
@@ -90,6 +94,8 @@ $actionPermissions = [
     'update-order-status' => 'orders',
     'delete-order' => 'orders',
     'mark-contact-read' => 'contact',
+    'save-policy' => 'policies',
+    'delete-policy' => 'policies',
 ];
 
 $actionName = get_param('action');
@@ -126,6 +132,8 @@ $pagePermissions = [
     'users-form' => 'users',
     'orders' => 'orders',
     'contact' => 'contact',
+    'policies' => 'policies',
+    'policy-form' => 'policies',
 ];
 
 if (is_string($page) && isset($routes[$page])

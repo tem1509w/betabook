@@ -5,7 +5,7 @@
 </section>
 
 <section class="offer-banner" aria-label="banner booklist">
-  <img src="<?php echo e(asset('images/banner/offer-banner.jpg')); ?>" alt="banner booklist">
+  <img src="<?php echo e(asset('images/banner/main-banner.png')); ?>" alt="banner booklist">
 </section>
 
 <!-- ============ NỘI DUNG: SIDEBAR + DANH SÁCH SÁCH ============ -->

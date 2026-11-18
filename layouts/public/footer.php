@@ -25,18 +25,18 @@
       <ul>
         <li><a href="<?php echo e(url('introduction')); ?>">Giới thiệu</a></li>
         <li><a href="<?php echo e(url('404')); ?>">Hệ thống nhà sách</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Tuyển dụng</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
+        <li><a href="<?php echo e(url('recruitment')); ?>">Tuyển dụng</a></li>
+        <li><a href="<?php echo e(url('distribution')); ?>">Hợp tác phân phối</a></li>
       </ul>
     </div>
 
     <div>
       <h4>CHÍNH SÁCH</h4>
       <ul>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách thanh toán</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách vận chuyển</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách bảo mật</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Chính sách đổi trả</a></li>
+        <li><a href="<?php echo e(url('policies')); ?>">Chính sách thanh toán</a></li>
+        <li><a href="<?php echo e(url('policies')); ?>">Chính sách vận chuyển</a></li>
+        <li><a href="<?php echo e(url('policies')); ?>">Chính sách bảo mật</a></li>
+        <li><a href="<?php echo e(url('policies')); ?>">Chính sách đổi trả</a></li>
       </ul>
     </div>
 
