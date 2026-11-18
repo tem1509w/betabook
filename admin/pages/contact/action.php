@@ -1,11 +1,18 @@
 <?php
-if (($actionName ?? null) === 'mark-contact-read') {
+if (in_array(($actionName ?? null), ['mark-contact-read', 'delete-contact-message'], true)) {
+    $isDeletingMessage = $actionName === 'delete-contact-message';
     if (!valid_csrf_token($_POST['csrf_token'] ?? null)) {
         $_SESSION['flash_message'] = 'Phiên làm việc đã hết hạn. Vui lòng tải lại trang và thử lại.';
     } else {
-        $messageId = filter_var($_POST['message_id'] ?? null, FILTER_VALIDATE_INT);
+        $messageIdInput = $_POST['message_id'] ?? null;
+        $messageId = is_scalar($messageIdInput)
+            ? filter_var((string)$messageIdInput, FILTER_VALIDATE_INT)
+            : false;
         if ($messageId === false || $messageId === null || $messageId < 1) {
             $_SESSION['flash_message'] = 'Tin nhắn liên hệ không hợp lệ.';
+        } elseif ($isDeletingMessage) {
+            $db->execute('DELETE FROM contact_messages WHERE message_id = ?', [$messageId]);
+            $_SESSION['flash_message'] = 'Đã xóa tin nhắn liên hệ.';
         } else {
             $db->execute(
                 'UPDATE contact_messages SET is_read = 1 WHERE message_id = ?',
@@ -15,7 +22,23 @@ if (($actionName ?? null) === 'mark-contact-read') {
         }
     }
 
-    redirect(admin_url('?page=contact'));
+    $returnParams = ['page' => 'contact'];
+    $returnSearch = $_POST['q'] ?? '';
+    if (is_string($returnSearch) && $returnSearch !== '') {
+        $returnParams['q'] = $returnSearch;
+    }
+    $returnReadFilter = $_POST['status'] ?? '';
+    if (in_array($returnReadFilter, ['unread', 'read'], true)) {
+        $returnParams['status'] = $returnReadFilter;
+    }
+    $returnPageInput = $_POST['p'] ?? 1;
+    $returnPage = is_scalar($returnPageInput)
+        ? filter_var((string)$returnPageInput, FILTER_VALIDATE_INT)
+        : false;
+    if ($returnPage !== false && $returnPage !== null && $returnPage > 1) {
+        $returnParams['p'] = $returnPage;
+    }
+    redirect(admin_url('?' . http_build_query($returnParams)));
 }
 
 $pageTitle = 'Tin nhắn liên hệ - Trang quản lý';

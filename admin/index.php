@@ -77,9 +77,11 @@ $actions = [
     'update-order-status' => 'pages/orders/update.php',
     'delete-order' => 'pages/orders/delete.php',
     'mark-contact-read' => 'pages/contact/action.php',
+    'delete-contact-message' => 'pages/contact/action.php',
     'save-policy' => 'actions/save-policy.php',
     'delete-policy' => 'actions/delete-policy.php',
     'delete-favorite' => 'pages/favorites/action.php',
+    'delete-user-favorites' => 'pages/favorites/action.php',
 ];
 
 $actionPermissions = [
@@ -96,9 +98,11 @@ $actionPermissions = [
     'update-order-status' => 'orders',
     'delete-order' => 'orders',
     'mark-contact-read' => 'contact',
+    'delete-contact-message' => 'contact',
     'save-policy' => 'policies',
     'delete-policy' => 'policies',
     'delete-favorite' => 'favorites',
+    'delete-user-favorites' => 'favorites',
 ];
 
 $actionName = get_param('action');

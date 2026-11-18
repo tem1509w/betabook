@@ -22,11 +22,11 @@
   <div class="table-wrap">
     <table class="data-table">
       <thead>
-        <tr><th>Ngày gửi</th><th>Người gửi</th><th>Chủ đề</th><th>Trạng thái</th><th>Nội dung</th></tr>
+        <tr><th>Ngày gửi</th><th>Người gửi</th><th>Chủ đề</th><th>Trạng thái</th><th>Nội dung</th><th>Thao tác</th></tr>
       </thead>
       <tbody>
         <?php if (!$messages): ?>
-          <tr><td colspan="5">Chưa có tin nhắn liên hệ phù hợp.</td></tr>
+          <tr><td colspan="6">Chưa có tin nhắn liên hệ phù hợp.</td></tr>
         <?php else: ?>
           <?php foreach ($messages as $message): ?>
             <tr>
@@ -46,10 +46,24 @@
                     <form method="post" action="<?= e(admin_url('?action=mark-contact-read')) ?>">
                       <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
                       <input type="hidden" name="message_id" value="<?= (int)$message['message_id'] ?>">
+                      <input type="hidden" name="q" value="<?= e($search) ?>">
+                      <input type="hidden" name="status" value="<?= e($readFilter) ?>">
+                      <input type="hidden" name="p" value="<?= (int)$pageNumber ?>">
                       <button type="submit" class="button">Đánh dấu đã đọc</button>
                     </form>
                   <?php endif; ?>
                 </details>
+              </td>
+              <td>
+                <form method="post" action="<?= e(admin_url('?action=delete-contact-message')) ?>"
+                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa tin nhắn này?');">
+                  <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                  <input type="hidden" name="message_id" value="<?= (int)$message['message_id'] ?>">
+                  <input type="hidden" name="q" value="<?= e($search) ?>">
+                  <input type="hidden" name="status" value="<?= e($readFilter) ?>">
+                  <input type="hidden" name="p" value="<?= (int)$pageNumber ?>">
+                  <button type="submit" class="button outline small">Xóa</button>
+                </form>
               </td>
             </tr>
           <?php endforeach; ?>
