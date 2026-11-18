@@ -90,7 +90,8 @@ unset($_SESSION['flash_message']);
         <li>
           <a href="<?php echo e(url('404')); ?>">Dịch vụ</a>
           <ul class="submenu">
-            <li><a href="<?php echo e(url('404')); ?>">Hợp tác phân phối</a></li>
+            <li><a href="<?php echo e(url('distribution')); ?>">Hợp tác phân phối</a></li>
+            <li><a href="<?php echo e(url('recruitment')); ?>">Tuyển dụng</a></li>
             <li><a href="<?php echo e(url('404')); ?>">Nội dung số</a></li>
           </ul>
         </li>

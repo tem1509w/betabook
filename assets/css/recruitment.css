@@ -1,0 +1,76 @@
+.recruitment-benefits {
+  margin-bottom: 0;
+}
+
+.apply-filler-box {
+  align-self: stretch;
+}
+
+.apply-steps {
+  display: grid;
+  gap: 16px;
+  margin: 22px 0;
+}
+
+.apply-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.step-num {
+  flex: 0 0 42px;
+  color: var(--cam);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.apply-card h3 {
+  margin: 0 0 6px;
+  color: var(--den);
+}
+
+.apply-card p {
+  margin: 0 0 8px;
+}
+
+.email-tag {
+  display: inline-block;
+  margin: 2px 0 8px;
+  color: var(--do);
+  font-weight: 700;
+}
+
+.apply-card .apply-note {
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+}
+
+.support-direct {
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.support-direct p {
+  margin: 0;
+}
+
+.support-direct .button {
+  margin-top: 15px;
+}
+
+@media (max-width: 480px) {
+  .apply-card {
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .step-num {
+    flex-basis: 34px;
+    font-size: 18px;
+  }
+}

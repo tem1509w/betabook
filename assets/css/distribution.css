@@ -1,0 +1,71 @@
+.distribution-audience,
+.recruitment-benefits {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  color: #555;
+  line-height: 1.8;
+}
+
+.apply-filler-box {
+  align-self: stretch;
+}
+
+.process-steps {
+  display: grid;
+  gap: 18px;
+  margin: 24px 0;
+}
+
+.process-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.process-badge {
+  display: inline-flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--cam);
+  color: white;
+  font-weight: 700;
+}
+
+.process-item h4 {
+  margin: 3px 0 4px;
+  color: var(--den);
+}
+
+.process-item p {
+  margin: 0;
+}
+
+.partner-contact-card {
+  margin-top: 24px;
+  padding: 18px;
+  border-radius: 10px;
+  background: #fff8f3;
+}
+
+.partner-contact-card h3 {
+  margin: 0 0 12px;
+  color: var(--den);
+}
+
+.partner-contact-card p {
+  margin: 6px 0;
+}
+
+.partner-contact-card .button {
+  margin-top: 15px;
+}
+
+@media (max-width: 800px) {
+  .process-steps {
+    gap: 16px;
+  }
+}

@@ -33,6 +33,9 @@ $routes = [
     'login' => 'login/index.php',
     'account' => 'account/index.php',
     'introduction' => 'introduction/index.php',
+    'policies' => 'policies/index.php',
+    'distribution' => 'distribution/index.php',
+    'recruitment' => 'recruitment/index.php',
     '404' => '404/Index.php',
 ];
 

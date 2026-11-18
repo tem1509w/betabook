@@ -51,6 +51,9 @@ khẩu mẫu khi triển khai thật.
 |---|---|
 | Trang chủ | `/` |
 | Giới thiệu | `/?route=introduction` |
+| Chính sách | `/?route=policies` |
+| Hợp tác phân phối | `/?route=distribution` |
+| Tuyển dụng | `/?route=recruitment` |
 | Danh sách sách | `/?route=booklist` |
 | Chi tiết sách | `/?route=product-detail&id=33` |
 | Sự kiện/khuyến mãi | `/?route=discount-event` |
@@ -94,6 +97,8 @@ bằng `0`. Trang đăng nhập sử dụng username, không đăng nhập bằn
 | Quản lý tài khoản | `/admin/?page=users` |
 | Quản lý đơn hàng | `/admin/?page=orders` |
 | Tin nhắn liên hệ | `/admin/?page=contact` |
+| Quản lý chính sách | `/admin/?page=policies` |
+| Thêm/sửa chính sách | `/admin/?page=policy-form` |
 
 Các màn hình quản trị cần người dùng đăng nhập và có role ID `1` hoặc `2`;
 trên database mới, thứ tự role là `1` quản trị viên, `2` nhân viên và `3` khách
@@ -122,6 +127,7 @@ liệu chính gồm:
 - `home_content`, `home_reviews`, `home_coupons`, `home_events`: nội dung
   trang chủ và dữ liệu hiển thị mẫu.
 - `contact_messages`, `settings`: tin nhắn liên hệ và cấu hình.
+- `policies`: nội dung chính sách hiển thị công khai, được quản lý trong admin.
 
 `home_reviews` lưu lời nhận xét về BetaBook được hiển thị trên trang chủ.
 
@@ -148,6 +154,8 @@ Các migration cập nhật schema người dùng:
 - `database/migrations/20261111_orders_checkout.sql`: tạo bảng đơn hàng, chi tiết
   đơn, giỏ hàng theo tài khoản và thêm quyền menu Quản lý đơn hàng cho role
   `admin` và `staff`. Có thể chạy lại trên database đã cập nhật.
+- `database/migrations/20261118_public_policies.sql`: tạo nội dung chính sách
+  mẫu và chỉ cấp quyền xem, thêm, sửa, xóa chính sách cho `admin`.
 - `database/migrations/20261111_order_retention.sql`: thêm mốc lưu trữ đơn 30
   ngày và quyền Quản lý đơn hàng cho Staff. Chỉ chạy một lần sau migration đơn
   hàng nếu database đã có bảng `orders`; file deploy mới đã có sẵn thay đổi này.
