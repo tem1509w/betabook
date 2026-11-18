@@ -224,15 +224,6 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     INDEX idx_contact_messages_read (is_read)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS settings (
-    setting_id INT PRIMARY KEY AUTO_INCREMENT,
-    setting_key VARCHAR(191) NOT NULL,
-    setting_value TEXT,
-    description TEXT,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_settings_key (setting_key)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS admin_menu_items (
     menu_id INT PRIMARY KEY AUTO_INCREMENT,
     menu_key VARCHAR(50) NOT NULL,
@@ -459,8 +450,7 @@ INSERT INTO home_coupons
 ('SACH50K', 'Giảm 50.000₫ cho đơn từ 300.000₫', '2026-11-30', 'voucher.ico', 2, 1, 'fixed', 50000, 300000, 0),
 ('FREESHIP', 'Miễn phí vận chuyển toàn quốc', '2026-10-31', 'voucher.ico', 3, 1, 'free_shipping', 0, 0, 0),
 ('COMBO20', 'Giảm 20% khi mua combo 3 cuốn', '2026-12-15', 'voucher.ico', 4, 1, 'percentage', 20, 0, 3),
-('HSSV15', 'Ưu đãi 15% cho học sinh - sinh viên', '2026-12-31', 'voucher.ico', 5, 1, 'percentage', 15, 0, 0),
-('BETA50K', 'Giảm 50.000₫ cho hội viên mới', '2027-02-28', 'voucher.ico', 6, 1, 'fixed', 50000, 0, 0)
+('BETA50K', 'Giảm 50.000₫ cho hội viên mới', '2027-02-28', 'voucher.ico', 5, 1, 'fixed', 50000, 0, 0)
 ON DUPLICATE KEY UPDATE
     description = VALUES(description),
     expires_at = VALUES(expires_at),

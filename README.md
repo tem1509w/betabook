@@ -17,7 +17,7 @@ sản phẩm môn học đang trong quá trình hoàn thiện, không phải web
 
 1. Đặt project trong thư mục web server, ví dụ `C:\xampp\htdocs\betabook`.
 2. Khởi động Apache và MySQL/MariaDB.
-3. Import file [`database/betabook_bt03_deploy.sql`](database/betabook_bt03_deploy.sql)
+3. Import file [`database/betabook.sql`](database/betabook.sql)
    bằng phpMyAdmin hoặc MySQL client. File tạo/chọn database `betabook`, tạo
    schema và dữ liệu mẫu; không xóa các bảng hiện có.
 4. Cấu hình database nếu cần. Mặc định trong
@@ -122,7 +122,7 @@ cũng như xóa đơn; đơn đang chờ/xác nhận được xóa kèm hoàn t�
 
 ## Database và migrations
 
-File `database/betabook_bt03_deploy.sql` dùng để tạo database mới. Các nhóm dữ
+File `database/betabook.sql` dùng để tạo database mới. Các nhóm dữ
 liệu chính gồm:
 
 - `products`, `product_images`, `categories`, `publishers`: sách và danh mục.
@@ -133,7 +133,7 @@ liệu chính gồm:
   hàng lưu riêng theo tài khoản.
 - `home_content`, `home_reviews`, `home_coupons`, `home_events`: nội dung
   trang chủ và dữ liệu hiển thị mẫu.
-- `contact_messages`, `settings`: tin nhắn liên hệ và cấu hình.
+- `contact_messages`: tin nhắn liên hệ.
 - `policies`: nội dung chính sách hiển thị công khai, được quản lý trong admin.
 - `user_favorite_items`: sách yêu thích theo tài khoản.
 

@@ -1,12 +1,6 @@
 <main class="container cart-page">
   <h1 class="page-title">Giỏ hàng &amp; thanh toán</h1>
 
-  <ol class="steps" aria-label="Các bước đặt hàng">
-    <li class="on">1. Giỏ hàng</li>
-    <li>2. Thông tin &amp; thanh toán</li>
-    <li>3. Hoàn tất</li>
-  </ol>
-
   <?php if ($cartError !== null): ?>
     <p class="form-msg error" role="alert"><?php echo e($cartError); ?></p>
   <?php endif; ?>
