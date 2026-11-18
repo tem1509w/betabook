@@ -189,6 +189,17 @@ CREATE TABLE IF NOT EXISTS user_cart_items (
         REFERENCES products(product_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS user_favorite_items (
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, product_id),
+    CONSTRAINT fk_user_favorite_items_user FOREIGN KEY (user_id)
+        REFERENCES users(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_favorite_items_product FOREIGN KEY (product_id)
+        REFERENCES products(product_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Local demo account: username "demo", password "BetaBook2026!".
 INSERT IGNORE INTO users (username, email, password, full_name, role_id, is_active)
 SELECT
@@ -257,6 +268,7 @@ VALUES
     ('users', 'Quản lý tài khoản', 'users', 'users,users-form', 'bi bi-people', 0, 5, 1),
     ('orders', 'Quản lý đơn hàng', 'orders', 'orders', 'bi bi-receipt', 0, 25, 1),
     ('contact', 'Tin nhắn liên hệ', 'contact', 'contact', 'bi bi-envelope', 0, 26, 1),
+    ('favorites', 'Sản phẩm yêu thích', 'favorites', 'favorites', 'bi bi-heart', 0, 27, 1),
     ('public', 'Quay lại Public', NULL, '', 'bi bi-box-arrow-up-right', 1, 90, 1)
 ON DUPLICATE KEY UPDATE
     label = VALUES(label), page_key = VALUES(page_key), active_pages = VALUES(active_pages),
@@ -284,6 +296,13 @@ SELECT r.role_id, m.menu_id, 1
 FROM roles r
 CROSS JOIN admin_menu_items m
 WHERE r.role_key = 'admin' AND m.menu_key = 'contact';
+
+INSERT INTO admin_menu_permissions (role_id, menu_id, can_view)
+SELECT r.role_id, m.menu_id, 1
+FROM roles r
+CROSS JOIN admin_menu_items m
+WHERE r.role_key IN ('admin', 'staff') AND m.menu_key = 'favorites'
+ON DUPLICATE KEY UPDATE can_view = 1;
 
 CREATE TABLE IF NOT EXISTS home_content (
     content_key VARCHAR(100) PRIMARY KEY,

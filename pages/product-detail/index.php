@@ -142,17 +142,21 @@ $soldLabel = $soldQuantity >= 1000
           <button type="submit" name="intent" value="add" class="button outline">Thêm vào giỏ</button>
           <button type="submit" name="intent" value="buy_now" class="button" data-go-cart="true">Mua ngay</button>
           <div class="wish-control">
-            <button type="button" class="wish" title="Yêu thích" aria-label="Yêu thích"
-                    aria-expanded="false" aria-controls="wish-message-<?php echo (int)$product['product_id']; ?>">
-              <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
-            </button>
-            <div class="wish-message" id="wish-message-<?php echo (int)$product['product_id']; ?>" role="status" hidden>
-              <?php if (empty($_SESSION['user'])): ?>
-                Vui lòng đăng nhập để wishlist sản phẩm.
-              <?php else: ?>
-                Tính năng wishlist sẽ được bổ sung sau.
-              <?php endif; ?>
-            </div>
+            <?php if (!empty($_SESSION['user'])): ?>
+              <button type="submit" class="wish" name="favorite_action" value="add"
+                      formaction="<?php echo e(url('favorite')); ?>" formnovalidate
+                      title="Yêu thích" aria-label="Thêm vào sản phẩm yêu thích">
+                <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
+              </button>
+            <?php else: ?>
+              <button type="button" class="wish" title="Yêu thích" aria-label="Yêu thích"
+                      aria-expanded="false" aria-controls="wish-message-<?php echo (int)$product['product_id']; ?>">
+                <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
+              </button>
+              <div class="wish-message" id="wish-message-<?php echo (int)$product['product_id']; ?>" role="status" hidden>
+                Vui lòng <a href="<?php echo e(url('login')); ?>">đăng nhập hoặc đăng ký</a> để sử dụng tính năng yêu thích.
+              </div>
+            <?php endif; ?>
           </div>
         </div>
       </form>
@@ -169,7 +173,28 @@ $soldLabel = $soldQuantity >= 1000
   </section>
 
   <script>
-  document.querySelectorAll('.wish').forEach((button) => {
+  let flashMessageTimeout;
+  const showFlashMessage = (text) => {
+    let flashMessage = document.getElementById('flash-message');
+    if (!flashMessage) {
+      flashMessage = document.createElement('div');
+      flashMessage.id = 'flash-message';
+      flashMessage.className = 'flash-message';
+      flashMessage.setAttribute('role', 'status');
+      flashMessage.setAttribute('aria-live', 'polite');
+      document.body.appendChild(flashMessage);
+    }
+
+    flashMessage.textContent = text;
+    flashMessage.classList.remove('is-hiding');
+    window.clearTimeout(flashMessageTimeout);
+    flashMessageTimeout = window.setTimeout(() => {
+      flashMessage.classList.add('is-hiding');
+      window.setTimeout(() => flashMessage.remove(), 250);
+    }, 3000);
+  };
+
+  document.querySelectorAll('button.wish[type="button"]').forEach((button) => {
     const message = document.getElementById(button.getAttribute('aria-controls'));
     if (!message) return;
 
@@ -186,6 +211,48 @@ $soldLabel = $soldQuantity >= 1000
     form.appendChild(message);
 
     form.addEventListener('submit', async (event) => {
+      if (event.submitter && event.submitter.name === 'favorite_action') {
+        event.preventDefault();
+        message.textContent = 'Đang thêm vào danh sách yêu thích...';
+        try {
+          const body = new FormData(form);
+          body.set('favorite_action', 'add');
+          const response = await fetch(event.submitter.formAction, {
+            method: 'POST',
+            body,
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin'
+          });
+          const result = await response.json();
+          message.textContent = result.message || 'Không thể cập nhật danh sách yêu thích.';
+
+          if (result.status === 'success') {
+            const favoriteLink = document.querySelector('.tools a[title="Sản phẩm yêu thích"]');
+            if (favoriteLink) {
+              const favoriteCount = Number(result.favorite_count) || 0;
+              favoriteLink.setAttribute('aria-label', 'Sản phẩm yêu thích, ' + favoriteCount + ' sản phẩm');
+              let badge = favoriteLink.querySelector('.cart-count');
+              if (!badge && favoriteCount > 0) {
+                badge = document.createElement('span');
+                badge.className = 'cart-count';
+                badge.setAttribute('aria-hidden', 'true');
+                favoriteLink.appendChild(badge);
+              }
+              if (badge) {
+                if (favoriteCount > 0) {
+                  badge.textContent = favoriteCount;
+                } else {
+                  badge.remove();
+                }
+              }
+            }
+            showFlashMessage(result.message || 'Đã thêm sách vào danh sách yêu thích.');
+          }
+        } catch (error) {
+          message.textContent = 'Không thể kết nối máy chủ. Vui lòng thử lại.';
+        }
+        return;
+      }
       event.preventDefault();
       const goToCart = Boolean(event.submitter && event.submitter.dataset.goCart === 'true');
       message.textContent = 'Đang thêm sách vào giỏ...';

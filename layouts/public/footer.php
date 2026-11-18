@@ -24,7 +24,7 @@
       <h4>THÔNG TIN</h4>
       <ul>
         <li><a href="<?php echo e(url('introduction')); ?>">Giới thiệu</a></li>
-        <li><a href="<?php echo e(url('404')); ?>">Hệ thống nhà sách</a></li>
+        <li><a href="<?php echo e(url('user-guide')); ?>">Hướng dẫn sử dụng</a></li>
         <li><a href="<?php echo e(url('recruitment')); ?>">Tuyển dụng</a></li>
         <li><a href="<?php echo e(url('distribution')); ?>">Hợp tác phân phối</a></li>
       </ul>

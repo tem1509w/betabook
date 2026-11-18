@@ -4,6 +4,11 @@
  */
 require_once __DIR__ . '/../../helpers/cart.php';
 $headerCartCount = cart_count();
+$headerFavoriteCount = 0;
+if (!empty($_SESSION['user'])) {
+    require_once __DIR__ . '/../../helpers/favorites.php';
+    $headerFavoriteCount = favorite_count();
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -88,11 +93,11 @@ unset($_SESSION['flash_message']);
           <?php endif; ?>
         </li>
         <li>
-          <a href="<?php echo e(url('404')); ?>">Dịch vụ</a>
+          <a href="<?php echo e(url('service')); ?>">Dịch vụ</a>
           <ul class="submenu">
             <li><a href="<?php echo e(url('distribution')); ?>">Hợp tác phân phối</a></li>
             <li><a href="<?php echo e(url('recruitment')); ?>">Tuyển dụng</a></li>
-            <li><a href="<?php echo e(url('404')); ?>">Nội dung số</a></li>
+            <li><a href="<?php echo e(url('service') . '#digital-content'); ?>">Nội dung số</a></li>
           </ul>
         </li>
         <li><a href="<?php echo e(url('discount-event')); ?>">Mã giảm - Sự kiện</a></li>
@@ -138,9 +143,13 @@ unset($_SESSION['flash_message']);
   </a>
 
   <?php if (!empty($_SESSION['user'])): ?>
-    <button class="icon-button wishlist-header-button" type="button" title="Yêu thích" aria-label="Yêu thích">
+    <a class="icon-button wishlist-header-button" href="<?php echo e(url('favorite')); ?>"
+       title="Sản phẩm yêu thích" aria-label="Sản phẩm yêu thích, <?php echo $headerFavoriteCount; ?> sản phẩm">
       <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
-    </button>
+      <?php if ($headerFavoriteCount > 0): ?>
+        <span class="cart-count" aria-hidden="true"><?php echo $headerFavoriteCount; ?></span>
+      <?php endif; ?>
+    </a>
   <?php endif; ?>
 
 </div>

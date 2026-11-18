@@ -60,6 +60,7 @@ $routes = [
     'contact' => 'pages/contact/index.php',
     'policies' => 'pages/policies/index.php',
     'policy-form' => 'pages/policies/form.php',
+    'favorites' => 'pages/favorites/index.php',
 ];
 
 $actions = [
@@ -78,6 +79,7 @@ $actions = [
     'mark-contact-read' => 'pages/contact/action.php',
     'save-policy' => 'actions/save-policy.php',
     'delete-policy' => 'actions/delete-policy.php',
+    'delete-favorite' => 'pages/favorites/action.php',
 ];
 
 $actionPermissions = [
@@ -96,6 +98,7 @@ $actionPermissions = [
     'mark-contact-read' => 'contact',
     'save-policy' => 'policies',
     'delete-policy' => 'policies',
+    'delete-favorite' => 'favorites',
 ];
 
 $actionName = get_param('action');
@@ -134,6 +137,7 @@ $pagePermissions = [
     'contact' => 'contact',
     'policies' => 'policies',
     'policy-form' => 'policies',
+    'favorites' => 'favorites',
 ];
 
 if (is_string($page) && isset($routes[$page])

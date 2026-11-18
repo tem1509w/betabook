@@ -36,6 +36,9 @@ $routes = [
     'policies' => 'policies/index.php',
     'distribution' => 'distribution/index.php',
     'recruitment' => 'recruitment/index.php',
+    'service' => 'service/index.php',
+    'user-guide' => 'user-guide/index.php',
+    'favorite' => 'favorite/index.php',
     '404' => '404/Index.php',
 ];
 

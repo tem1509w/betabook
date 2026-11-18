@@ -52,6 +52,9 @@ khẩu mẫu khi triển khai thật.
 | Trang chủ | `/` |
 | Giới thiệu | `/?route=introduction` |
 | Chính sách | `/?route=policies` |
+| Dịch vụ | `/?route=service` |
+| Hướng dẫn sử dụng | `/?route=user-guide` |
+| Sản phẩm yêu thích | `/?route=favorite` |
 | Hợp tác phân phối | `/?route=distribution` |
 | Tuyển dụng | `/?route=recruitment` |
 | Danh sách sách | `/?route=booklist` |
@@ -83,6 +86,9 @@ khẩu sau khi nhập mật khẩu hiện tại; chọn avatar trong
 `assets/images/pfp-icon-set/`; xem lịch sử đơn hàng; và đăng xuất.
 Số điện thoại tài khoản là tùy chọn; nếu nhập phải gồm 10 hoặc 11 chữ số và bắt đầu
 bằng `0`. Trang đăng nhập sử dụng username, không đăng nhập bằng số điện thoại.
+Danh sách yêu thích chỉ dành cho tài khoản đã đăng nhập và được lưu theo tài
+khoản. Khách chưa đăng nhập không thấy biểu tượng yêu thích trên header; nút
+trái tim ở trang chi tiết sẽ nhắc đăng nhập hoặc đăng ký.
 
 ### Admin
 
@@ -99,6 +105,7 @@ bằng `0`. Trang đăng nhập sử dụng username, không đăng nhập bằn
 | Tin nhắn liên hệ | `/admin/?page=contact` |
 | Quản lý chính sách | `/admin/?page=policies` |
 | Thêm/sửa chính sách | `/admin/?page=policy-form` |
+| Sản phẩm yêu thích | `/admin/?page=favorites` |
 
 Các màn hình quản trị cần người dùng đăng nhập và có role ID `1` hoặc `2`;
 trên database mới, thứ tự role là `1` quản trị viên, `2` nhân viên và `3` khách
@@ -128,6 +135,7 @@ liệu chính gồm:
   trang chủ và dữ liệu hiển thị mẫu.
 - `contact_messages`, `settings`: tin nhắn liên hệ và cấu hình.
 - `policies`: nội dung chính sách hiển thị công khai, được quản lý trong admin.
+- `user_favorite_items`: sách yêu thích theo tài khoản.
 
 `home_reviews` lưu lời nhận xét về BetaBook được hiển thị trên trang chủ.
 
@@ -156,6 +164,11 @@ Các migration cập nhật schema người dùng:
   `admin` và `staff`. Có thể chạy lại trên database đã cập nhật.
 - `database/migrations/20261118_public_policies.sql`: tạo nội dung chính sách
   mẫu và chỉ cấp quyền xem, thêm, sửa, xóa chính sách cho `admin`.
+- `database/migrations/20261118_user_favorites.sql`: tạo bảng yêu thích và cấp
+  quyền xem, xóa mục yêu thích cho `admin` và `staff`. Chạy sau khi đã có các
+  bảng `users`, `products`, `roles`, `admin_menu_items` và
+  `admin_menu_permissions` nếu database hiện có chưa chứa chức năng này. Schema
+  triển khai mới đã có bảng và menu yêu thích.
 - `database/migrations/20261111_order_retention.sql`: thêm mốc lưu trữ đơn 30
   ngày và quyền Quản lý đơn hàng cho Staff. Chỉ chạy một lần sau migration đơn
   hàng nếu database đã có bảng `orders`; file deploy mới đã có sẵn thay đổi này.

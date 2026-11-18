@@ -1,0 +1,45 @@
+.fav-page { padding-top: 30px; padding-bottom: 50px; }
+.fav-page .page-title { font-size: 28px; color: var(--den); margin: 0 0 8px; }
+.fav-page .page-subtitle { color: var(--chu); margin: 0 0 24px; font-size: 15px; }
+.fav-page .button { border: 0; cursor: pointer; font-family: inherit; }
+.fav-page .button.outline { background: white; color: var(--cam); border: 1px solid var(--cam); }
+.fav-page .button.outline:hover { background: var(--cam); color: white; }
+.fav-box { background: white; border: 1px solid #e5e5e5; border-radius: 10px; padding: 24px; }
+.fav-box h2 { font-size: 18px; color: var(--den); margin-bottom: 16px; }
+.fav-head, .fav-item {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 140px 70px;
+  gap: 12px;
+  align-items: center;
+}
+.fav-head { font-weight: bold; color: var(--den); padding-bottom: 10px; border-bottom: 2px solid var(--xam-nhat); }
+.fav-item { padding: 16px 0; border-bottom: 1px solid #eeeeee; }
+.fav-item-info { display: flex; align-items: center; gap: 14px; }
+.fav-item-img { width: 70px; height: 90px; border-radius: 6px; flex-shrink: 0; }
+.fav-item-info h3 { font-size: 15px; color: var(--den); margin-bottom: 2px; }
+.fav-item-info p { margin: 0; font-size: 13px; }
+.stock { font-size: 13px; font-weight: bold; }
+.stock.in { color: #2e9e3e; }
+.stock.out { color: var(--do); }
+.btn-add-cart {
+  display: inline-block; padding: 8px 16px; background: var(--cam); color: white;
+  border: 0; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;
+  text-align: center; white-space: nowrap;
+}
+.btn-add-cart:hover { opacity: .85; }
+.btn-add-cart.disabled { background: #cccccc; cursor: not-allowed; pointer-events: none; }
+.fav-remove { border: 0; background: none; color: #999999; cursor: pointer; font-size: 13px; }
+.fav-remove:hover { color: var(--do); }
+.fav-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.fav-actions div { display: flex; gap: 10px; flex-wrap: wrap; }
+.fav-empty { text-align: center; padding: 60px 20px; }
+.fav-empty-icon { font-size: 64px; margin-bottom: 16px; opacity: .5; }
+.fav-empty h3 { font-size: 20px; color: var(--den); margin-bottom: 8px; }
+.fav-empty p { margin-bottom: 20px; }
+@media (max-width: 800px) {
+  .fav-head { display: none; }
+  .fav-item { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .fav-item-info { grid-column: 1 / -1; }
+  .fav-box { padding: 16px; }
+  .fav-page .page-title { font-size: 22px; }
+}
