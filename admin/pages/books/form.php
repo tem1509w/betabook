@@ -13,7 +13,8 @@
         </div>
     <?php endif; ?>
 
-    <form action="<?= admin_url('?action=save-book') ?>" method="POST" class="admin-form">
+    <form action="<?= admin_url('?action=save-book') ?>" method="POST" enctype="multipart/form-data" class="admin-form">
+        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
         <input type="hidden" name="book_id" value="<?= $bookId ?>">
         <div class="form-group">
             <label for="title">Tên sách <span class="required">*</span></label>
@@ -61,9 +62,81 @@
             <label for="stock_quantity">Số lượng tồn</label>
             <input id="stock_quantity" type="number" name="stock_quantity" value="<?= e((string)($data['stock_quantity'] ?? '0')) ?>" min="0">
         </div>
-        <div class="form-group">
-            <label for="cover_image">Ảnh bìa (tên file)</label>
-            <input id="cover_image" type="text" name="cover_image" value="<?= e((string)($data['cover_image'] ?? '')) ?>">
+        <?php
+        $primaryImageSlot = 0;
+        foreach ($bookImages as $imageSlot => $bookImage) {
+            if ((int)($bookImage['is_primary'] ?? 0) === 1) {
+                $primaryImageSlot = (int)$imageSlot;
+                break;
+            }
+        }
+        $postedPrimarySlot = is_scalar($data['primary_slot'] ?? null)
+            ? filter_var($data['primary_slot'], FILTER_VALIDATE_INT)
+            : false;
+        if ($postedPrimarySlot !== false && $postedPrimarySlot >= 0 && $postedPrimarySlot < 4) {
+            $primaryImageSlot = $postedPrimarySlot;
+        }
+        $postedRemoveSlots = [];
+        if (is_array($data['remove_image_slots'] ?? null)) {
+            foreach ($data['remove_image_slots'] as $postedRemoveSlot) {
+                if (!is_scalar($postedRemoveSlot)) {
+                    continue;
+                }
+                $postedRemoveSlot = filter_var($postedRemoveSlot, FILTER_VALIDATE_INT);
+                if ($postedRemoveSlot !== false && $postedRemoveSlot >= 0 && $postedRemoveSlot < 4) {
+                    $postedRemoveSlots[] = $postedRemoveSlot;
+                }
+            }
+        }
+        ?>
+        <div class="form-group book-images-field">
+            <label>Hình ảnh sản phẩm</label>
+            <p class="book-images-help">Tối đa 4 ảnh (gồm ảnh bìa), JPG/PNG/WEBP, tối đa 2 MB mỗi ảnh. Ảnh mới sẽ thay ảnh ở cùng khung.</p>
+            <div class="book-image-grid">
+                <?php for ($imageSlot = 0; $imageSlot < 4; $imageSlot++): ?>
+                    <?php
+                    $bookImage = $bookImages[$imageSlot] ?? null;
+                    $imageUrl = $bookImage
+                        ? product_image_src(['image_url' => $bookImage['image_url']])
+                        : '';
+                    ?>
+                    <div class="book-image-slot">
+                        <div class="book-image-preview">
+                            <img
+                                <?= $imageUrl !== '' ? 'src="' . e($imageUrl) . '"' : '' ?>
+                                data-original-src="<?= e($imageUrl) ?>"
+                                alt="Ảnh sản phẩm <?= $imageSlot + 1 ?>"
+                                <?= $imageUrl === '' ? 'hidden' : '' ?>>
+                            <span class="book-image-placeholder" <?= $imageUrl !== '' ? 'hidden' : '' ?>>
+                                Ảnh <?= $imageSlot + 1 ?>
+                            </span>
+                        </div>
+                        <label class="book-image-file-label" for="product_image_<?= $imageSlot ?>">
+                            <?= $imageUrl !== '' ? 'Thay ảnh' : 'Chọn ảnh' ?>
+                        </label>
+                        <input
+                            id="product_image_<?= $imageSlot ?>"
+                            class="book-image-file"
+                            type="file"
+                            name="product_images[<?= $imageSlot ?>]"
+                            accept="image/jpeg,image/png,image/webp">
+                        <?php if ($bookImage): ?>
+                            <label class="book-image-remove">
+                                <input type="checkbox" name="remove_image_slots[]" value="<?= $imageSlot ?>" <?= in_array($imageSlot, $postedRemoveSlots, true) ? 'checked' : '' ?>>
+                                Xóa ảnh hiện tại
+                            </label>
+                        <?php endif; ?>
+                        <label class="book-image-primary">
+                            <input
+                                type="radio"
+                                name="primary_slot"
+                                value="<?= $imageSlot ?>"
+                                <?= $primaryImageSlot === $imageSlot ? 'checked' : '' ?>>
+                            Ảnh bìa chính
+                        </label>
+                    </div>
+                <?php endfor; ?>
+            </div>
         </div>
         <div class="form-group">
             <label for="publication_year">Năm xuất bản</label>
@@ -105,3 +178,37 @@
         <a href="<?= admin_url('?page=books') ?>" class="btn-cancel">Hủy</a>
     </form>
 </div>
+
+<script>
+document.querySelectorAll('.book-image-file').forEach((input) => {
+    input.addEventListener('change', () => {
+        const slot = input.closest('.book-image-slot');
+        const preview = slot.querySelector('.book-image-preview img');
+        const placeholder = slot.querySelector('.book-image-placeholder');
+        const removeCheckbox = slot.querySelector('.book-image-remove input');
+        const file = input.files && input.files[0];
+
+        if (preview.dataset.previewUrl) {
+            URL.revokeObjectURL(preview.dataset.previewUrl);
+            delete preview.dataset.previewUrl;
+        }
+        if (!file) {
+            if (preview.dataset.originalSrc === '') {
+                preview.removeAttribute('src');
+                preview.hidden = true;
+            } else {
+                preview.src = preview.dataset.originalSrc;
+                preview.hidden = false;
+            }
+            placeholder.hidden = !preview.hidden;
+            return;
+        }
+
+        preview.dataset.previewUrl = URL.createObjectURL(file);
+        preview.src = preview.dataset.previewUrl;
+        preview.hidden = false;
+        placeholder.hidden = true;
+        if (removeCheckbox) removeCheckbox.checked = false;
+    });
+});
+</script>

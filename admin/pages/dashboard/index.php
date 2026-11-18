@@ -3,9 +3,9 @@
         <div>
             <p class="dashboard-eyebrow">BETA BOOK · QUẢN TRỊ</p>
             <h2>Tổng quan</h2>
-            <p class="dashboard-subtitle">Tình hình danh mục sách và tồn kho hiện tại.</p>
+            <p class="dashboard-subtitle">Theo dõi hoạt động kinh doanh, sách và tồn kho.</p>
         </div>
-        <a class="dashboard-refresh" href="<?= admin_url('?page=dashboard') ?>">
+        <a class="dashboard-refresh" href="<?= e(admin_url('?page=dashboard' . ($isDashboardOwner ? '&revenue_period=' . urlencode($revenuePeriod) : ''))) ?>">
             <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
             Cập nhật
         </a>
@@ -22,17 +22,64 @@
             <div><p>Danh mục hoạt động</p><strong><?= number_format((int)$dashboardStats['active_categories']) ?></strong></div>
             <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
         </article>
-        <article class="dashboard-stat">
-            <div class="dashboard-stat-icon green"><i class="bi bi-stars" aria-hidden="true"></i></div>
-            <div><p>Sách bán chạy</p><strong><?= number_format((int)$dashboardStats['best_sellers']) ?></strong></div>
-            <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
-        </article>
-        <article class="dashboard-stat">
-            <div class="dashboard-stat-icon purple"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
-            <div><p>Lượt bán ghi nhận</p><strong><?= number_format((int)$dashboardStats['units_sold']) ?></strong></div>
-            <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
-        </article>
+        <?php if ($isDashboardOwner): ?>
+            <article class="dashboard-stat">
+                <div class="dashboard-stat-icon green"><i class="bi bi-stars" aria-hidden="true"></i></div>
+                <div><p>Sách bán chạy</p><strong><?= number_format((int)$dashboardStats['best_sellers']) ?></strong></div>
+                <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
+            </article>
+            <article class="dashboard-stat">
+                <div class="dashboard-stat-icon purple"><i class="bi bi-box-seam" aria-hidden="true"></i></div>
+                <div><p>Lượt bán ghi nhận</p><strong><?= number_format((int)$dashboardStats['units_sold']) ?></strong></div>
+                <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
+            </article>
+        <?php endif; ?>
+        <?php if ($isDashboardOwner): ?>
+            <article class="dashboard-stat">
+                <div class="dashboard-stat-icon orange"><i class="bi bi-cash-stack" aria-hidden="true"></i></div>
+                <div><p>Tổng doanh thu</p><strong class="dashboard-revenue-total"><?= money($totalRevenue) ?></strong></div>
+                <span class="bi bi-arrow-up-right stat-corner" aria-hidden="true"></span>
+            </article>
+        <?php endif; ?>
     </div>
+
+    <?php if ($isDashboardOwner): ?>
+        <section class="dashboard-card revenue-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h3>Biểu đồ doanh thu</h3>
+                    <p>Đơn hàng đã hoàn tất và thanh toán thành công.</p>
+                </div>
+                <nav class="revenue-periods" aria-label="Khoảng thời gian doanh thu">
+                    <?php foreach (['day' => 'Ngày', 'month' => 'Tháng', 'year' => 'Năm'] as $periodKey => $periodLabel): ?>
+                        <a class="<?= $revenuePeriod === $periodKey ? 'active' : '' ?>"
+                           href="<?= e(admin_url('?' . http_build_query(['page' => 'dashboard', 'revenue_period' => $periodKey]))) ?>"
+                           <?= $revenuePeriod === $periodKey ? 'aria-current="page"' : '' ?>>
+                            <?= e($periodLabel) ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            </div>
+            <div class="revenue-chart revenue-chart-<?= e($revenuePeriod) ?>">
+                <?php foreach ($revenueChart as $revenuePoint): ?>
+                    <?php $barHeight = $maxRevenue > 0 ? (int)round($revenuePoint['revenue'] / $maxRevenue * 100) : 0; ?>
+                    <div class="revenue-chart-column">
+                        <div class="revenue-chart-track">
+                            <span class="revenue-chart-bar"
+                                  role="img"
+                                  style="height: <?= $barHeight ?>%"
+                                  title="<?= e($revenuePoint['label'] . ': ' . money($revenuePoint['revenue'])) ?>"
+                                  aria-label="<?= e($revenuePoint['label'] . ': ' . money($revenuePoint['revenue'])) ?>"></span>
+                        </div>
+                        <small><?= e($revenuePoint['label']) ?></small>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <?php if ($maxRevenue <= 0): ?>
+                <p class="revenue-empty">Chưa có doanh thu trong khoảng thời gian này.</p>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 
     <div class="dashboard-grid">
         <section class="dashboard-card recent-books-card">
@@ -119,10 +166,41 @@
                 </div>
             <?php endif; ?>
         </section>
-
-        <aside class="dashboard-note">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <div><strong>Quản lý đơn hàng</strong><p>Phần đơn hàng và doanh thu sẽ hiển thị khi module đơn hàng được kết nối. Dashboard hiện chỉ tổng hợp dữ liệu đã có trong danh mục sách.</p></div>
-        </aside>
     </div>
+
+    <?php if ($isDashboardOwner): ?>
+        <section class="dashboard-card top-selling-card">
+            <div class="dashboard-card-heading">
+                <div>
+                    <h3>Top 5 sách bán chạy</h3>
+                    <p>Xếp theo số lượng đã bán được ghi nhận.</p>
+                </div>
+                <i class="bi bi-trophy dashboard-heading-icon" aria-hidden="true"></i>
+            </div>
+            <div class="dashboard-table-wrap">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr><th>#</th><th>Sách</th><th>Mã sách</th><th>Lượt bán</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($topSellingBooks as $rank => $book): ?>
+                            <tr>
+                                <td><span class="top-selling-rank"><?= $rank + 1 ?></span></td>
+                                <td>
+                                    <a class="dashboard-book-title" href="<?= e(admin_url('?page=book-form&id=' . (int)$book['product_id'])) ?>">
+                                        <?= e($book['title']) ?>
+                                    </a>
+                                </td>
+                                <td><?= e($book['product_code']) ?></td>
+                                <td><strong class="top-selling-count"><?= number_format((int)$book['sold_quantity']) ?> cuốn</strong></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (!$topSellingBooks): ?>
+                            <tr><td colspan="4" class="dashboard-empty">Chưa có lượt bán được ghi nhận.</td></tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    <?php endif; ?>
 </div>

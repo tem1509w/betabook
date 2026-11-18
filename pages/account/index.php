@@ -96,7 +96,8 @@
             </div>
             <div class="field">
               <label for="phone">Số điện thoại</label>
-              <input type="tel" id="phone" name="phone" maxlength="20"
+              <input type="tel" id="phone" name="phone" inputmode="numeric" minlength="10" maxlength="11"
+                     pattern="0[0-9]{9,10}" title="Nhập 10 hoặc 11 chữ số, bắt đầu bằng 0."
                      value="<?php echo e((string)($profileData['phone'] ?? '')); ?>" autocomplete="tel">
             </div>
           </div>

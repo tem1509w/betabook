@@ -15,17 +15,7 @@ require_once __DIR__ . '/../helpers/common.php';
 
 $db = db();
 
-$sessionUserId = filter_var($_SESSION['user']['user_id'] ?? null, FILTER_VALIDATE_INT);
-$adminRole = $sessionUserId !== false && $sessionUserId !== null && $sessionUserId > 0
-    ? $db->fetchOne(
-        'SELECT r.role_id, r.role_key, r.role_name
-         FROM users u
-         INNER JOIN roles r ON r.role_id = u.role_id
-         WHERE u.user_id = ? AND u.is_active = 1 AND r.is_active = 1
-           AND u.role_id IN (1, 2)',
-        [$sessionUserId]
-    )
-    : false;
+$adminRole = security_get_admin_role($db, $_SESSION['user']['user_id'] ?? null);
 
 if (!$adminRole) {
     http_response_code(403);
@@ -104,12 +94,12 @@ $actionPermissions = [
 
 $actionName = get_param('action');
 if (is_string($actionName) && isset($actions[$actionName])) {
-    if ($actionName === 'delete-user' && $adminRoleKey !== 'admin') {
+    if ($actionName === 'delete-user' && !security_user_has_role($adminRoleKey, ['admin'])) {
         http_response_code(403);
         exit('Chỉ quản trị viên mới được xóa tài khoản.');
     }
 
-    if (!in_array($actionPermissions[$actionName], $allowedMenuKeys, true)) {
+    if (!security_has_admin_permission($allowedMenuKeys, $actionPermissions[$actionName])) {
         http_response_code(403);
         exit('Bạn không có quyền thực hiện thao tác này.');
     }
@@ -139,7 +129,7 @@ $pagePermissions = [
 ];
 
 if (is_string($page) && isset($routes[$page])
-    && !in_array($pagePermissions[$page], $allowedMenuKeys, true)) {
+    && !security_has_admin_permission($allowedMenuKeys, $pagePermissions[$page])) {
     http_response_code(403);
     exit('Bạn không có quyền truy cập trang này.');
 }

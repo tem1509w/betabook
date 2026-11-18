@@ -1,7 +1,6 @@
 <?php
 $categoryId = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT) ?: 0;
 $name = trim(is_string($_POST['name'] ?? null) ? $_POST['name'] : '');
-$description = trim(is_string($_POST['description'] ?? null) ? $_POST['description'] : '');
 $parentId = filter_input(INPUT_POST, 'parent_id', FILTER_VALIDATE_INT) ?: 0;
 $isActive = isset($_POST['is_active']) ? 1 : 0;
 
@@ -37,13 +36,13 @@ if ($errors) {
 $parentId = $parentId > 0 ? $parentId : null;
 if ($categoryId > 0) {
     $result = $db->execute(
-        'UPDATE categories SET name = ?, slug = ?, parent_id = ?, description = ?, is_active = ? WHERE category_id = ?',
-        [$name, $slug, $parentId, $description, $isActive, $categoryId]
+        'UPDATE categories SET name = ?, slug = ?, parent_id = ?, is_active = ? WHERE category_id = ?',
+        [$name, $slug, $parentId, $isActive, $categoryId]
     );
 } else {
     $result = $db->execute(
-        'INSERT INTO categories (name, slug, parent_id, description, is_active) VALUES (?, ?, ?, ?, ?)',
-        [$name, $slug, $parentId, $description, $isActive]
+        'INSERT INTO categories (name, slug, parent_id, is_active) VALUES (?, ?, ?, ?)',
+        [$name, $slug, $parentId, $isActive]
     );
 }
 

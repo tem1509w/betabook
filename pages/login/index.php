@@ -21,8 +21,8 @@
           <button type="submit" class="button full">Đăng xuất</button>
         </form>
       <?php else: ?>
-        <input type="radio" name="login-mode" id="login-tab" checked>
-        <input type="radio" name="login-mode" id="register-tab">
+        <input type="radio" name="login-mode" id="login-tab" <?= $loginMode === 'login' ? 'checked' : '' ?>>
+        <input type="radio" name="login-mode" id="register-tab" <?= $loginMode === 'register' ? 'checked' : '' ?>>
         <div class="tabs">
           <label for="login-tab">Đăng nhập</label>
           <label for="register-tab">Đăng ký</label>
@@ -40,6 +40,7 @@
           <?php endif; ?>
 
           <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
+          <input type="hidden" name="login_action" value="login">
           <div class="field">
             <label for="username">Tên đăng nhập</label>
             <input
@@ -63,41 +64,80 @@
               placeholder="Nhập mật khẩu">
           </div>
           <button type="submit" class="button full">Đăng nhập</button>
-          <div class="social-login">
-            <button type="button" class="social-button">
-              <img class="social-mark" src="<?php echo e(asset('images/google.png')); ?>" alt="">
-              <span>Tiếp tục với Google</span>
-            </button>
-          </div>
         </form>
 
-        <div id="register-form" class="register-form">
+        <form id="register-form" class="register-form" action="<?php echo e(url('login')); ?>" method="post">
           <h1>Tạo tài khoản</h1>
           <p class="sub">Đăng ký để mua sách và nhận ưu đãi từ BetaBook.</p>
+          <?php foreach ($registerErrors as $error): ?>
+            <p class="login-error" role="alert"><?php echo e($error); ?></p>
+          <?php endforeach; ?>
+
+          <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
+          <input type="hidden" name="login_action" value="register">
           <div class="field">
-            <label for="register-username">Username</label>
-            <input type="text" id="register-username" placeholder="Nhập username">
+            <label for="register-username">Tên đăng nhập</label>
+            <input
+              type="text"
+              id="register-username"
+              name="username"
+              value="<?php echo e($registerUsername); ?>"
+              autocomplete="username"
+              maxlength="191"
+              required
+              placeholder="Nhập tên đăng nhập">
           </div>
           <div class="field">
-            <label for="register-email">Gmail</label>
-            <input type="email" id="register-email" placeholder="Ví dụ: tenban@gmail.com">
+            <label for="register-email">Email</label>
+            <input
+              type="email"
+              id="register-email"
+              name="email"
+              value="<?php echo e($registerEmail); ?>"
+              autocomplete="email"
+              maxlength="191"
+              required
+              placeholder="Nhập email">
           </div>
           <div class="field">
             <label for="register-phone">Số điện thoại</label>
-            <input type="tel" id="register-phone" placeholder="Ví dụ: 0912345678">
+            <input
+              type="tel"
+              id="register-phone"
+              name="phone"
+              value="<?php echo e($registerPhone); ?>"
+              autocomplete="tel"
+              inputmode="numeric"
+              minlength="10"
+              maxlength="11"
+              pattern="0[0-9]{9,10}"
+              title="Nhập 10 hoặc 11 chữ số, bắt đầu bằng 0."
+              placeholder="Ví dụ: 0912345678">
           </div>
           <div class="field">
             <label for="register-password">Mật khẩu</label>
-            <input type="password" id="register-password" placeholder="Ít nhất 6 ký tự">
+            <input
+              type="password"
+              id="register-password"
+              name="password"
+              autocomplete="new-password"
+              minlength="6"
+              required
+              placeholder="Ít nhất 6 ký tự">
           </div>
-          <button type="button" class="button full">Đăng ký</button>
-          <div class="social-login">
-            <button type="button" class="social-button">
-              <img class="social-mark" src="<?php echo e(asset('images/google.png')); ?>" alt="">
-              <span>Tiếp tục với Google</span>
-            </button>
+          <div class="field">
+            <label for="register-confirm-password">Nhập lại mật khẩu</label>
+            <input
+              type="password"
+              id="register-confirm-password"
+              name="confirm_password"
+              autocomplete="new-password"
+              minlength="6"
+              required
+              placeholder="Nhập lại mật khẩu">
           </div>
-        </div>
+          <button type="submit" class="button full">Đăng ký</button>
+        </form>
       <?php endif; ?>
     </div>
   </div>

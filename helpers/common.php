@@ -2,6 +2,7 @@
 /**
  * Common Helpers - e(), money(), redirect()
  */
+require_once __DIR__ . '/security.php';
 
 /**
  * Escape HTML output (ngăn XSS)
@@ -21,6 +22,10 @@ function money($amount): string {
     return number_format((float)$amount, 0, ',', '.') . 'đ';
 }
 
+function is_valid_phone_number(string $phone): bool {
+    return preg_match('/\A0[0-9]{9,10}\z/', $phone) === 1;
+}
+
 /**
  * Get a product's primary image, falling back to the legacy cover_image field.
  * @param array $product
@@ -38,21 +43,6 @@ function product_image_src(array $product): string {
     return asset($coverImage !== ''
         ? 'images/products/' . $coverImage
         : 'images/logo.png');
-}
-
-function csrf_token(): string {
-    if (empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-
-    return $_SESSION['csrf_token'];
-}
-
-function valid_csrf_token($token): bool {
-    return is_string($token)
-        && isset($_SESSION['csrf_token'])
-        && is_string($_SESSION['csrf_token'])
-        && hash_equals($_SESSION['csrf_token'], $token);
 }
 
 function user_avatar_options(): array {

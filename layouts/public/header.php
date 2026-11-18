@@ -136,6 +136,12 @@ unset($_SESSION['flash_message']);
     <?php endif; ?>
   </a>
 
+  <?php if (!empty($_SESSION['user'])): ?>
+    <button class="icon-button wishlist-header-button" type="button" title="Yêu thích" aria-label="Yêu thích">
+      <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
+    </button>
+  <?php endif; ?>
+
 </div>
   </div>
 </header>

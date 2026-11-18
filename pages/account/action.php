@@ -68,9 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             || $stringLength($profileFormData['email']) > 191) {
             $profileErrors[] = 'Email không hợp lệ hoặc vượt quá 191 ký tự.';
         }
-        if ($stringLength($profileFormData['full_name']) > 191
-            || $stringLength($profileFormData['phone']) > 20) {
-            $profileErrors[] = 'Họ tên hoặc số điện thoại vượt quá độ dài cho phép.';
+        if ($stringLength($profileFormData['full_name']) > 191) {
+            $profileErrors[] = 'Họ tên không được vượt quá 191 ký tự.';
+        }
+        if ($profileFormData['phone'] !== '' && !is_valid_phone_number($profileFormData['phone'])) {
+            $profileErrors[] = 'Số điện thoại phải gồm 10 hoặc 11 chữ số và bắt đầu bằng 0.';
         }
 
         if (!$profileErrors) {

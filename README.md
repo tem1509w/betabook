@@ -78,6 +78,8 @@ sử dụng mã. Phí vận chuyển hiện bằng 0 nên mã freeship chưa là
 Trang tài khoản hỗ trợ cập nhật username, họ tên, email, số điện thoại; đổi mật
 khẩu sau khi nhập mật khẩu hiện tại; chọn avatar trong
 `assets/images/pfp-icon-set/`; xem lịch sử đơn hàng; và đăng xuất.
+Số điện thoại tài khoản là tùy chọn; nếu nhập phải gồm 10 hoặc 11 chữ số và bắt đầu
+bằng `0`. Trang đăng nhập sử dụng username, không đăng nhập bằng số điện thoại.
 
 ### Admin
 
@@ -156,6 +158,12 @@ Các migration cập nhật schema người dùng:
   xem hộp thư liên hệ cho Admin; tạo `contact_messages` nếu database chưa có.
 - `database/migrations/20261117_staff_promotions_contact_permissions.sql`:
   cấp quyền mã giảm giá/sự kiện và tin nhắn liên hệ cho vai trò Staff.
+- `database/migrations/20261118_users_phone_format.sql`: chuyển số điện thoại
+  tài khoản cũ sai định dạng thành `NULL`, giới hạn cột `users.phone` còn 11 ký
+  tự và thêm CHECK constraint. Chỉ chạy một lần sau khi đã có bảng `users`.
+- `database/migrations/20261118_remove_category_description.sql`: xóa cột
+  `categories.description` trên database hiện có. Chỉ chạy một lần khi cột này
+  vẫn còn; schema deploy mới không tạo cột đó.
 
 Các migration chuyển đổi cấu trúc như role, `address` và avatar chỉ chạy khi
 database còn ở trạng thái cần chuyển đổi; không chạy lại nếu thay đổi đã có.
@@ -185,8 +193,7 @@ Các dấu hiệu sau trong mã nguồn và database cho thấy project vẫn l�
 
 | Phần | Tình trạng hiện tại | Dấu hiệu trong project |
 |---|---|---|
-| Đăng ký tài khoản | Chưa xử lý tạo tài khoản. | Form đăng ký trong `pages/login/index.php` mới có các ô nhập và nút `type="button"`, chưa gửi dữ liệu tới backend. |
-| Đăng nhập Google | Chưa tích hợp OAuth hoặc dịch vụ xác thực bên thứ ba. | Nút Google chỉ là nút giao diện, không có luồng xác thực tương ứng. |
+| Đăng ký tài khoản | Khách có thể đăng ký bằng username, email, mật khẩu và số điện thoại tùy chọn; số điện thoại phải gồm 10 hoặc 11 chữ số bắt đầu bằng `0`. Tài khoản mới nhận role khách hàng (`role_id = 3`). | `pages/login/` tạo tài khoản với mật khẩu đã băm và kiểm tra dữ liệu đầu vào. |
 | Giỏ hàng và đặt mua | Giỏ khách lưu trong session; giỏ đăng nhập lưu riêng theo tài khoản và được gộp khi đăng nhập. Badge đếm loại sách. Đặt hàng không thu phí vận chuyển; có COD hoặc chuyển khoản chờ xác nhận. | `helpers/cart.php`, `helpers/orders.php`, `pages/cart/` và các bảng `user_cart_items`, `orders`, `order_items`. |
 | Quản lý đơn hàng | Admin và Staff có thể xem/tìm/lọc đơn, cập nhật trạng thái đơn và trạng thái thanh toán. Hủy đơn chưa giao sẽ hoàn tồn kho. | `admin/pages/orders/`; menu cấp cho role `admin` và `staff`. |
 | Xóa dữ liệu | Admin có thể xóa tài khoản (không tự xóa hoặc xóa Admin hoạt động cuối cùng); Staff và Admin có thể xóa đơn. Đơn pending/confirmed bị xóa sẽ hoàn tồn kho. Đơn hoàn thành + đã thanh toán, đã hoàn tiền hoặc đã hủy tự xóa sau 30 ngày đủ điều kiện. | `admin/actions/delete-user.php`, `helpers/orders.php`, `scripts/cleanup_orders.php`. |

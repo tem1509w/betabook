@@ -96,8 +96,8 @@ $contactError = $contactError ?? '';
 
           <div class="field">
             <label for="sdt">Số điện thoại</label>
-            <input type="tel" id="sdt" name="contact_phone" maxlength="20" pattern="0[0-9]{9}"
-                   title="Số điện thoại gồm 10 chữ số, bắt đầu bằng 0."
+            <input type="tel" id="sdt" name="contact_phone" inputmode="numeric" minlength="10" maxlength="11"
+                   pattern="0[0-9]{9,10}" title="Số điện thoại gồm 10 hoặc 11 chữ số, bắt đầu bằng 0."
                    placeholder="Ví dụ: 0912345678"
                    value="<?= e(is_string($_POST['contact_phone'] ?? null) ? $_POST['contact_phone'] : '') ?>">
           </div>

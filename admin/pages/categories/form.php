@@ -33,10 +33,6 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="description">Mô tả</label>
-            <textarea id="description" name="description" rows="4"><?= e((string)($data['description'] ?? '')) ?></textarea>
-        </div>
-        <div class="form-group">
             <label>
                 <input type="checkbox" name="is_active" value="1" <?= (int)($data['is_active'] ?? 1) === 1 ? 'checked' : '' ?>>
                 Hoạt động

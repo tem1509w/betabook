@@ -24,6 +24,14 @@ require_once __DIR__ . '/../../helpers/router.php';
                 <h1 class="admin-logo"><a href="<?= url('admin/?page=dashboard') ?>">Trang quản lý</a></h1>
             </div>
             <div class="admin-header-right">
+                <form class="admin-logout-form" action="<?= e(url('login')) ?>" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                    <input type="hidden" name="login_action" value="logout">
+                    <button class="admin-logout-button" type="submit">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                        Đăng xuất
+                    </button>
+                </form>
                 <a href="<?= url('') ?>" class="btn-view-site" target="_blank">Xem trang web</a>
                 <span class="admin-user">Xin chào, <?= e((string)($adminRoleName ?? 'Quản trị viên')) ?></span>
             </div>

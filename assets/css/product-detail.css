@@ -135,16 +135,38 @@
 .buy-actions .button:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(244, 121, 32, 0.3); }
 .button.outline { background: white; color: var(--cam); }
 .wish {
+  display: grid;
+  place-items: center;
   width: 46px;
+  height: 46px;
+  padding: 0;
+  box-sizing: border-box;
   flex-shrink: 0;
   border: 1px solid #cccccc;
   border-radius: 50%;
   background: white;
-  color: var(--do);
-  font-size: 22px;
   cursor: pointer;
 }
 .wish:hover { border-color: var(--do); background: #fff2f2; }
+.wish img { display: block; width: 30px; height: 30px; object-fit: contain; }
+.wish-control { position: relative; flex-shrink: 0; }
+.wish-message {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 5;
+  width: 270px;
+  max-width: calc(100vw - 40px);
+  padding: 12px 14px;
+  border: 1px solid #f1c5c5;
+  border-radius: 8px;
+  background: white;
+  color: #6b3434;
+  font-size: 13px;
+  line-height: 1.5;
+  box-shadow: 0 5px 16px rgba(34, 34, 34, 0.12);
+}
+.wish-message[hidden] { display: none; }
 
 /* Cam kết */
 .perks {

@@ -32,6 +32,15 @@ if (!$product) {
     return;
 }
 
+$productImages = $db->fetchAll(
+    'SELECT image_url
+     FROM product_images
+     WHERE product_id = ?
+     ORDER BY is_primary DESC, sort_order ASC, image_id ASC
+     LIMIT 4',
+    [(int)$productId]
+);
+
 $relatedProducts = $db->fetchAll(
     "SELECT p.*, c.name AS category_name,
             (SELECT pi.image_url
@@ -49,4 +58,4 @@ $relatedProducts = $db->fetchAll(
 
 $pageTitle = $product['title'];
 $bodyClass = 'product-detail-page';
-$extraCss = [asset('css/product-detail.css')];
+$extraCss = [asset('css/product-detail.css') . '?v=' . filemtime(__DIR__ . '/../../assets/css/product-detail.css')];

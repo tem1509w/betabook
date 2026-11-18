@@ -66,25 +66,6 @@
 }
 .login-form .button.full:hover { opacity: 0.9; }
 
-.social-login { display: grid; gap: 10px; margin-top: 14px; }
-.social-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 42px;
-  padding: 8px 14px;
-  border: 1px solid #cccccc;
-  border-radius: 22px;
-  background: white;
-  color: var(--den);
-  font: inherit;
-  cursor: pointer;
-}
-.social-button:hover { background: var(--xam-nhat); }
-.social-mark { width: 20px; height: 20px; flex: 0 0 20px; object-fit: contain; }
-
 .login-error,
 .login-notice {
   padding: 10px 12px;

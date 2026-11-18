@@ -15,6 +15,14 @@ $oldPrice = $product['original_price'] && $product['original_price'] > $product[
 $description = $product['description'] ?? '';
 $additionalDescription = $product['content'] ?? '';
 $coverImage = product_image_src($product);
+$galleryImages = [];
+foreach ($productImages as $productImage) {
+    $galleryImages[] = product_image_src(['image_url' => $productImage['image_url']]);
+}
+if (!$galleryImages) {
+    $galleryImages[] = $coverImage;
+}
+$galleryImages = array_slice($galleryImages, 0, 4);
 $inStock = ($product['stock_quantity'] ?? 0) > 0;
 $productCode = e($product['product_code'] ?? '');
 $isbn = e($product['isbn'] ?? '');
@@ -63,21 +71,27 @@ $soldLabel = $soldQuantity >= 1000
         <?php elseif ($product['is_recommended']): ?>
           <span class="sale-tag">Khuyến nghị</span>
         <?php endif; ?>
-        <div class="img-box g-img g1">
-          <img src="<?php echo e($coverImage); ?>" alt="<?php echo $title; ?>">
-        </div>
-        <div class="img-box g-img g2">Ảnh 2</div>
-        <div class="img-box g-img g3">Ảnh 3</div>
-        <div class="img-box g-img g4">Ảnh 4</div>
+        <?php for ($imageIndex = 0; $imageIndex < 4; $imageIndex++): ?>
+          <div class="img-box g-img g<?php echo $imageIndex + 1; ?>">
+            <?php if (isset($galleryImages[$imageIndex])): ?>
+              <img src="<?php echo e($galleryImages[$imageIndex]); ?>" alt="<?php echo $title; ?> - Ảnh <?php echo $imageIndex + 1; ?>">
+            <?php else: ?>
+              Ảnh <?php echo $imageIndex + 1; ?>
+            <?php endif; ?>
+          </div>
+        <?php endfor; ?>
       </div>
 
       <div class="thumbs">
-        <label for="g1" class="img-box">
-          <img src="<?php echo e($coverImage); ?>" alt="Ảnh 1">
-        </label>
-        <label for="g2" class="img-box">Ảnh 2</label>
-        <label for="g3" class="img-box">Ảnh 3</label>
-        <label for="g4" class="img-box">Ảnh 4</label>
+        <?php for ($imageIndex = 0; $imageIndex < 4; $imageIndex++): ?>
+          <label for="g<?php echo $imageIndex + 1; ?>" class="img-box">
+            <?php if (isset($galleryImages[$imageIndex])): ?>
+              <img src="<?php echo e($galleryImages[$imageIndex]); ?>" alt="Ảnh <?php echo $imageIndex + 1; ?>">
+            <?php else: ?>
+              Ảnh <?php echo $imageIndex + 1; ?>
+            <?php endif; ?>
+          </label>
+        <?php endfor; ?>
       </div>
     </div>
 
@@ -127,7 +141,19 @@ $soldLabel = $soldQuantity >= 1000
         <div class="buy-actions">
           <button type="submit" name="intent" value="add" class="button outline">Thêm vào giỏ</button>
           <button type="submit" name="intent" value="buy_now" class="button" data-go-cart="true">Mua ngay</button>
-          <button type="button" class="wish" title="Yêu thích">♥</button>
+          <div class="wish-control">
+            <button type="button" class="wish" title="Yêu thích" aria-label="Yêu thích"
+                    aria-expanded="false" aria-controls="wish-message-<?php echo (int)$product['product_id']; ?>">
+              <img src="<?php echo e(asset('images/favorite.ico')); ?>" alt="" aria-hidden="true">
+            </button>
+            <div class="wish-message" id="wish-message-<?php echo (int)$product['product_id']; ?>" role="status" hidden>
+              <?php if (empty($_SESSION['user'])): ?>
+                Vui lòng đăng nhập để wishlist sản phẩm.
+              <?php else: ?>
+                Tính năng wishlist sẽ được bổ sung sau.
+              <?php endif; ?>
+            </div>
+          </div>
         </div>
       </form>
 
@@ -143,6 +169,17 @@ $soldLabel = $soldQuantity >= 1000
   </section>
 
   <script>
+  document.querySelectorAll('.wish').forEach((button) => {
+    const message = document.getElementById(button.getAttribute('aria-controls'));
+    if (!message) return;
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!isExpanded));
+      message.hidden = isExpanded;
+    });
+  });
+
   document.querySelectorAll('form.buy').forEach((form) => {
     const message = document.createElement('p');
     message.setAttribute('aria-live', 'polite');

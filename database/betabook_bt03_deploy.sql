@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS categories (
     parent_id INT DEFAULT NULL,
     slug VARCHAR(191) NOT NULL,
     name VARCHAR(200) NOT NULL,
-    description TEXT,
     is_active TINYINT(1) DEFAULT 1,
     sort_order INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -108,7 +107,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(191) NOT NULL,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(191),
-    phone VARCHAR(20),
+    phone VARCHAR(11) DEFAULT NULL,
     avatar_image VARCHAR(255) NOT NULL DEFAULT 'pfp-icon-set/Avatar-Pyrois.webp',
     role_id INT NOT NULL,
     is_active TINYINT(1) DEFAULT 1,
@@ -118,6 +117,13 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE KEY uk_users_username (username),
     UNIQUE KEY uk_users_email (email),
     INDEX idx_users_role_id (role_id),
+    CONSTRAINT chk_users_phone_format CHECK (
+        phone IS NULL OR (
+            CHAR_LENGTH(phone) IN (10, 11)
+            AND phone REGEXP '^0[0-9]{9,10}$'
+            AND LEFT(phone, 1) = '0'
+        )
+    ),
     CONSTRAINT fk_users_role
         FOREIGN KEY (role_id) REFERENCES roles(role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -327,17 +333,16 @@ CREATE TABLE IF NOT EXISTS home_events (
 
 -- Seed six top-level categories and five child categories.
 -- Use stable slug lookups so existing category IDs remain valid on re-runs.
-INSERT INTO categories (parent_id, slug, name, description, is_active, sort_order) VALUES
-(NULL, 'betacards', 'BetaCards', NULL , 1, 1),
-(NULL, 'van-hoc-giai-tri', 'Văn học & Giải trí',NULL, 1, 2),
-(NULL, 'kinh-doanh-kinh-te', 'Kinh doanh & Kinh tế', NULL, 1, 3),
-(NULL, 'tu-duy-phat-trien-ban-than', 'Tư duy & Phát triển bản thân', NULL, 1, 4),
-(NULL, 'khoa-hoc-doi-song', 'Khoa học & Đời sống', NULL, 1, 5),
-(NULL, 'an-pham-dac-biet', 'Ấn phẩm & Bộ sưu tập đặc biệt', NULL, 1, 6)
+INSERT INTO categories (parent_id, slug, name, is_active, sort_order) VALUES
+(NULL, 'betacards', 'BetaCards', 1, 1),
+(NULL, 'van-hoc-giai-tri', 'Văn học & Giải trí', 1, 2),
+(NULL, 'kinh-doanh-kinh-te', 'Kinh doanh & Kinh tế', 1, 3),
+(NULL, 'tu-duy-phat-trien-ban-than', 'Tư duy & Phát triển bản thân', 1, 4),
+(NULL, 'khoa-hoc-doi-song', 'Khoa học & Đời sống', 1, 5),
+(NULL, 'an-pham-dac-biet', 'Ấn phẩm & Bộ sưu tập đặc biệt', 1, 6)
 
 ON DUPLICATE KEY UPDATE
-    name = VALUES(name), description = VALUES(description), is_active = VALUES(is_active),
-    sort_order = VALUES(sort_order);
+    name = VALUES(name), is_active = VALUES(is_active), sort_order = VALUES(sort_order);
 
 SET @category_betacards = (SELECT category_id FROM categories WHERE slug = 'betacards');
 SET @category_literature = (SELECT category_id FROM categories WHERE slug = 'van-hoc-giai-tri');

@@ -43,3 +43,23 @@ if ($bookId > 0 && !$book) {
     http_response_code(404);
     $formErrors[] = 'Không tìm thấy sách cần sửa.';
 }
+
+$bookImages = $bookId > 0
+    ? $db->fetchAll(
+        'SELECT image_url, is_primary
+         FROM product_images
+         WHERE product_id = ?
+         ORDER BY is_primary DESC, sort_order ASC, image_id ASC
+         LIMIT 4',
+        [$bookId]
+    )
+    : [];
+if (!$bookImages && !empty($book['cover_image'])) {
+    $legacyImage = trim((string)$book['cover_image']);
+    $bookImages[] = [
+        'image_url' => strpos($legacyImage, 'images/') === 0
+            ? $legacyImage
+            : 'images/products/' . ltrim($legacyImage, '/'),
+        'is_primary' => 1,
+    ];
+}

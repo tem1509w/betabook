@@ -44,8 +44,8 @@ if ($message === '') {
     $contactErrors[] = 'Nội dung tin nhắn quá dài.';
 }
 
-if ($phone !== '' && !preg_match('/^0[0-9]{9}$/', $phone)) {
-    $contactErrors[] = 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0.';
+if ($phone !== '' && !is_valid_phone_number($phone)) {
+    $contactErrors[] = 'Số điện thoại phải gồm 10 hoặc 11 chữ số và bắt đầu bằng 0.';
 }
 
 if ($contactErrors) {

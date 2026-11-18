@@ -32,7 +32,9 @@
             </div>
             <div class="form-group">
                 <label for="phone">Số điện thoại</label>
-                <input id="phone" type="tel" name="phone" maxlength="20" value="<?= e((string)($data['phone'] ?? '')) ?>">
+                <input id="phone" type="tel" name="phone" inputmode="numeric" minlength="10" maxlength="11"
+                       pattern="0[0-9]{9,10}" title="Nhập 10 hoặc 11 chữ số, bắt đầu bằng 0."
+                       value="<?= e((string)($data['phone'] ?? '')) ?>">
             </div>
             <div class="form-group">
                 <label for="role_id">Vai trò <span class="required">*</span></label>

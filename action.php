@@ -67,7 +67,7 @@ if ($action === 'contact') {
         || strlen($message) > 65535
         || $stringLength($name) > 191 || $stringLength($email) > 191
         || $stringLength($phone) > 20 || $stringLength($subject) > 255
-        || ($phone !== '' && !preg_match('/^0[0-9]{9}$/', $phone))) {
+        || ($phone !== '' && !is_valid_phone_number($phone))) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'message' => 'Vui lòng kiểm tra tên, email, số điện thoại, chủ đề và nội dung.']);
         exit;

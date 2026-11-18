@@ -26,8 +26,11 @@ if ($username === '' || $stringLength($username) > 191) {
 if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $stringLength($email) > 191) {
     $errors[] = 'Email không hợp lệ hoặc vượt quá 191 ký tự.';
 }
-if ($stringLength($fullName) > 191 || $stringLength($phone) > 20) {
-    $errors[] = 'Họ tên hoặc số điện thoại vượt quá độ dài cho phép.';
+if ($stringLength($fullName) > 191) {
+    $errors[] = 'Họ tên không được vượt quá 191 ký tự.';
+}
+if ($phone !== '' && !is_valid_phone_number($phone)) {
+    $errors[] = 'Số điện thoại phải gồm 10 hoặc 11 chữ số và bắt đầu bằng 0.';
 }
 if ($avatarImage !== '' && !in_array($avatarImage, $avatarOptions, true)) {
     $errors[] = 'Ảnh đại diện không hợp lệ.';
